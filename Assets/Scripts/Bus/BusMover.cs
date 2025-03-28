@@ -13,7 +13,7 @@ public class BusMover : MonoBehaviour
         _velocity.z = _speed;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_canMove)
             transform.Translate(_velocity);
