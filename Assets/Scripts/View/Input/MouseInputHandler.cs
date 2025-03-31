@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MouseInputHandler : MonoBehaviour
@@ -10,6 +11,8 @@ public class MouseInputHandler : MonoBehaviour
     private RaycastHit _hitInfo;
     private Collider _target;
 
+    public event Action<Bus> BusSelected;
+
     private void Update()
     {
         _target = OnMouseClick();
@@ -17,8 +20,8 @@ public class MouseInputHandler : MonoBehaviour
         if (_target == null)
             return;
 
-        if (_target.TryGetComponent(out BusMover bus))
-            bus.Run();
+        if (_target.TryGetComponent(out Bus bus))
+            BusSelected?.Invoke(bus);
     }
 
     private Collider OnMouseClick()
