@@ -1,19 +1,9 @@
 fileFormatVersion: 2
-guid: 2a592c23c27b8f34689bf2381a0f4096
+guid: b8fa693a41ae7ab4999a9d7e01723b65
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BusColor
-    second: {fileID: 2100000, guid: 22574b82cba461e4d8fa7e71a586635b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Palette
-    second: {fileID: 2100000, guid: 1b5fa76732329bb4e9a883780b9179fe, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

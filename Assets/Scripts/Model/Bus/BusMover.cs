@@ -6,13 +6,13 @@ public class BusMover : MonoBehaviour
     [SerializeField] private float _speed;
 
     private readonly float _minDistance = 0.3f;
-    private readonly float _derectionForward = 1f;
-    private readonly float _derectionBackward = -1f;
+    private readonly float _directionForward = 1f;
+    private readonly float _directionBackward = -1f;
 
     private Vector3 _velocity = Vector3.forward;
     private Vector3 _target = Vector3.zero;
-    private Vector3 _direction;
-    private float _speedDirection = 1f;
+    private Vector3 _vectorDistance;
+    private float _direction = 1f;
     private float _sqrDistance;
     private bool _canMove = false;
 
@@ -28,9 +28,9 @@ public class BusMover : MonoBehaviour
         if (_canMove)
         {
             if (_target != Vector3.zero)
-                MoveToTarget();
+                HandleMoving();
 
-            transform.Translate(_velocity * _speedDirection);
+            transform.Translate(_direction * Time.deltaTime * _velocity);
         }
     }
 
@@ -40,7 +40,7 @@ public class BusMover : MonoBehaviour
     public void Run()
     {
         _canMove = true;
-        _speedDirection = _derectionForward;
+        _direction = _directionForward;
     }
 
     public void GoToPoint(Vector3 point)
@@ -48,7 +48,7 @@ public class BusMover : MonoBehaviour
         point.y = transform.position.y;
         _target = point;
         _canMove = true;
-        _speedDirection = _derectionForward;
+        _direction = _directionForward;
 
         transform.LookAt(_target);
     }
@@ -57,7 +57,7 @@ public class BusMover : MonoBehaviour
     {
         target.y = transform.position.y;
         transform.LookAt(target);
-        _speedDirection = _derectionForward;
+        _direction = _directionForward;
         _canMove = true;
     }
 
@@ -66,18 +66,18 @@ public class BusMover : MonoBehaviour
         point.y = transform.position.y;
         _target = point;
         _canMove = true;
-        _speedDirection = _derectionBackward;
+        _direction = _directionBackward;
     }
 
-    private void MoveToTarget()
+    private void HandleMoving()
     {
-        _direction = _target - transform.position;
-        _sqrDistance = _direction.sqrMagnitude;
+        _vectorDistance = _target - transform.position;
+        _sqrDistance = _vectorDistance.sqrMagnitude;
 
         if (_sqrDistance < _minDistance)
         {
             transform.position = _target;
-            _direction = Vector3.zero;
+            _vectorDistance = Vector3.zero;
             _target = Vector3.zero;
             _canMove = false;
 

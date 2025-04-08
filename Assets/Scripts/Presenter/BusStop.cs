@@ -5,18 +5,25 @@ using UnityEngine;
 [RequireComponent(typeof(BusStopNavigator))]
 public class BusStop : MonoBehaviour
 {
-    private BusStopNavigator _navigator;
-    private bool[] _stops = new bool[7];
-    private int _initialFreeStopsCount = 7;
+    [SerializeField] private int _stopsCount = 7;
+    [SerializeField] private int _initialFreeStopsCount = 7;
 
-    public bool IsFreeStops => _stops.Where(value => value == true).Count() > 0;
+    private BusStopNavigator _navigator;
+    private BusStopPlace[] _stops;
+    public bool IsFreeStops => _stops.Where(place => place.IsFree == true).Count() > 0;
+
 
     private void Awake()
     {
+        if (_initialFreeStopsCount > _stopsCount)
+            throw new IndexOutOfRangeException(nameof(_initialFreeStopsCount));
+
         _navigator = GetComponent<BusStopNavigator>();
 
+        _stops = new BusStopPlace[_stopsCount];
+
         for (int i = 0; i < _initialFreeStopsCount; i++)
-            _stops[i] = true;
+            _stops[i] = new BusStopPlace();
     }
 
     public Vector3 GetPointerCoordinate(int stopIndex) =>
@@ -31,9 +38,9 @@ public class BusStop : MonoBehaviour
 
         for (int i = 0; i < _stops.Length; i++)
         {
-            if (_stops[i] == true)
+            if (_stops[i].IsFree == true)
             {
-                _stops[i] = false;
+                _stops[i].Reserve();
                 return i;
             }
         }
@@ -46,6 +53,14 @@ public class BusStop : MonoBehaviour
         if (index < 0 || index >= _stops.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        _stops[index] = true;
+        _stops[index].Free();
+    }
+
+    public void TakeBus(Bus bus, int placeIndex)
+    {
+        if (placeIndex < 0 || placeIndex >= _stops.Length)
+            throw new ArgumentOutOfRangeException(nameof(placeIndex));
+
+        _stops[placeIndex].AddBus(bus);
     }
 }

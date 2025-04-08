@@ -21,7 +21,10 @@ public class MouseInputHandler : MonoBehaviour
             return;
 
         if (_target.TryGetComponent(out Bus bus))
-            BusSelected?.Invoke(bus);
+        {
+            if (bus.IsActive)
+                BusSelected?.Invoke(bus);
+        }
     }
 
     private Collider OnMouseClick()
