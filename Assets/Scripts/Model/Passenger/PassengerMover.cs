@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +8,14 @@ public class PassengerMover : MonoBehaviour
     [SerializeField] private float _speed;
 
     private readonly float _maxPositionZForRotation = 4.5f;
+    private readonly Queue<Vector3> _targets = new();
 
     private PassengerAnimator _animator;
     private Vector3 _target = Vector3.zero;
     private float _randomDifferenceAngle = 40f;
-    private Queue<Vector3> _targets = new();
+    private bool _isMoveCompleted;
+
+    public event Action ArrivedToBus;
 
     private void Awake()
     {
@@ -25,6 +29,12 @@ public class PassengerMover : MonoBehaviour
 
     public void MoveTo(Vector3 target) =>
         _targets.Enqueue(target);
+
+    public void FinishMove(Vector3 target)
+    {
+        MoveTo(target);
+        _isMoveCompleted = true;
+    }
 
     private void Move()
     {
@@ -60,13 +70,20 @@ public class PassengerMover : MonoBehaviour
 
             _animator.Stop();
             _target = Vector3.zero;
+
+            if (_isMoveCompleted)
+            {
+                ArrivedToBus?.Invoke();
+                return;
+            }
+
             RotateRandom();
         }
     }
 
     private void RotateRandom()
     {
-        float angle = Random.Range(0f, _randomDifferenceAngle);
+        float angle = UnityEngine.Random.Range(0f, _randomDifferenceAngle);
         Vector3 rotationAngle = transform.rotation.eulerAngles;
 
         rotationAngle.y += angle;

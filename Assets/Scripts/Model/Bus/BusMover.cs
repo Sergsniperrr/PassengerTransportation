@@ -5,7 +5,7 @@ public class BusMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    private readonly float _minDistance = 0.3f;
+    private readonly float _minDistance = 0.9f;
     private readonly float _directionForward = 1f;
     private readonly float _directionBackward = -1f;
 
@@ -43,14 +43,15 @@ public class BusMover : MonoBehaviour
         _direction = _directionForward;
     }
 
-    public void GoToPoint(Vector3 point)
+    public void GoToPoint(Vector3 point, bool canRotate = true)
     {
         point.y = transform.position.y;
         _target = point;
         _canMove = true;
         _direction = _directionForward;
 
-        transform.LookAt(_target);
+        if (canRotate)
+            transform.LookAt(_target);
     }
 
     public void ChangeDirection(Vector3 target)

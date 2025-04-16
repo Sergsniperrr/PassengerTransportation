@@ -8,7 +8,7 @@ public class TriggerHandler : MonoBehaviour
     private bool _canCrash = false;
 
     public event Action BusStopTriggered;
-    public event Action WayFinished;
+    //public event Action WayFinished;
     public event Action BusCrashed;
 
     private void Awake()
@@ -26,7 +26,8 @@ public class TriggerHandler : MonoBehaviour
 
         if (other.TryGetComponent(out EndPoint _))
         {
-            WayFinished?.Invoke();
+            //WayFinished?.Invoke();
+            Destroy(gameObject);
         }
 
         if (other.TryGetComponent(out BusStop busStop))

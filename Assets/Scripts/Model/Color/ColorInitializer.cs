@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColorsHandler : MonoBehaviour, IColorGetter
+public class ColorInitializer : MonoBehaviour, IColorGetter
 {
     private Queue<Material> _colors;
 

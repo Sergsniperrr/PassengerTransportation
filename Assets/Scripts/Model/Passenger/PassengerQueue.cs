@@ -1,17 +1,23 @@
 using System;
 using UnityEngine;
 using System.Linq;
+using System.Collections;
 
 [RequireComponent(typeof(QueueMover))]
 [RequireComponent(typeof(PassengerSpawner))]
-public class PassengerQueue : MonoBehaviour
+public class PassengerQueue : MonoBehaviour, IActivePassenger
 {
     private int _visibleQueueSize = 25;
     private Passenger[] _queue;
     private QueueMover _mover;
     private PassengerSpawner _spawner;
-    private Passenger _bufer;
-    private bool _canSpawn = true;
+    private Passenger _bufferForEnqueue;
+    private Passenger _bufferForDequeue;
+    private Passenger _bufferForShift;
+
+    public event Action LastPassengerChanged;
+
+    public Passenger LastPassenger => _queue[^1];
 
     private void Awake()
     {
@@ -29,33 +35,32 @@ public class PassengerQueue : MonoBehaviour
         if (_queue[index] != null)
             throw new Exception("_queue[0] is not null value!");
 
-        _bufer = _spawner.Spawn();
+        _bufferForEnqueue = _spawner.Spawn();
 
-        if (_bufer != null)
-            _queue[index] = _bufer;
+        if (_bufferForEnqueue != null)
+            _queue[index] = _bufferForEnqueue;
     }
 
     public Passenger Dequeue()
     {
-        _bufer = _queue[^1];
-        _mover.MoveOutPassenger(_bufer);
+        _bufferForDequeue = _queue[^1];
+        _mover.MoveOutPassenger(_bufferForDequeue);
         ShiftAll(_queue.Length - 1);
 
-        return _bufer;
+        return _bufferForDequeue;
     }
-
-    public Passenger GetLast() =>
-        _queue[^1];
 
     public Passenger ExtractPassenger(int index)
     {
+        Passenger _buffer;
+
         if (index < 0 || index >= _queue.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        _bufer = _queue[index];
+        _buffer = _queue[index];
         ShiftAll(index);
 
-        return _bufer;
+        return _buffer;
     }
 
     public void Spawn()
@@ -73,13 +78,15 @@ public class PassengerQueue : MonoBehaviour
         if (freeElementIndex < minIndexForShift || freeElementIndex >= _queue.Length)
             throw new ArgumentOutOfRangeException(nameof(freeElementIndex));
 
+
         for (int i = freeElementIndex; i > 0; i--)
         {
-            _bufer = _queue[i - 1];
+            _bufferForShift = _queue[i - 1];
             _queue[i - 1] = null;
-            _queue[i] = _bufer;
+            _queue[i] = _bufferForShift;
         }
 
+        Enqueue();
         _mover.MoveOneStep(_queue.ToArray());
     }
 }

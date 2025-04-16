@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.85
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       propertyPath: m_LocalScale.y
@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.85
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       propertyPath: m_LocalPosition.x
@@ -99,9 +99,6 @@ PrefabInstance:
       addedObject: {fileID: 1584261846806220826}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6916385003174456774}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1071051278127420068}
     - targetCorrespondingSourceObject: {fileID: 5823506122465456227, guid: 37c52c0857dcbf8418089d1633963035, type: 3}
       insertIndex: -1
@@ -178,6 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49810351058fe0747b8baf666a91547e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _sizeAtStop: {x: 1, y: 0.85, z: 1}
 --- !u!114 &-2309466402780457693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f3dab25e2e34894aaca3c9930c2b496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 20
+  _speed: 15
 --- !u!114 &-8871427001735037280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,21 +226,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Count>k__BackingField: 6
-  <FirstPlaceCoordinate>k__BackingField: {x: 0, y: 0, z: 0}
-  <SideInterval>k__BackingField: 0
-  <BackInterval>k__BackingField: 0
---- !u!114 &6916385003174456774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669182336252168888}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 261c25b5723a4884ab64217d93f11792, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  <FirstPlaceCoordinate>k__BackingField: {x: -0.2603, y: -0.2047, z: 0.5148}
+  <SideInterval>k__BackingField: 0.483
+  <BackInterval>k__BackingField: -0.48
 --- !u!114 &1071051278127420068
 MonoBehaviour:
   m_ObjectHideFlags: 0

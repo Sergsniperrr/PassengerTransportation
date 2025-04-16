@@ -1,17 +1,28 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(BusStopNavigator))]
+[RequireComponent(typeof(ColorAnalyzer))]
 public class BusStop : MonoBehaviour
 {
+    private const int FailedIndex = -1;
+
     [SerializeField] private int _stopsCount = 7;
     [SerializeField] private int _initialFreeStopsCount = 7;
+    [SerializeField] private PassengerQueue _queue;
+
+    private readonly float _delayOfUpdateQueue = 0.01f;
 
     private BusStopNavigator _navigator;
-    private BusStopPlace[] _stops;
-    public bool IsFreeStops => _stops.Where(place => place.IsFree == true).Count() > 0;
+    private ColorAnalyzer _colorAnalyzer;
+    private bool[] _reservations;
+    private Bus[] _stops;
+    private float _updateCounter;
 
+    public bool IsFreeStops => _reservations.Where(place => place == true).Count() > 0;
 
     private void Awake()
     {
@@ -19,11 +30,24 @@ public class BusStop : MonoBehaviour
             throw new IndexOutOfRangeException(nameof(_initialFreeStopsCount));
 
         _navigator = GetComponent<BusStopNavigator>();
+        _colorAnalyzer = GetComponent<ColorAnalyzer>();
 
-        _stops = new BusStopPlace[_stopsCount];
+        _reservations = new bool[_stopsCount];
+        _stops = new Bus[_stopsCount];
 
         for (int i = 0; i < _initialFreeStopsCount; i++)
-            _stops[i] = new BusStopPlace();
+            _reservations[i] = true;
+    }
+
+    private void Update()
+    {
+        if (_updateCounter < 0f)
+        {
+            _colorAnalyzer.TrySendPassengerToPlatform(_queue, _stops);
+            _updateCounter = _delayOfUpdateQueue;
+        }
+
+        _updateCounter -= Time.deltaTime;
     }
 
     public Vector3 GetPointerCoordinate(int stopIndex) =>
@@ -34,18 +58,16 @@ public class BusStop : MonoBehaviour
 
     public int GetFreeStopIndex()
     {
-        int failedIndex = -1;
-
-        for (int i = 0; i < _stops.Length; i++)
+        for (int i = 0; i < _stopsCount; i++)
         {
-            if (_stops[i].IsFree == true)
+            if (_reservations[i])
             {
-                _stops[i].Reserve();
+                _reservations[i] = false;
                 return i;
             }
         }
 
-        return failedIndex;
+        return FailedIndex;
     }
 
     public void ReleaseStop(int index)
@@ -53,7 +75,8 @@ public class BusStop : MonoBehaviour
         if (index < 0 || index >= _stops.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        _stops[index].Free();
+        _reservations[index] = true;
+        _stops[index] = null;
     }
 
     public void TakeBus(Bus bus, int placeIndex)
@@ -61,6 +84,6 @@ public class BusStop : MonoBehaviour
         if (placeIndex < 0 || placeIndex >= _stops.Length)
             throw new ArgumentOutOfRangeException(nameof(placeIndex));
 
-        _stops[placeIndex].AddBus(bus);
+        _stops[placeIndex] = bus;
     }
 }

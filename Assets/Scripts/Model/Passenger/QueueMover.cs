@@ -16,7 +16,6 @@ public class QueueMover : MonoBehaviour
         Vector3 shift = Vector3.zero;
         _coordinates = new Vector3[elementsCount];
 
-
         for (int i = 0; i < _rotaryIndex; i++)
         {
             shift.z = i * _stepSize;
@@ -70,6 +69,6 @@ public class QueueMover : MonoBehaviour
     private void CalculateOutPoint()
     {
         _outPoint = _coordinates[^1];
-        _outPoint.z = _outPointShiftOnZ;
+        _outPoint.z += _outPointShiftOnZ;
     }
 }

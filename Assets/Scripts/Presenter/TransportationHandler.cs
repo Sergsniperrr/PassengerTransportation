@@ -5,7 +5,7 @@ public class TransportationHandler : MonoBehaviour
 {
     [SerializeField] private BusStop _busStop;
     [SerializeField] private PassengerQueue _queue;
-    [SerializeField] private ColorsHandler _colorsHandler;
+    [SerializeField] private ColorInitializer _colorsHandler;
     [SerializeField] private Level _level;
 
     private MouseInputHandler _input;
@@ -38,6 +38,7 @@ public class TransportationHandler : MonoBehaviour
         if (_busStop.IsFreeStops)
         {
             bus.StopReleased += ReleaseStop;
+            bus.ArrivedToStop += AddToBusStop;
 
             bus.SetStopIndex(_busStop.GetFreeStopIndex());
             AssignRouteForBus(bus);
@@ -51,6 +52,13 @@ public class TransportationHandler : MonoBehaviour
         bus.StopReleased -= ReleaseStop;
 
         _busStop.ReleaseStop(index);
+    }
+
+    private void AddToBusStop(Bus bus, int stopIndex)
+    {
+        bus.ArrivedToStop -= AddToBusStop;
+
+        _busStop.TakeBus(bus, stopIndex);
     }
 
     private void AssignRouteForBus(Bus bus)
