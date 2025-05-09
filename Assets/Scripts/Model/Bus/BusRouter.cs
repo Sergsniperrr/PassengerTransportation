@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(BusMover))]
-[RequireComponent(typeof(Loader))]
 [RequireComponent(typeof(TriggerHandler))]
 public class BusRouter : MonoBehaviour
 {
@@ -11,12 +10,10 @@ public class BusRouter : MonoBehaviour
 
     private BusMover _mover;
     private TriggerHandler _trigger;
-    private Loader _loader;
-
     private Vector3 _initialCoordinate;
     private Vector3 _stopPointerCoordinate;
     private Vector3 _stopCoordinate;
-    private WaitForSeconds _waitForStopToLeave = new(0.1f);
+    private WaitForSeconds _waitForStopToLeave = new(0.3f);
 
     public event Action MoveCompleted;
     public event Action StopArrived;
@@ -26,7 +23,6 @@ public class BusRouter : MonoBehaviour
     {
         _mover = GetComponent<BusMover>();
         _trigger = GetComponent<TriggerHandler>();
-        _loader = GetComponent<Loader>();
 
         _initialCoordinate = transform.position;
     }
@@ -64,11 +60,10 @@ public class BusRouter : MonoBehaviour
         StartCoroutine(MoveOutFromBusStopWithDelay());
     }
 
-    public IEnumerator MoveOutFromBusStopWithDelay()
+    private IEnumerator MoveOutFromBusStopWithDelay()
     {
-        _loader.FillingCompleted -= MoveOutFromBusStop;
-
         yield return _waitForStopToLeave;
+
         _mover.GoToPoint(_stopPointerCoordinate);
 
         _mover.ArrivedAtPoint += MoveToFinish;
@@ -114,7 +109,6 @@ public class BusRouter : MonoBehaviour
     private void WaitForFilling()
     {
         _mover.ArrivedAtPoint -= WaitForFilling;
-        _loader.FillingCompleted += MoveOutFromBusStop;
 
         StopArrived?.Invoke();
     }

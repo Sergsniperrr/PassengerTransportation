@@ -5,7 +5,7 @@ public class TransportationHandler : MonoBehaviour
 {
     [SerializeField] private BusStop _busStop;
     [SerializeField] private PassengerQueue _queue;
-    [SerializeField] private ColorInitializer _colorsHandler;
+    [SerializeField] private ColorsHandler _colorsHandler;
     [SerializeField] private Level _level;
 
     private MouseInputHandler _input;
@@ -67,10 +67,5 @@ public class TransportationHandler : MonoBehaviour
         Vector3 stopCoordinate = _busStop.GetStopCoordinate(bus.StopIndex);
 
         bus.AssignBusStopPoints(pointerCoordinate, stopCoordinate);
-    }
-
-    private void UpdateColorHandle()
-    {
-
     }
 }

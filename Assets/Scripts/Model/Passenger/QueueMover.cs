@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class QueueMover : MonoBehaviour
@@ -14,61 +16,45 @@ public class QueueMover : MonoBehaviour
     public void InitializeData(Vector3 zeroPosition, int elementsCount)
     {
         Vector3 shift = Vector3.zero;
-        _coordinates = new Vector3[elementsCount];
+        List<Vector3> coordinates = new();
 
         for (int i = 0; i < _rotaryIndex; i++)
         {
             shift.z = i * _stepSize;
-            _coordinates[i] = zeroPosition + shift;
+            coordinates.Add(zeroPosition + shift);
         }
 
         for (int i = _rotaryIndex; i < elementsCount; i++)
         {
             shift.x = (i - _rotaryIndex + 1) * _stepSize * _reverseDerection;
-            _coordinates[i] = zeroPosition + shift;
+            coordinates.Add(zeroPosition + shift);
         }
+
+        coordinates.Reverse();
+        _coordinates = coordinates.ToArray();
 
         CalculateOutPoint();
     }
 
-    public void MoveOneStep(Passenger[] queue)
+    public void UpdatePositions(List<Passenger> queue)
     {
-        for (int i = 0; i < queue.Length; i++)
-        {
-            if (queue[i] != null)
-                queue[i].MoveTo(_coordinates[i]);
-        }
+        for (int i = 0; i < queue.Count; i++)
+            queue[i].MoveToNextPlaceInQueue();
     }
 
-    public void StartMove(Passenger[] queue) =>
-        StartCoroutine(StartMoveCoroutine(queue));
-
-    public void MoveOutPassenger(Passenger passenger) =>
-        passenger.MoveTo(_outPoint);
-
-    public IEnumerator StartMoveCoroutine(Passenger[] queue)
+    public void StartMovePassenger(Passenger passenger, int index)
     {
-        int rotaryIndex = _rotaryIndex - 1;
-        float delay = 0.045f;
-        WaitForSeconds wait = new(delay);
+        int minPositionZIndex = 15;
 
-        for (int i = queue.Length - 1; i >= 0; i--)
-        {
-            if (queue[i] == null)
-                continue;
+        if (index < minPositionZIndex)
+            passenger.MoveTo(_coordinates[minPositionZIndex]);
 
-            if (i > rotaryIndex)
-                queue[i].MoveTo(_coordinates[rotaryIndex]);
-
-            queue[i].MoveTo(_coordinates[i]);
-
-            yield return wait;
-        }
+        passenger.MoveTo(_coordinates[index]);
     }
 
     private void CalculateOutPoint()
     {
-        _outPoint = _coordinates[^1];
+        _outPoint = _coordinates[0];
         _outPoint.z += _outPointShiftOnZ;
     }
 }

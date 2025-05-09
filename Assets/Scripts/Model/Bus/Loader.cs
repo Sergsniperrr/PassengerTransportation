@@ -17,7 +17,8 @@ public class Loader : MonoBehaviour
 
     public event Action FillingCompleted;
 
-    public bool IsEmptySeat => _reservations.Where(element => element == true).Count() > 0;
+    public int EmptySeatCount => _reservations.Where(element => element == true).Count();
+    public bool IsEmptySeat => EmptySeatCount > 0;
 
     private void Awake()
     {
@@ -45,14 +46,17 @@ public class Loader : MonoBehaviour
             throw new ArgumentNullException(nameof(passenger));
 
         passenger.transform.SetParent(transform);
-        passenger.transform.localPosition = _coordinates[passenger.PlaceIndex];
+        passenger.transform.localPosition = _coordinates[passenger.BusPlaceIndex];
         passenger.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-        _places[passenger.PlaceIndex] = passenger;
+        _places[passenger.BusPlaceIndex] = passenger;
 
         if (CheckFill())
             FillingCompleted?.Invoke();
     }
+
+    public Passenger GetPassengerByIndex(int index) =>
+        _places[index];
 
     private bool CheckFill()
     {

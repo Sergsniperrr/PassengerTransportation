@@ -2,91 +2,114 @@ using System;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(QueueMover))]
 [RequireComponent(typeof(PassengerSpawner))]
-public class PassengerQueue : MonoBehaviour, IActivePassenger
+public class PassengerQueue : MonoBehaviour
 {
+    private int _indexOfpassengerBeforeLast = 1;
     private int _visibleQueueSize = 25;
-    private Passenger[] _queue;
+    private List<Passenger> _queue = new();
     private QueueMover _mover;
     private PassengerSpawner _spawner;
     private Passenger _bufferForEnqueue;
     private Passenger _bufferForDequeue;
     private Passenger _bufferForShift;
+    private WaitForSeconds _delayBeforeShift = new(0.03f);
+    private WaitForSeconds _delayOfSpawnPassenger = new(0.07f);
 
-    public event Action LastPassengerChanged;
-
-    public Passenger LastPassenger => _queue[^1];
+    public Passenger LastPassenger { get; private set; }
+    public int Count => _queue.Count;
 
     private void Awake()
     {
         _mover = GetComponent<QueueMover>();
         _spawner = GetComponent<PassengerSpawner>();
-        _queue = new Passenger[_visibleQueueSize];
         _mover.InitializeData(_spawner.transform.position, _visibleQueueSize);
     }
 
     public void InitializeColorsSpawner(IColorGetter colors) =>
         _spawner.InitializeColors(colors);
 
-    public void Enqueue(int index = 0)
+    public Passenger GetPassengerByIndex(int index)
     {
-        if (_queue[index] != null)
-            throw new Exception("_queue[0] is not null value!");
+        if (index < 0 || index >= _queue.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
 
-        _bufferForEnqueue = _spawner.Spawn();
-
-        if (_bufferForEnqueue != null)
-            _queue[index] = _bufferForEnqueue;
+        return _queue[index];
     }
 
-    public Passenger Dequeue()
+    public void Enqueue()
     {
-        _bufferForDequeue = _queue[^1];
-        _mover.MoveOutPassenger(_bufferForDequeue);
-        ShiftAll(_queue.Length - 1);
+        _bufferForEnqueue = _spawner.Spawn();
 
-        return _bufferForDequeue;
+        if (_bufferForEnqueue == null || _queue.Count == _visibleQueueSize)
+            return;
+
+        StartCoroutine(EnqueueWithWaiting(_bufferForEnqueue));
+    }
+
+    public void Dequeue()
+    {
+        _queue.RemoveAt(0);
+        LastPassenger = null;
+
+        if (_queue.Count > 0)
+        {
+            if (_queue.Count > _indexOfpassengerBeforeLast)
+                _queue[_indexOfpassengerBeforeLast].SpeedUp();
+
+            _mover.UpdatePositions(_queue);
+            LastPassenger = _queue[0];
+        }
+
+        Enqueue();
     }
 
     public Passenger ExtractPassenger(int index)
     {
         Passenger _buffer;
 
-        if (index < 0 || index >= _queue.Length)
+        if (index < 0 || index >= _queue.Count)
             throw new ArgumentOutOfRangeException(nameof(index));
 
         _buffer = _queue[index];
-        ShiftAll(index);
 
         return _buffer;
     }
 
     public void Spawn()
     {
-        for (int i = _visibleQueueSize - 1; i >= 0; i--)
-            Enqueue(i);
-
-        _mover.StartMove(_queue);
+        StartCoroutine(SpawnWithDelay());
     }
 
-    private void ShiftAll(int freeElementIndex)
+    private IEnumerator SpawnWithDelay()
     {
-        int minIndexForShift = 1;
-
-        if (freeElementIndex < minIndexForShift || freeElementIndex >= _queue.Length)
-            throw new ArgumentOutOfRangeException(nameof(freeElementIndex));
-
-
-        for (int i = freeElementIndex; i > 0; i--)
+        for (int i = 0; i < _visibleQueueSize; i++)
         {
-            _bufferForShift = _queue[i - 1];
-            _queue[i - 1] = null;
-            _queue[i] = _bufferForShift;
+            _bufferForEnqueue = _spawner.Spawn();
+
+            if (_bufferForEnqueue != null)
+            {
+                _queue.Add(_bufferForEnqueue);
+                _bufferForEnqueue.SetPlaceIndex(i);
+                _mover.StartMovePassenger(_queue[^1], _queue.Count - 1);
+
+                _bufferForEnqueue.SkipPositionsOfQueue(_visibleQueueSize - i - 1);
+            }
+
+            yield return _delayOfSpawnPassenger;
         }
 
-        Enqueue();
-        _mover.MoveOneStep(_queue.ToArray());
+        LastPassenger = _queue[0];
+        LastPassenger.SpeedUp();
+    }
+
+    private IEnumerator EnqueueWithWaiting(Passenger passenger)
+    {
+        yield return new WaitUntil(() => passenger.IsFinishedMovement);
+
+        _queue.Add(passenger);
     }
 }

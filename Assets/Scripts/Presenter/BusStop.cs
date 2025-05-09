@@ -14,15 +14,20 @@ public class BusStop : MonoBehaviour
     [SerializeField] private int _initialFreeStopsCount = 7;
     [SerializeField] private PassengerQueue _queue;
 
-    private readonly float _delayOfUpdateQueue = 0.01f;
+    private readonly float _delayOfUpdateQueue = 0.05f;
 
     private BusStopNavigator _navigator;
     private ColorAnalyzer _colorAnalyzer;
     private bool[] _reservations;
     private Bus[] _stops;
+    private Bus _outGoingBus;
+    private Queue<Bus> _outGoingBuses = new();
     private float _updateCounter;
+    private int _stopIndexBuffer;
+    private bool _canLeave = true;
 
     public bool IsFreeStops => _reservations.Where(place => place == true).Count() > 0;
+    public int StopsCount => _stopsCount;
 
     private void Awake()
     {
@@ -41,14 +46,12 @@ public class BusStop : MonoBehaviour
 
     private void Update()
     {
-        if (_updateCounter < 0f)
-        {
-            _colorAnalyzer.TrySendPassengerToPlatform(_queue, _stops);
-            _updateCounter = _delayOfUpdateQueue;
-        }
-
-        _updateCounter -= Time.deltaTime;
+        HandlePassengersBoarding();
+        HandleBusesMoveOut();
     }
+
+    public Bus GetBusOnStopByIndex(int index) => 
+        _stops[index];
 
     public Vector3 GetPointerCoordinate(int stopIndex) =>
         _navigator.GetPointerCoordinate(stopIndex);
@@ -85,5 +88,51 @@ public class BusStop : MonoBehaviour
             throw new ArgumentOutOfRangeException(nameof(placeIndex));
 
         _stops[placeIndex] = bus;
+
+        bus.LoadCompleted += AddToLeavingBusesQueue;
+    }
+
+    private void HandlePassengersBoarding()
+    {
+        if (_updateCounter < 0f && _queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
+        {
+            _stopIndexBuffer = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _stops);
+
+            if (_stopIndexBuffer != FailedIndex)
+            {
+                _queue.LastPassenger.GetOnBus(_stops[_stopIndexBuffer]);
+                _queue.Dequeue();
+            }
+
+            _updateCounter = _delayOfUpdateQueue;
+        }
+
+        _updateCounter -= Time.deltaTime;
+    }
+
+    private void HandleBusesMoveOut()
+    {
+        if (_canLeave && _outGoingBuses.Count > 0)
+        {
+            _outGoingBus = _outGoingBuses.Dequeue();
+            _outGoingBus.MoveOutFromBusStop();
+            _canLeave = false;
+
+            _outGoingBus.StopReleased += AllowExit;
+        }
+    }
+
+    private void AllowExit(Bus bus, int _)
+    {
+        _canLeave = true;
+
+        _outGoingBus.StopReleased += AllowExit;
+    }
+
+    private void AddToLeavingBusesQueue(Bus bus)
+    {
+        _outGoingBuses.Enqueue(bus);
+
+        bus.LoadCompleted -= AddToLeavingBusesQueue;
     }
 }
