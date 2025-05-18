@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,8 +22,7 @@ public class PassengerColorShuffler : MonoBehaviour
     private void ShuffleColors()
     {
         Queue<Material> freePlacesColors = GetFreePlacesColorsOfBuses();
-        List<Material> removableColors = new();
-        List<Material> returnableColors = new();
+        List<Material> colors = _colorHandler.Colors;
         Passenger[] visibleQueue = _queue.Passengers;
         Material materialBuffer;
 
@@ -33,59 +31,28 @@ public class PassengerColorShuffler : MonoBehaviour
             if (passenger == null)
                 continue;
 
-            //returnableColors.Add(passenger.Material);
-            _colorHandler.EnqueuePassengerColor(passenger.Material);
+            colors.Add(passenger.Material);
+        }
 
+
+        foreach (Passenger passenger in visibleQueue)
+        {
             if (freePlacesColors.Count > 0)
             {
-                Debug.Log($"freePlacesColors = {freePlacesColors.Count}");
-
                 materialBuffer = freePlacesColors.Dequeue();
-                removableColors.Add(materialBuffer);
+                colors.Remove(materialBuffer);
                 passenger.SetColor(materialBuffer);
 
             }
             else
             {
-                passenger.SetColor(_colorHandler.DequeuePassengerColor());
+                passenger.SetColor(colors[0]);
+                colors.RemoveAt(0);
             }
         }
 
-        _colorHandler.RemoveColors(removableColors.ToArray());
-
-        //_colorHandler.ReplaceColors(returnableColors, removableColors);
+        _colorHandler.SetColorsQueue(colors);
     }
-
-    //private void ShuffleColors()
-    //{
-    //    Queue<Material> freePlacesColors = GetFreePlacesColorsOfBuses();
-    //    List<Material> removableColors = new();
-    //    List<Material> returnableColors = new();
-    //    Passenger[] visibleQueue = _queue.Passengers;
-    //    Material materialBuffer;
-        
-    //    foreach (Passenger passenger in visibleQueue)
-    //    {
-    //        if (passenger == null)
-    //            continue;
-
-    //        returnableColors.Add(passenger.Material);
-
-    //        if (freePlacesColors.Count > 0)
-    //        {
-    //            materialBuffer = freePlacesColors.Dequeue();
-    //            removableColors.Add(materialBuffer);
-    //        }
-    //        else
-    //        {
-    //            materialBuffer = _colorHandler.DequeuePassengerColor();
-    //        }
-
-    //        passenger.SetColor(materialBuffer);
-    //    }
-
-    //    _colorHandler.ReplaceColors(returnableColors, removableColors);
-    //}
 
     private Queue<Material> GetFreePlacesColorsOfBuses()
     {

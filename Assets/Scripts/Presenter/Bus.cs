@@ -9,7 +9,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 {
-    private readonly WaitForSeconds _waitOfDestroy = new(0.1f);
+    private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
 
     private BusRouter _router;
     private Roof _roof;
@@ -69,7 +69,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     {
         _trigger.WayFinished -= Finish;
 
-        StartCoroutine(DestroyAfterDelay());
+        StartCoroutine(DestroyAfterCheckPassengers());
     }
 
     private void ReleasePassengers()
@@ -83,11 +83,14 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
                 throw new NullReferenceException(nameof(passenger));
     }
 
-    private IEnumerator DestroyAfterDelay()
+    private IEnumerator DestroyAfterCheckPassengers()
     {
-        ReleasePassengers();
+        while (TryGetComponent(out Passenger _))
+        {
+            ReleasePassengers();
 
-        yield return _waitOfDestroy;
+            yield return _waitOfCheckPassengers;
+        }
 
         Destroy(gameObject);
     }

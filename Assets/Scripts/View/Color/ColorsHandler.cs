@@ -9,6 +9,7 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
     private List<Material> _colorsBuffer;
 
     public int ColorsCount => _colors.Count;
+    public List<Material> Colors => _colors.ToList();
 
     public void InitializeColors() =>
         _colors = CreateRandomColors(ReadColors());
@@ -24,42 +25,14 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
             throw new ArgumentNullException(nameof(color));
 
         _colors.Enqueue(color);
+
+        Debug.Log("Enqueue color!!!");
     }
 
-    public void ReplaceColors(List<Material> returnableColors, List<Material> removableColors)
+    public void SetColorsQueue(List<Material> colors)
     {
-        List<Material> colorsBuffer = _colors.ToList();
-
-        colorsBuffer.AddRange(returnableColors);
-
-        foreach (Material color in removableColors)
-            colorsBuffer.Remove(color);
-
         _colors.Clear();
-        _colors = new Queue<Material>(colorsBuffer);
-    }
-
-    //public void ReplaceColors(List<Material> returnableColors, List<Material> removableColors)
-    //{
-    //    _colorsBuffer = _colors.ToList();
-    //    _colorsBuffer.AddRange(returnableColors);
-
-    //    foreach (Material color in removableColors)
-    //        _colorsBuffer.Remove(color);
-
-    //    _colors.Clear();
-    //    _colors = new Queue<Material>(_colorsBuffer);
-    //}
-
-    public void RemoveColors(Material[] removebleColors)
-    {
-        List<Material> colorsBuffer = _colors.ToList();
-
-        foreach (Material color in removebleColors)
-            colorsBuffer.Remove(color);
-
-        _colors.Clear();
-        _colors = new Queue<Material>(colorsBuffer);
+        _colors = new Queue<Material>(colors);
     }
 
     private List<Material> ReadColors()
