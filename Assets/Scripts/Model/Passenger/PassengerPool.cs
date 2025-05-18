@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(QueuePositionsCalculator))]
 public class PassengerPool : MonoBehaviour
 {
     [SerializeField] private Passenger _prefab;
@@ -16,22 +18,19 @@ public class PassengerPool : MonoBehaviour
         {
             _passenger = Instantiate(_prefab, transform.position, Quaternion.identity);
             _passenger.transform.SetParent(transform);
+            _passenger.InitializeContainer(transform);
 
             return _passenger;
         }
 
         _passenger  = _pool.Dequeue();
         _passenger.gameObject.SetActive(true);
-        _passenger.AllowMovement();
-        _passenger.ResetSpeed();
-        _passenger.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
 
         return _passenger;
     }
 
     public void PutObject(Passenger passenger)
     {
-        passenger.transform.SetParent(transform);
         _pool.Enqueue(passenger);
 
         passenger.gameObject.SetActive(false);

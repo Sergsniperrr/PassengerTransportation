@@ -18,7 +18,7 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
     public Material DequeuePassengerColor() =>
         _colors.Dequeue();
 
-    public void ReturnColor(Material color)
+    public void EnqueuePassengerColor(Material color)
     {
         if (color == null)
             throw new ArgumentNullException(nameof(color));
@@ -28,14 +28,38 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
 
     public void ReplaceColors(List<Material> returnableColors, List<Material> removableColors)
     {
-        _colorsBuffer = _colors.ToList();
-        _colorsBuffer.AddRange(returnableColors);
+        List<Material> colorsBuffer = _colors.ToList();
+
+        colorsBuffer.AddRange(returnableColors);
 
         foreach (Material color in removableColors)
-            _colorsBuffer.Remove(color);
+            colorsBuffer.Remove(color);
 
         _colors.Clear();
-        _colors = new Queue<Material>(_colorsBuffer);
+        _colors = new Queue<Material>(colorsBuffer);
+    }
+
+    //public void ReplaceColors(List<Material> returnableColors, List<Material> removableColors)
+    //{
+    //    _colorsBuffer = _colors.ToList();
+    //    _colorsBuffer.AddRange(returnableColors);
+
+    //    foreach (Material color in removableColors)
+    //        _colorsBuffer.Remove(color);
+
+    //    _colors.Clear();
+    //    _colors = new Queue<Material>(_colorsBuffer);
+    //}
+
+    public void RemoveColors(Material[] removebleColors)
+    {
+        List<Material> colorsBuffer = _colors.ToList();
+
+        foreach (Material color in removebleColors)
+            colorsBuffer.Remove(color);
+
+        _colors.Clear();
+        _colors = new Queue<Material>(colorsBuffer);
     }
 
     private List<Material> ReadColors()

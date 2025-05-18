@@ -7,14 +7,23 @@ public class MouseInputHandler : MonoBehaviour
 
     private const int LeftMouseButton = 0;
 
+    private readonly float _updateDelay = 0.3f;
+
     private Ray _ray;
     private RaycastHit _hitInfo;
     private Collider _target;
+    private float _updateCounter;
 
     public event Action<Bus> BusSelected;
 
     private void Update()
     {
+        if (_updateCounter > 0)
+        {
+            _updateCounter -= Time.deltaTime;
+            return;
+        }
+
         _target = OnMouseClick();
 
         if (_target == null)
@@ -23,7 +32,10 @@ public class MouseInputHandler : MonoBehaviour
         if (_target.TryGetComponent(out Bus bus))
         {
             if (bus.IsActive)
+            {
                 BusSelected?.Invoke(bus);
+                _updateCounter = _updateDelay;
+            }
         }
     }
 

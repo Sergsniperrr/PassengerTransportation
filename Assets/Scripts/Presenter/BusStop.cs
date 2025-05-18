@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(BusStopNavigator))]
+[RequireComponent(typeof(BusPointsCalculator))]
 [RequireComponent(typeof(ColorAnalyzer))]
-public class BusStop : MonoBehaviour
+public class BusStop : MonoBehaviour, IBusReceiver
 {
     private const int FailedIndex = -1;
 
@@ -14,19 +14,18 @@ public class BusStop : MonoBehaviour
     [SerializeField] private int _initialFreeStopsCount = 7;
     [SerializeField] private PassengerQueue _queue;
 
-    private readonly float _delayOfUpdateQueue = 0.05f;
+    private readonly float _delayOfUpdateQueue = 0.06f;
 
-    private BusStopNavigator _navigator;
+    private BusPointsCalculator _navigator;
     private ColorAnalyzer _colorAnalyzer;
+    private WaitForSeconds _delayBeforeLeave = new(0.3f);
     private bool[] _reservations;
     private Bus[] _stops;
     private Bus _outGoingBus;
     private Queue<Bus> _outGoingBuses = new();
     private float _updateCounter;
-    private int _stopIndexBuffer;
     private bool _canLeave = true;
 
-    public bool IsFreeStops => _reservations.Where(place => place == true).Count() > 0;
     public int StopsCount => _stopsCount;
 
     private void Awake()
@@ -34,7 +33,7 @@ public class BusStop : MonoBehaviour
         if (_initialFreeStopsCount > _stopsCount)
             throw new IndexOutOfRangeException(nameof(_initialFreeStopsCount));
 
-        _navigator = GetComponent<BusStopNavigator>();
+        _navigator = GetComponent<BusPointsCalculator>();
         _colorAnalyzer = GetComponent<ColorAnalyzer>();
 
         _reservations = new bool[_stopsCount];
@@ -46,18 +45,20 @@ public class BusStop : MonoBehaviour
 
     private void Update()
     {
-        HandlePassengersBoarding();
-        HandleBusesMoveOut();
+        if (_updateCounter > 0)
+        {
+            _updateCounter -= Time.deltaTime;
+        }
+        else
+        {
+            HandlePassengersBoarding();
+            HandleBusesMoveOut();
+            _updateCounter = _delayOfUpdateQueue;
+        }
     }
 
-    public Bus GetBusOnStopByIndex(int index) => 
+    public Bus GetBusOnStopByIndex(int index) =>
         _stops[index];
-
-    public Vector3 GetPointerCoordinate(int stopIndex) =>
-        _navigator.GetPointerCoordinate(stopIndex);
-
-    public Vector3 GetStopCoordinate(int stopIndex) =>
-        _navigator.GetStopCoordinate(stopIndex);
 
     public int GetFreeStopIndex()
     {
@@ -82,32 +83,40 @@ public class BusStop : MonoBehaviour
         _stops[index] = null;
     }
 
-    public void TakeBus(Bus bus, int placeIndex)
+    public void TakeBus(Bus bus, int platformIndex)
     {
-        if (placeIndex < 0 || placeIndex >= _stops.Length)
-            throw new ArgumentOutOfRangeException(nameof(placeIndex));
+        if (platformIndex < 0 || platformIndex >= _stops.Length)
+            throw new ArgumentOutOfRangeException(nameof(platformIndex));
 
-        _stops[placeIndex] = bus;
+        _stops[platformIndex] = bus;
 
-        bus.LoadCompleted += AddToLeavingBusesQueue;
+        bus.FillingCompleted += AddToLeavingBusesQueue;
     }
 
-    private void HandlePassengersBoarding()
+    public void HandlePassengersBoarding()
     {
-        if (_updateCounter < 0f && _queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
+        if (_queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
         {
-            _stopIndexBuffer = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _stops);
+            int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _stops);
 
-            if (_stopIndexBuffer != FailedIndex)
+            if (stopIndex != FailedIndex)
             {
-                _queue.LastPassenger.GetOnBus(_stops[_stopIndexBuffer]);
-                _queue.Dequeue();
+                bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_stops[stopIndex]);
+
+                if (isEmptySeat)
+                {
+                    _queue.LastPassenger.GotOnBus += GetOnBus;
+                    _queue.RemoveLastPassenger();
+                }
             }
-
-            _updateCounter = _delayOfUpdateQueue;
         }
+    }
 
-        _updateCounter -= Time.deltaTime;
+    private void GetOnBus(Passenger passenger)
+    {
+        passenger.GotOnBus -= GetOnBus;
+
+        passenger.Bus.TakePassenger(passenger);
     }
 
     private void HandleBusesMoveOut()
@@ -117,22 +126,21 @@ public class BusStop : MonoBehaviour
             _outGoingBus = _outGoingBuses.Dequeue();
             _outGoingBus.MoveOutFromBusStop();
             _canLeave = false;
-
-            _outGoingBus.StopReleased += AllowExit;
+            StartCoroutine(AllowLeave());
         }
-    }
-
-    private void AllowExit(Bus bus, int _)
-    {
-        _canLeave = true;
-
-        _outGoingBus.StopReleased += AllowExit;
     }
 
     private void AddToLeavingBusesQueue(Bus bus)
     {
         _outGoingBuses.Enqueue(bus);
 
-        bus.LoadCompleted -= AddToLeavingBusesQueue;
+        bus.FillingCompleted -= AddToLeavingBusesQueue;
+    }
+
+    private IEnumerator AllowLeave()
+    {
+        yield return _delayBeforeLeave;
+
+        _canLeave = true;
     }
 }

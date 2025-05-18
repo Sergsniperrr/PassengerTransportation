@@ -5,47 +5,30 @@ using UnityEngine;
 [RequireComponent(typeof(PassengerMover))]
 public class PassengerRouter : MonoBehaviour
 {
-    private readonly float _shiftPositionZToPlatform = 0.94f;
     private readonly float _firstPlatformPositionX = -31.45f;
     private readonly float _platformIntervalX = 1.6489f;
     private readonly Vector3 _shiftToBusEnter = new(0.48f, 0f, 0.92f);
-    private readonly Vector3 _lastPositionInQueue = new(-28.2f, 0.46f, 4.5f);
+
     private readonly Vector3 _busStopPosition = new(-28.2f, 0.46f, 5.44f);
 
-
+    private Vector3 _busPlatformPosition = new(0f, 0.46f, 5.44f);
     private PassengerMover _mover;
-    private Vector3 _bufferPosition = Vector3.zero;
-    private Bus _bus;
-
-    public event Action ArrivedAtPoint;
-    public event Action<Bus> ArrivedToBus;
+    private int _queueSize;
 
     private void Awake()
     {
         _mover = GetComponent<PassengerMover>();
     }
 
-    public void InitialPositionsOfQueue(Queue<Vector3> positions) =>
-        _mover.InitialPositionsOfQueue(positions);
-
-    public void SkipPositionsOfQueue(int countPositions) =>
-        _mover.SkipPositionsOfQueue(countPositions);
-
-    public void MoveTo(Vector3 target)
+    public void InitializeQueueSize(int size, ISenderOfGettingOnBus sender)
     {
-        _mover.MoveTo(target);
-
-        _mover.MoveCompleted += FinishMove;
+        _mover.InitializeData(sender);
+        _queueSize = size;
+        _mover.SetRout(CalculateQueuePositions());
     }
 
-    public void ApproachToBus(Bus bus)
-    {
-        _bus = bus;
-
-        GoToBusStop();
-        GoToPlatform();
-        GoToBus();
-    }
+    public void IncrementCurrentIndex() =>
+        _mover.IncrementCurrentIndex();
 
     public void SpeedUp() =>
         _mover.SpeedUp();
@@ -56,38 +39,39 @@ public class PassengerRouter : MonoBehaviour
     public void SetPlaceIndex(int index) =>
         _mover.SetPlaceIndex(index);
 
-    public void MoveToNextPlaceInQueue() =>
-        _mover.MoveToNextPlaceInQueue();
-
-    private void GoToBusStop() =>
-        _mover.MoveTo(_busStopPosition);
-
-    private void FinishMove()
+    public void GetOnBus(Bus bus)
     {
-        _mover.MoveCompleted -= FinishMove;
-
-        ArrivedAtPoint?.Invoke();
+        _mover.SetRout(CalculateRoteToBus(bus), false);
     }
 
-    private void GoToPlatform()
+    private Vector3[] CalculateQueuePositions()
     {
-        _bufferPosition = _busStopPosition;
-        _bufferPosition.x = _platformIntervalX * _bus.StopIndex + _firstPlatformPositionX;
+        Vector3 position = Vector3.zero;
+        List<Vector3> positions = new();
+        int rotaryIndex = 10;
+        float stepSize = 0.5f;
 
-        _mover.MoveTo(_bufferPosition);
+        for (int i = 0; i < _queueSize; i++)
+        {
+            position.z = Mathf.Min(i, rotaryIndex - 1) * stepSize;
+            position.x = Mathf.Max(0, i - rotaryIndex + 1) * stepSize;
+            position.x *= -1;
+
+            positions.Add(transform.position + position);
+        }
+
+        return positions.ToArray();
     }
 
-    private void GoToBus()
+    private Vector3[] CalculateRoteToBus(Bus bus)
     {
-        _mover.MoveTo(_bufferPosition + _shiftToBusEnter);
+        List<Vector3> positions = new();
+        _busPlatformPosition.x = _platformIntervalX * bus.StopIndex + _firstPlatformPositionX;
 
-        _mover.MoveCompleted += GetOnBus;
-    }
+        positions.Add(_busStopPosition);
+        positions.Add(_busPlatformPosition);
+        positions.Add(_busPlatformPosition + _shiftToBusEnter);
 
-    private void GetOnBus()
-    {
-        _mover.MoveCompleted -= GetOnBus;
-
-        ArrivedToBus?.Invoke(_bus);
+        return positions.ToArray();
     }
 }

@@ -4,55 +4,65 @@ using UnityEngine;
 
 [RequireComponent(typeof(BusMover))]
 [RequireComponent(typeof(TriggerHandler))]
+[RequireComponent(typeof(TransformChanger))]
+[RequireComponent(typeof(PointsHandler))]
 public class BusRouter : MonoBehaviour
 {
-    private readonly float _finishCoordinateX = -50f;
+    private const int FailedIndex = -1;
+
+    private readonly WaitForSeconds _waitForStopToLeave = new(0.3f);
 
     private BusMover _mover;
     private TriggerHandler _trigger;
-    private Vector3 _initialCoordinate;
-    private Vector3 _stopPointerCoordinate;
-    private Vector3 _stopCoordinate;
-    private WaitForSeconds _waitForStopToLeave = new(0.3f);
+    private IBusReceiver _busStop;
+    private TransformChanger _transformChanger;
+    private PointsHandler _pointsHandler;
 
-    public event Action MoveCompleted;
-    public event Action StopArrived;
-    public event Action StopTriggerArrived;
+    public int StopIndex { get; private set; } = FailedIndex;
+    public bool IsActive { get; private set; } = true;
 
     private void Awake()
     {
         _mover = GetComponent<BusMover>();
         _trigger = GetComponent<TriggerHandler>();
+        _transformChanger = GetComponent<TransformChanger>();
+        _pointsHandler = GetComponent<PointsHandler>();
+    }
 
-        _initialCoordinate = transform.position;
+    public void InitializeData(IBusReceiver busStop, BusPointsCalculator calculator)
+    {
+        _busStop = busStop ?? throw new ArgumentNullException(nameof(busStop));
+
+        _mover.InitializeBusStop(busStop);
+        _pointsHandler.InitializeData(calculator);
     }
 
     public void StartMove()
     {
-        _mover.Run();
+        StopIndex = _busStop.GetFreeStopIndex();
+
+        if (StopIndex == FailedIndex)
+            return;
+
+        _mover.EnableMovement();
         _trigger.EnableCrash();
+        IsActive = false;
 
         _trigger.BusCrashed += BackToInitialPlace;
         _trigger.BusStopTriggered += GoToStopPointer;
     }
 
-    public void AssignBusStopPoints(Vector3 pointerCoordinate, Vector3 stopCoordinate)
-    {
-        _stopPointerCoordinate = pointerCoordinate;
-        _stopPointerCoordinate.y = transform.position.y;
-
-        _stopCoordinate = stopCoordinate;
-        _stopCoordinate.y = transform.position.y;
-    }
+    public void SetActive() =>
+        IsActive = true;
 
     public void BackToInitialPlace()
     {
-        MoveCompleted?.Invoke();
+        _trigger.BusCrashed -= BackToInitialPlace;
+        _trigger.BusStopTriggered -= GoToStopPointer;
 
-        _mover.GoBackwardsToPoint(_initialCoordinate);
-        _trigger.DisableCrash();
-
-        _mover.ArrivedAtPoint += StopMove;
+        _mover.GoBackwardsToPoint();
+        SetActive();
+        _busStop.ReleaseStop(StopIndex);
     }
 
     public void MoveOutFromBusStop()
@@ -64,26 +74,8 @@ public class BusRouter : MonoBehaviour
     {
         yield return _waitForStopToLeave;
 
-        _mover.GoToPoint(_stopPointerCoordinate);
-
-        _mover.ArrivedAtPoint += MoveToFinish;
-    }
-
-    private void MoveToFinish()
-    {
-        _mover.ArrivedAtPoint -= MoveToFinish;
-
-        Vector3 finishCoordinate = transform.position;
-        finishCoordinate.x = _finishCoordinateX;
-        StopTriggerArrived?.Invoke();
-
-        _mover.GoToPoint(finishCoordinate);
-    }
-
-    private void StopMove()
-    {
-        _mover.ArrivedAtPoint -= StopMove;
-        _mover.Stop();
+        _busStop.ReleaseStop(StopIndex);
+        _mover.MoveOutFromBusStop();
     }
 
     private void GoToStopPointer()
@@ -91,25 +83,17 @@ public class BusRouter : MonoBehaviour
         _trigger.BusCrashed -= BackToInitialPlace;
         _trigger.BusStopTriggered -= GoToStopPointer;
 
-        _mover.GoToPoint(_stopPointerCoordinate);
-        StopTriggerArrived?.Invoke();
+        _transformChanger.GrowToHalfSizeAtStop();
+        _mover.InitializeData(StopIndex);
 
-        _mover.ArrivedAtPoint += GoToStop;
-    }
-
-    private void GoToStop()
-    {
-        _mover.ArrivedAtPoint -= GoToStop;
-
-        _mover.GoToPoint(_stopCoordinate);
-
-        _mover.ArrivedAtPoint += WaitForFilling;
+        _pointsHandler.ArrivedToBusStop += WaitForFilling;
     }
 
     private void WaitForFilling()
     {
-        _mover.ArrivedAtPoint -= WaitForFilling;
+        _pointsHandler.ArrivedToBusStop -= WaitForFilling;
 
-        StopArrived?.Invoke();
+        if (TryGetComponent(out Bus bus))
+            _busStop.TakeBus(bus, StopIndex);
     }
 }

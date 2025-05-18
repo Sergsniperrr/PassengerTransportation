@@ -1,58 +1,62 @@
 using System;
 using UnityEngine;
 
-public class BusMover : MonoBehaviour
+[RequireComponent(typeof(PointsHandler))]
+public class BusMover : MonoBehaviour, IMoveCorrector
 {
     [SerializeField] private float _speed;
 
-    private readonly float _minDistance = 0.9f;
     private readonly float _directionForward = 1f;
-    private readonly float _directionBackward = -1f;
 
+    private IBusReceiver _busStop;
+    private PointsHandler _pointsHandler;
+    private IPoints _points;
     private Vector3 _velocity = Vector3.forward;
     private Vector3 _target = Vector3.zero;
-    private Vector3 _vectorDistance;
+    private Vector3 _initialPlace;
     private float _direction = 1f;
-    private float _sqrDistance;
     private bool _canMove = false;
+    private bool _isMoveForward = true;
 
-    public event Action ArrivedAtPoint;
+    public bool IsFilled { get; private set; }
 
     private void Awake()
     {
         _velocity.z = _speed;
+        _initialPlace = transform.position;
+        _pointsHandler = GetComponent<PointsHandler>();
     }
 
     private void Update()
     {
-        if (_canMove)
-        {
-            if (_target != Vector3.zero)
-                HandleMoving();
-
-            transform.Translate(_direction * Time.deltaTime * _velocity);
-        }
+        Move();
     }
 
-    public void Stop() =>
+    public void InitializeBusStop(IBusReceiver busStop) =>
+        _busStop = busStop;
+
+    public void InitializeData(int stopIndex)
+    {
+        _pointsHandler.InitializePoints(stopIndex);
+        _points = _pointsHandler.Points;
+        DisableForwardMovement();
+        SetTarget(_points.StopPointer);
+    }
+
+    public void EnableMovement() =>
+        _canMove = true;
+
+    public void EnableForwardMovement() =>
+        _isMoveForward = true;
+
+    public void DisableForwardMovement() =>
+        _isMoveForward = false;
+
+    public void DisableMovement() =>
         _canMove = false;
 
-    public void Run()
-    {
-        _canMove = true;
-        _direction = _directionForward;
-    }
-
-    public void GoToPoint(Vector3 point, bool canRotate = true)
-    {
-        point.y = transform.position.y;
-        _target = point;
-        _canMove = true;
-        _direction = _directionForward;
-
-        if (canRotate)
-            transform.LookAt(_target);
-    }
+    public void ResetTarget() =>
+        _target = Vector3.zero;
 
     public void ChangeDirection(Vector3 target)
     {
@@ -62,27 +66,44 @@ public class BusMover : MonoBehaviour
         _canMove = true;
     }
 
-    public void GoBackwardsToPoint(Vector3 point)
+    public void GoBackwardsToPoint()
     {
-        point.y = transform.position.y;
-        _target = point;
-        _canMove = true;
-        _direction = _directionBackward;
+        _isMoveForward = false;
+        SetTarget(_initialPlace, false);
     }
 
-    private void HandleMoving()
+    public void SetTarget(Vector3 target, bool canLookAtTarget = true)
     {
-        _vectorDistance = _target - transform.position;
-        _sqrDistance = _vectorDistance.sqrMagnitude;
+        if (canLookAtTarget)
+            transform.LookAt(target);
 
-        if (_sqrDistance < _minDistance)
+        _target = target;
+    }
+
+    public void MoveOutFromBusStop()
+    {
+        IsFilled = true;
+        SetTarget(_points.StopPointer, false);
+        _canMove = true;
+    }
+
+    private void Move()
+    {
+        if (_canMove == false)
+            return;
+
+        if (_isMoveForward)
         {
-            transform.position = _target;
-            _vectorDistance = Vector3.zero;
-            _target = Vector3.zero;
-            _canMove = false;
-
-            ArrivedAtPoint?.Invoke();
+            transform.Translate(_direction * Time.deltaTime * _velocity);
+            return;
         }
+
+        if (transform.position == _target)
+        {
+            _pointsHandler.HandlePoints(_target);
+            return;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
     }
 }

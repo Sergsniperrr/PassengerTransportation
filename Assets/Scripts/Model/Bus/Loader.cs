@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(Bus))]
 public class Loader : MonoBehaviour
 {
     [field: SerializeField] public int Count { get; private set; }
@@ -14,14 +15,15 @@ public class Loader : MonoBehaviour
     private Vector3[] _coordinates;
     private bool[] _reservations;
     private Passenger[] _places;
-
-    public event Action FillingCompleted;
+    private ISenderOfFillingCompletion _sender;
 
     public int EmptySeatCount => _reservations.Where(element => element == true).Count();
     public bool IsEmptySeat => EmptySeatCount > 0;
+    public Passenger[] Passengers => _places.ToArray();
 
     private void Awake()
     {
+        _sender = GetComponent<Bus>();
         _reservations = new bool[Count];
         _places = new Passenger[Count];
         _coordinates = CalculatePlacesCoordinates();
@@ -52,7 +54,9 @@ public class Loader : MonoBehaviour
         _places[passenger.BusPlaceIndex] = passenger;
 
         if (CheckFill())
-            FillingCompleted?.Invoke();
+        {
+            _sender.CompleteFilling();
+        }
     }
 
     public Passenger GetPassengerByIndex(int index) =>

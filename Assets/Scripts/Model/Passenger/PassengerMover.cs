@@ -7,22 +7,20 @@ public class PassengerMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    private readonly int _rotaryIndex = 10;
-    private readonly float _stepSize = 0.5f;
-    private readonly float _maxPositionZForRotation = 4.5f;
+    private const int FailedIndex = -1;
+
     private readonly float _randomDifferenceAngle = 40f;
     private readonly float _speedMultiplier = 2f;
     private readonly Queue<Vector3> _targets = new();
 
-    private Vector3 _zeroPosition;
-    private Vector3[] _coordinates;
-    private Queue<Vector3> _positionsOfQueue;
+    private ISenderOfGettingOnBus _sender;
+    private Vector3[] _positions;
+    private Vector3 _velocity = Vector3.forward;
     private PassengerAnimator _animator;
     private float _initialSpeed;
-    private int _indexOfQueue;
-    private int _maxIndex = 24;
+    private bool _isInQueue = true;
 
-    public event Action MoveCompleted;
+    public int CurrentPosition { get; private set; }
 
     public Vector3 Target { get; private set; }
 
@@ -30,12 +28,7 @@ public class PassengerMover : MonoBehaviour
     {
         _animator = GetComponent<PassengerAnimator>();
         _initialSpeed = _speed;
-        _zeroPosition = transform.position;
-    }
-
-    private void OnEnable()
-    {
-        _indexOfQueue = _maxIndex;
+        _velocity.z = _speed;
     }
 
     private void Update()
@@ -43,19 +36,30 @@ public class PassengerMover : MonoBehaviour
         Move();
     }
 
-    public void SetPlaceIndex(int index)
-    {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
+    public void InitializeData(ISenderOfGettingOnBus sender) =>
+        _sender = sender;
 
-        _indexOfQueue = index;
+    public void SetRout(Vector3[] positions, bool isInQueue = true)
+    {
+        _positions = positions;
+        SetPlaceIndex(0);
+        _isInQueue = isInQueue;
     }
 
-    public void InitialPositionsOfQueue(Queue<Vector3> positions) =>
-        _positionsOfQueue = positions;
+    public void IncrementCurrentIndex()
+    {
+        if (CurrentPosition < _positions.Length - 1)
+        {
+            SetPlaceIndex(CurrentPosition + 1);
+        }
+    }
 
-    public void MoveTo(Vector3 target) =>
-        _targets.Enqueue(target);
+    public void SetPlaceIndex(int index)
+    {
+        CurrentPosition = index;
+        transform.LookAt(_positions[CurrentPosition]);
+        _animator.Move();
+    }
 
     public void SpeedUp() =>
         _speed *= _speedMultiplier;
@@ -63,66 +67,38 @@ public class PassengerMover : MonoBehaviour
     public void ResetSpeed() =>
         _speed = _initialSpeed;
 
-    public void MoveToNextPlaceInQueue()
-    {
-        if (_positionsOfQueue.Count > 0)
-            MoveTo(_positionsOfQueue.Dequeue());
-    }
-
-    public void SkipPositionsOfQueue(int countPositions)
-    {
-        for (int i = 0; i < countPositions; i++)
-            _positionsOfQueue.Dequeue();
-    }
-
     private void Move()
     {
-        if (Target == Vector3.zero)
+        if (CurrentPosition == FailedIndex)
+            return;
+
+        if (_positions.Length > 0 && transform.position != _positions[CurrentPosition])
         {
-            if (_targets.Count > 0)
-            {
-                Target = _targets.Dequeue();
-                _animator.Move();
-            }
-            else
-            {
-                return;
-            }
+            transform.position = Vector3.MoveTowards(transform.position, _positions[CurrentPosition], _speed * Time.deltaTime);
         }
-
-        transform.position = Vector3.MoveTowards(transform.position, Target, _speed * Time.deltaTime);
-
-        if (transform.position == Target)
+        else if (_isInQueue == false && CurrentPosition < _positions.Length - 1)
         {
-            if (transform.position.z == _maxPositionZForRotation)
+            SetPlaceIndex(CurrentPosition + 1);
+        }
+        else
+        {
+            if (_isInQueue == false && CurrentPosition == _positions.Length - 1)
             {
-                Vector3 rotationOnRight = new(0f, -90f, 0f);
-                transform.rotation = Quaternion.Euler(rotationOnRight);
-            }
-
-            if (_targets.Count > 0)
-            {
-                Target = _targets.Dequeue();
-                transform.LookAt(Target);
-                return;
+                _sender.SendGettingOnBusAction();
+                CurrentPosition = FailedIndex;
             }
 
             _animator.Stop();
-            Target = Vector3.zero;
-
-            MoveCompleted?.Invoke();
-
-            RotateRandom();
         }
     }
 
-    private void RotateRandom()
-    {
-        float angle = UnityEngine.Random.Range(0f, _randomDifferenceAngle);
-        Vector3 rotationAngle = transform.rotation.eulerAngles;
+    //private void RotateRandom()
+    //{
+    //    float angle = UnityEngine.Random.Range(0f, _randomDifferenceAngle);
+    //    Vector3 rotationAngle = transform.rotation.eulerAngles;
 
-        rotationAngle.y += angle;
+    //    rotationAngle.y += angle;
 
-        transform.rotation = Quaternion.Euler(rotationAngle);
-    }
+    //    transform.rotation = Quaternion.Euler(rotationAngle);
+    //}
 }

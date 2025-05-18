@@ -6,13 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(ColorSetter))]
 [RequireComponent(typeof(Loader))]
 [RequireComponent(typeof(TriggerHandler))]
-public class Bus : MonoBehaviour
+[RequireComponent(typeof(MeshRenderer))]
+public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 {
-    [SerializeField] private Vector3 _sizeAtStop;
-
-    private const int FailedIndex = -1;
-
-    private readonly int _halfDevider = 2;
+    private readonly WaitForSeconds _waitOfDestroy = new(0.1f);
 
     private BusRouter _router;
     private Roof _roof;
@@ -20,12 +17,10 @@ public class Bus : MonoBehaviour
     private Loader _loader;
     private TriggerHandler _trigger;
 
-    public event Action<Bus, int> StopReleased;
-    public event Action<Bus, int> ArrivedToStop;
-    public event Action<Bus> LoadCompleted;
+    public event Action<Bus> FillingCompleted;
 
-    public bool IsActive { get; private set; } = true;
-    public int StopIndex { get; private set; } = FailedIndex;
+    public bool IsActive => _router.IsActive;
+    public int StopIndex => _router.StopIndex;
     public int SeatsCount => _loader.Count;
     public Material Material => _color.Material;
     public bool IsEmptySeat => _loader.IsEmptySeat;
@@ -43,21 +38,14 @@ public class Bus : MonoBehaviour
             throw new NullReferenceException(nameof(_roof));
     }
 
+    public void InitializeData(IBusReceiver busStop, BusPointsCalculator navigator) =>
+        _router.InitializeData(busStop, navigator);
+
     public void SetColor(Material material) =>
         _color.SetMateral(material);
 
-    public void Run()
-    {
+    public void Run() =>
         _router.StartMove();
-        IsActive = false;
-
-        _router.MoveCompleted += EndMove;
-        _router.StopArrived += WaitPassengers;
-        _router.StopTriggerArrived += GrowToHalfSizeAtStop;
-    }
-
-    public void SetStopIndex(int index) =>
-        StopIndex = index;
 
     public int ReserveFreePlace() =>
         _loader.ReserveFreePlace();
@@ -65,75 +53,42 @@ public class Bus : MonoBehaviour
     public void TakePassenger(Passenger passenger) =>
         _loader.TakePassenger(passenger);
 
-    public void AssignBusStopPoints(Vector3 pointerCoordinate, Vector3 stopCoordinate) =>
-        _router.AssignBusStopPoints(pointerCoordinate, stopCoordinate);
-
-    public void MoveOutFromBusStop() =>
-        _router.MoveOutFromBusStop();
-
-    public void ReleaseBusStop()
+    public void MoveOutFromBusStop()
     {
-        _router.StopTriggerArrived -= ReleaseBusStop;
-
-        StopReleased?.Invoke(this, StopIndex);
+        _router.MoveOutFromBusStop();
 
         _trigger.WayFinished += Finish;
     }
 
-    private void TryLeaveBusStop()
+    public void CompleteFilling()
     {
-        _loader.FillingCompleted -= TryLeaveBusStop;
-
-        LoadCompleted?.Invoke(this);
-    }
-
-    private void EndMove()
-    {
-        _router.MoveCompleted -= EndMove;
-
-        StopReleased?.Invoke(this, StopIndex);
-
-        StopIndex = FailedIndex;
-        IsActive = true;
-    }
-
-    private void WaitPassengers()
-    {
-        transform.localScale = _sizeAtStop;
-        _roof.gameObject.SetActive(false);
-
-        _router.StopArrived -= WaitPassengers;
-        _router.StopTriggerArrived += ReleaseBusStop;
-
-        ArrivedToStop?.Invoke(this, StopIndex);
-
-        _loader.FillingCompleted += TryLeaveBusStop;
+        FillingCompleted?.Invoke(this);
     }
 
     private void Finish()
     {
         _trigger.WayFinished -= Finish;
 
-        for (int i = 0; i < SeatsCount; i++)
-            _loader.GetPassengerByIndex(i).Finish();
-
-        StartCoroutine(DestroyWithDelay());
+        StartCoroutine(DestroyAfterDelay());
     }
 
-    private IEnumerator DestroyWithDelay()
+    private void ReleasePassengers()
     {
-        WaitForSeconds wait = new(0.3f);
+        var passengers = GetComponentsInChildren<Passenger>();
 
-        yield return wait;
+        foreach (Passenger passenger in passengers)
+            if (passenger != null)
+                passenger.Finish();
+            else
+                throw new NullReferenceException(nameof(passenger));
+    }
+
+    private IEnumerator DestroyAfterDelay()
+    {
+        ReleasePassengers();
+
+        yield return _waitOfDestroy;
 
         Destroy(gameObject);
-    }
-
-    private void GrowToHalfSizeAtStop()
-    {
-        _router.StopTriggerArrived -= GrowToHalfSizeAtStop;
-
-        Vector3 scale = transform.localScale;
-        transform.localScale = (_sizeAtStop - scale) /_halfDevider + scale;
     }
 }

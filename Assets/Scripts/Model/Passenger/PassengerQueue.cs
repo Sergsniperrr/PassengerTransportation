@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,29 +7,48 @@ using System.Collections.Generic;
 [RequireComponent(typeof(PassengerSpawner))]
 public class PassengerQueue : MonoBehaviour
 {
-    private int _indexOfpassengerBeforeLast = 1;
-    private int _visibleQueueSize = 25;
+    private int _maxVisibleQueueSize = 25;
     private List<Passenger> _queue = new();
+    private Queue<bool> _spawnQueue = new();
     private QueueMover _mover;
     private PassengerSpawner _spawner;
-    private Passenger _bufferForEnqueue;
-    private Passenger _bufferForDequeue;
-    private Passenger _bufferForShift;
-    private WaitForSeconds _delayBeforeShift = new(0.03f);
     private WaitForSeconds _delayOfSpawnPassenger = new(0.07f);
+    private Passenger _passenger;
+    private float _changeLastPassengerDelay = 0.06f;
+    private float _changeLastPassengerCounter;
+    private bool _isNeedUpdateLastPassenger;
 
     public Passenger LastPassenger { get; private set; }
+    public Passenger[] Passengers => _queue.ToArray();
     public int Count => _queue.Count;
 
     private void Awake()
     {
         _mover = GetComponent<QueueMover>();
         _spawner = GetComponent<PassengerSpawner>();
-        _mover.InitializeData(_spawner.transform.position, _visibleQueueSize);
+        _mover.InitislQueueSize(_maxVisibleQueueSize);
     }
 
-    public void InitializeColorsSpawner(IColorGetter colors) =>
+    private void Update()
+    {
+        if (_isNeedUpdateLastPassenger == false)
+            return;
+
+        if (_changeLastPassengerCounter <= 0 && _queue.Count > 0)
+        {
+            LastPassenger = _queue[0];
+            LastPassenger.SpeedUp();
+            _changeLastPassengerCounter = _changeLastPassengerDelay;
+            _isNeedUpdateLastPassenger = false;
+        }
+
+        _changeLastPassengerCounter -= Time.deltaTime;
+    }
+
+    public void InitializeColorsSpawner(IColorGetter colors)
+    {
         _spawner.InitializeColors(colors);
+    }
 
     public Passenger GetPassengerByIndex(int index)
     {
@@ -42,74 +60,56 @@ public class PassengerQueue : MonoBehaviour
 
     public void Enqueue()
     {
-        _bufferForEnqueue = _spawner.Spawn();
+        _passenger = _spawner.Spawn();
 
-        if (_bufferForEnqueue == null || _queue.Count == _visibleQueueSize)
+        if (_passenger == null || _queue.Count == _maxVisibleQueueSize)
             return;
 
-        StartCoroutine(EnqueueWithWaiting(_bufferForEnqueue));
+        _passenger.InitializeQueueSize(_maxVisibleQueueSize);
+        _queue.Add(_passenger);
     }
 
-    public void Dequeue()
+    public void RemoveLastPassenger()
     {
         _queue.RemoveAt(0);
         LastPassenger = null;
 
         if (_queue.Count > 0)
         {
-            if (_queue.Count > _indexOfpassengerBeforeLast)
-                _queue[_indexOfpassengerBeforeLast].SpeedUp();
-
-            _mover.UpdatePositions(_queue);
-            LastPassenger = _queue[0];
+            //LastPassenger = _queue[0];
+            //LastPassenger.SpeedUp();
+            _isNeedUpdateLastPassenger = true;
+            _mover.IncrementPositions(_queue);
         }
 
         Enqueue();
     }
 
-    public Passenger ExtractPassenger(int index)
-    {
-        Passenger _buffer;
-
-        if (index < 0 || index >= _queue.Count)
-            throw new ArgumentOutOfRangeException(nameof(index));
-
-        _buffer = _queue[index];
-
-        return _buffer;
-    }
-
     public void Spawn()
     {
-        StartCoroutine(SpawnWithDelay());
+        StartCoroutine(InitialSpawnWithDelay());
     }
 
-    private IEnumerator SpawnWithDelay()
+    private IEnumerator InitialSpawnWithDelay()
     {
-        for (int i = 0; i < _visibleQueueSize; i++)
+        Passenger passenger;
+
+        for (int i = 0; i < _maxVisibleQueueSize; i++)
         {
-            _bufferForEnqueue = _spawner.Spawn();
+            passenger = _spawner.Spawn();
 
-            if (_bufferForEnqueue != null)
+            if (passenger != null)
             {
-                _queue.Add(_bufferForEnqueue);
-                _bufferForEnqueue.SetPlaceIndex(i);
-                _mover.StartMovePassenger(_queue[^1], _queue.Count - 1);
-
-                _bufferForEnqueue.SkipPositionsOfQueue(_visibleQueueSize - i - 1);
+                passenger.InitializeQueueSize(_maxVisibleQueueSize);
+                _queue.Add(passenger);
+                _mover.StartMovePassengers(_queue);
             }
 
             yield return _delayOfSpawnPassenger;
         }
 
-        LastPassenger = _queue[0];
-        LastPassenger.SpeedUp();
-    }
-
-    private IEnumerator EnqueueWithWaiting(Passenger passenger)
-    {
-        yield return new WaitUntil(() => passenger.IsFinishedMovement);
-
-        _queue.Add(passenger);
+        _isNeedUpdateLastPassenger = true;
+        //LastPassenger = _queue[0];
+        //LastPassenger.SpeedUp();
     }
 }
