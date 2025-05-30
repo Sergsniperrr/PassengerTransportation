@@ -9,20 +9,16 @@ public class PassengerMover : MonoBehaviour
 
     private const int FailedIndex = -1;
 
-    private readonly float _randomDifferenceAngle = 40f;
     private readonly float _speedMultiplier = 2f;
-    private readonly Queue<Vector3> _targets = new();
 
     private ISenderOfGettingOnBus _sender;
     private Vector3[] _positions;
     private Vector3 _velocity = Vector3.forward;
     private PassengerAnimator _animator;
     private float _initialSpeed;
-    private bool _isInQueue = true;
+    private bool _isInQueue;
 
     public int CurrentPosition { get; private set; }
-
-    public Vector3 Target { get; private set; }
 
     private void Awake()
     {
@@ -58,6 +54,7 @@ public class PassengerMover : MonoBehaviour
     {
         CurrentPosition = index;
         transform.LookAt(_positions[CurrentPosition]);
+
         _animator.Move();
     }
 
@@ -91,14 +88,4 @@ public class PassengerMover : MonoBehaviour
             _animator.Stop();
         }
     }
-
-    //private void RotateRandom()
-    //{
-    //    float angle = UnityEngine.Random.Range(0f, _randomDifferenceAngle);
-    //    Vector3 rotationAngle = transform.rotation.eulerAngles;
-
-    //    rotationAngle.y += angle;
-
-    //    transform.rotation = Quaternion.Euler(rotationAngle);
-    //}
 }

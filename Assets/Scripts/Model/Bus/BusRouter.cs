@@ -47,22 +47,29 @@ public class BusRouter : MonoBehaviour
         _mover.EnableMovement();
         _trigger.EnableCrash();
         IsActive = false;
+        _transformChanger.EnableSmoke();
 
         _trigger.BusCrashed += BackToInitialPlace;
         _trigger.BusStopTriggered += GoToStopPointer;
     }
 
-    public void SetActive() =>
+    public void SetActive()
+    {
+        _pointsHandler.ReturnedToInitialPlace -= SetActive;
+
         IsActive = true;
+    }
 
     public void BackToInitialPlace()
     {
         _trigger.BusCrashed -= BackToInitialPlace;
         _trigger.BusStopTriggered -= GoToStopPointer;
 
+        _transformChanger.DisableSmoke();
         _mover.GoBackwardsToPoint();
-        SetActive();
         _busStop.ReleaseStop(StopIndex);
+
+        _pointsHandler.ReturnedToInitialPlace += SetActive;
     }
 
     public void MoveOutFromBusStop()
@@ -76,6 +83,7 @@ public class BusRouter : MonoBehaviour
 
         _busStop.ReleaseStop(StopIndex);
         _mover.MoveOutFromBusStop();
+        _transformChanger.EnableSmoke();
     }
 
     private void GoToStopPointer()

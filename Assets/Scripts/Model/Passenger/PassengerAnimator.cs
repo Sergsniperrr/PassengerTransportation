@@ -17,6 +17,8 @@ public class PassengerAnimator : MonoBehaviour
     public void Move() =>
         _animator.SetBool(_isMoving, true);
 
-    public void Stop() =>
+    public void Stop()
+    {
         _animator.SetBool(_isMoving, false);
+    }
 }

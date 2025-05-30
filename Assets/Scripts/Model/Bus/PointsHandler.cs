@@ -11,6 +11,7 @@ public class PointsHandler : MonoBehaviour
     private IMoveCorrector _mover;
 
     public event Action ArrivedToBusStop;
+    public event Action ReturnedToInitialPlace;
 
     public BusPoints Points { get; private set; }
 
@@ -41,6 +42,8 @@ public class PointsHandler : MonoBehaviour
             _mover.EnableForwardMovement();
             _mover.DisableMovement();
             _mover.ResetTarget();
+            _transformChanger.DisableSmoke();
+            ReturnedToInitialPlace?.Invoke();
         }
         else if (target == Points.StopPointer)
         {
@@ -58,6 +61,7 @@ public class PointsHandler : MonoBehaviour
         {
             _transformChanger.GrowToFullSizeAtStop();
             _transformChanger.DisableRoof();
+            _transformChanger.DisableSmoke();
             _mover.DisableMovement();
             _mover.ResetTarget();
 

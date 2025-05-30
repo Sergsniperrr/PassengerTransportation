@@ -16,7 +16,6 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
     private readonly float _delayOfUpdateQueue = 0.06f;
 
-    private BusPointsCalculator _navigator;
     private ColorAnalyzer _colorAnalyzer;
     private WaitForSeconds _delayBeforeLeave = new(0.3f);
     private bool[] _reservations;
@@ -26,6 +25,8 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private float _updateCounter;
     private bool _canLeave = true;
 
+    public event Action<Bus> BusReceived;
+
     public int StopsCount => _stopsCount;
 
     private void Awake()
@@ -33,7 +34,6 @@ public class BusStop : MonoBehaviour, IBusReceiver
         if (_initialFreeStopsCount > _stopsCount)
             throw new IndexOutOfRangeException(nameof(_initialFreeStopsCount));
 
-        _navigator = GetComponent<BusPointsCalculator>();
         _colorAnalyzer = GetComponent<ColorAnalyzer>();
 
         _reservations = new bool[_stopsCount];
@@ -89,6 +89,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
             throw new ArgumentOutOfRangeException(nameof(platformIndex));
 
         _stops[platformIndex] = bus;
+        BusReceived?.Invoke(bus);
 
         bus.FillingCompleted += AddToLeavingBusesQueue;
     }

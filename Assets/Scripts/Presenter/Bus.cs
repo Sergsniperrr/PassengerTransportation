@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Loader))]
 [RequireComponent(typeof(TriggerHandler))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(TransformChanger))]
 public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 {
     private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
@@ -16,8 +17,10 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     private ColorSetter _color;
     private Loader _loader;
     private TriggerHandler _trigger;
+    private TransformChanger _transformChanger;
 
     public event Action<Bus> FillingCompleted;
+    public event Action<Bus> Removed;
 
     public bool IsActive => _router.IsActive;
     public int StopIndex => _router.StopIndex;
@@ -33,6 +36,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _color = GetComponentInChildren<ColorSetter>();
         _loader = GetComponent<Loader>();
         _trigger = GetComponent<TriggerHandler>();
+        _transformChanger = GetComponent<TransformChanger>();
 
         if (_roof == null)
             throw new NullReferenceException(nameof(_roof));
@@ -50,8 +54,11 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     public int ReserveFreePlace() =>
         _loader.ReserveFreePlace();
 
-    public void TakePassenger(Passenger passenger) =>
+    public void TakePassenger(Passenger passenger)
+    {
         _loader.TakePassenger(passenger);
+        _transformChanger.PulsateSize();
+    }
 
     public void MoveOutFromBusStop()
     {
@@ -70,6 +77,8 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _trigger.WayFinished -= Finish;
 
         StartCoroutine(DestroyAfterCheckPassengers());
+
+        Removed?.Invoke(this);
     }
 
     private void ReleasePassengers()

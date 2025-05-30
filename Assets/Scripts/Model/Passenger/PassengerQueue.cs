@@ -9,7 +9,6 @@ public class PassengerQueue : MonoBehaviour
 {
     private int _maxVisibleQueueSize = 25;
     private List<Passenger> _queue = new();
-    private Queue<bool> _spawnQueue = new();
     private QueueMover _mover;
     private PassengerSpawner _spawner;
     private WaitForSeconds _delayOfSpawnPassenger = new(0.07f);
@@ -20,13 +19,11 @@ public class PassengerQueue : MonoBehaviour
 
     public Passenger LastPassenger { get; private set; }
     public Passenger[] Passengers => _queue.ToArray();
-    public int Count => _queue.Count;
 
     private void Awake()
     {
         _mover = GetComponent<QueueMover>();
         _spawner = GetComponent<PassengerSpawner>();
-        _mover.InitislQueueSize(_maxVisibleQueueSize);
     }
 
     private void Update()
@@ -76,8 +73,6 @@ public class PassengerQueue : MonoBehaviour
 
         if (_queue.Count > 0)
         {
-            //LastPassenger = _queue[0];
-            //LastPassenger.SpeedUp();
             _isNeedUpdateLastPassenger = true;
             _mover.IncrementPositions(_queue);
         }
@@ -109,7 +104,5 @@ public class PassengerQueue : MonoBehaviour
         }
 
         _isNeedUpdateLastPassenger = true;
-        //LastPassenger = _queue[0];
-        //LastPassenger.SpeedUp();
     }
 }

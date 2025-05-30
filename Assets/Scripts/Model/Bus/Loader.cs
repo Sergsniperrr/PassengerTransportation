@@ -59,9 +59,6 @@ public class Loader : MonoBehaviour
         }
     }
 
-    public Passenger GetPassengerByIndex(int index) =>
-        _places[index];
-
     private bool CheckFill()
     {
         foreach (Passenger passenger in _places)
