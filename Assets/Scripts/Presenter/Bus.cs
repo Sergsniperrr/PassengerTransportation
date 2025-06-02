@@ -64,7 +64,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     {
         _router.MoveOutFromBusStop();
 
-        _trigger.WayFinished += Finish;
+        _router.WayFinished += Finish;
     }
 
     public void CompleteFilling()
@@ -74,7 +74,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 
     private void Finish()
     {
-        _trigger.WayFinished -= Finish;
+        _router.WayFinished -= Finish;
 
         StartCoroutine(DestroyAfterCheckPassengers());
 

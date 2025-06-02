@@ -12,6 +12,7 @@ public class PointsHandler : MonoBehaviour
 
     public event Action ArrivedToBusStop;
     public event Action ReturnedToInitialPlace;
+    public event Action EndpointArrived;
 
     public BusPoints Points { get; private set; }
 
@@ -66,6 +67,10 @@ public class PointsHandler : MonoBehaviour
             _mover.ResetTarget();
 
             ArrivedToBusStop?.Invoke();
+        }
+        else if (target == Points.Finish)
+        {
+            EndpointArrived?.Invoke();
         }
     }
 }

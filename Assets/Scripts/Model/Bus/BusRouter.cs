@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(TriggerHandler))]
 [RequireComponent(typeof(TransformChanger))]
 [RequireComponent(typeof(PointsHandler))]
+[RequireComponent(typeof(DirectionHandler))]
 public class BusRouter : MonoBehaviour
 {
     private const int FailedIndex = -1;
@@ -17,6 +18,9 @@ public class BusRouter : MonoBehaviour
     private IBusReceiver _busStop;
     private TransformChanger _transformChanger;
     private PointsHandler _pointsHandler;
+    private DirectionHandler _directionHandler;
+
+    public event Action WayFinished;
 
     public int StopIndex { get; private set; } = FailedIndex;
     public bool IsActive { get; private set; } = true;
@@ -27,6 +31,7 @@ public class BusRouter : MonoBehaviour
         _trigger = GetComponent<TriggerHandler>();
         _transformChanger = GetComponent<TransformChanger>();
         _pointsHandler = GetComponent<PointsHandler>();
+        _directionHandler = GetComponent<DirectionHandler>();
     }
 
     public void InitializeData(IBusReceiver busStop, BusPointsCalculator calculator)
@@ -45,12 +50,11 @@ public class BusRouter : MonoBehaviour
             return;
 
         _mover.EnableMovement();
-        _trigger.EnableCrash();
         IsActive = false;
         _transformChanger.EnableSmoke();
 
         _trigger.BusCrashed += BackToInitialPlace;
-        _trigger.BusStopTriggered += GoToStopPointer;
+        _directionHandler.BusStopArrived += GoToStopPointer;
     }
 
     public void SetActive()
@@ -63,7 +67,7 @@ public class BusRouter : MonoBehaviour
     public void BackToInitialPlace()
     {
         _trigger.BusCrashed -= BackToInitialPlace;
-        _trigger.BusStopTriggered -= GoToStopPointer;
+        _directionHandler.BusStopArrived -= GoToStopPointer;
 
         _transformChanger.DisableSmoke();
         _mover.GoBackwardsToPoint();
@@ -84,6 +88,8 @@ public class BusRouter : MonoBehaviour
         _busStop.ReleaseStop(StopIndex);
         _mover.MoveOutFromBusStop();
         _transformChanger.EnableSmoke();
+
+        _pointsHandler.EndpointArrived += Finish;
     }
 
     private void GoToStopPointer()
@@ -103,5 +109,12 @@ public class BusRouter : MonoBehaviour
 
         if (TryGetComponent(out Bus bus))
             _busStop.TakeBus(bus, StopIndex);
+    }
+
+    private void Finish()
+    {
+        _pointsHandler.EndpointArrived -= Finish;
+
+        WayFinished?.Invoke();
     }
 }
