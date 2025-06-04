@@ -11,6 +11,12 @@ public class PassengerPool : MonoBehaviour
     private readonly Queue<Passenger> _pool = new();
 
     private Passenger _passenger;
+    private Vector3 _initialScale;
+
+    private void Awake()
+    {
+        _initialScale = _prefab.transform.localScale;
+    }
 
     public Passenger GetObject()
     {
@@ -25,6 +31,7 @@ public class PassengerPool : MonoBehaviour
 
         _passenger  = _pool.Dequeue();
         _passenger.gameObject.SetActive(true);
+        _passenger.transform.localScale = _initialScale;
 
         return _passenger;
     }

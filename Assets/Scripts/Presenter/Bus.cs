@@ -5,9 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(BusRouter))]
 [RequireComponent(typeof(ColorSetter))]
 [RequireComponent(typeof(Loader))]
-[RequireComponent(typeof(TriggerHandler))]
 [RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(TransformChanger))]
+[RequireComponent(typeof(BusView))]
 public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 {
     private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
@@ -16,8 +15,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     private Roof _roof;
     private ColorSetter _color;
     private Loader _loader;
-    private TriggerHandler _trigger;
-    private TransformChanger _transformChanger;
+    private BusView _transformChanger;
 
     public event Action<Bus> FillingCompleted;
     public event Action<Bus> Removed;
@@ -35,15 +33,14 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _roof = GetComponentInChildren<Roof>();
         _color = GetComponentInChildren<ColorSetter>();
         _loader = GetComponent<Loader>();
-        _trigger = GetComponent<TriggerHandler>();
-        _transformChanger = GetComponent<TransformChanger>();
+        _transformChanger = GetComponent<BusView>();
 
         if (_roof == null)
             throw new NullReferenceException(nameof(_roof));
     }
 
-    public void InitializeData(IBusReceiver busStop, BusPointsCalculator navigator) =>
-        _router.InitializeData(busStop, navigator);
+    public void InitializeData(IBusReceiver busStop, BusPointsCalculator navigator, ParticleSystem sparks) =>
+        _router.InitializeData(busStop, navigator, sparks);
 
     public void SetColor(Material material) =>
         _color.SetMateral(material);

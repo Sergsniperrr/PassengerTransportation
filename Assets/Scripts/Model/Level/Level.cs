@@ -12,6 +12,7 @@ public class Level : MonoBehaviour
     [SerializeField] private BusPointsCalculator _busNavigator;
     [SerializeField] private PassengerQueue _queue;
     [SerializeField] private Train _train;
+    [SerializeField] private ParticleSystem _sparks;
 
     private Colors _colors;
     private ColorsHandler _colorsHandler;
@@ -34,7 +35,7 @@ public class Level : MonoBehaviour
         _input.BusSelected += RunBus;
         _busStop.BusReceived += RemoveBus;
         _train.ArrivedAtStation += ActivatePassengers;
-        _train.LeftStation += GameOver;
+        _train.LeftStation += LevelComplete;
     }
 
     private void OnDisable()
@@ -42,7 +43,7 @@ public class Level : MonoBehaviour
         _input.BusSelected -= RunBus;
         _busStop.BusReceived -= RemoveBus;
         _train.ArrivedAtStation -= ActivatePassengers;
-        _train.LeftStation -= GameOver;
+        _train.LeftStation -= LevelComplete;
     }
 
     private void Start()
@@ -85,7 +86,7 @@ public class Level : MonoBehaviour
     }
 
     private void InitializeBusData(Bus bus) =>
-        bus.InitializeData(_busStop, _busNavigator);
+        bus.InitializeData(_busStop, _busNavigator, _sparks);
 
     private void RunBus(Bus bus)
     {
@@ -99,10 +100,8 @@ public class Level : MonoBehaviour
         _canBusMove = true;
     }
 
-    private void GameOver()
+    private void LevelComplete()
     {
-        Application.Quit();
-
-        //UnityEditor.EditorApplication.isPlaying = false; // “ŒÀ‹ Œ ƒÀﬂ »Ã»“¿÷»» ¬€’Œƒ¿ »« »√–€!!!
+        
     }
 }

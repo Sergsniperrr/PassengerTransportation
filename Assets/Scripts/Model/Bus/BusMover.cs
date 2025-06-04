@@ -2,22 +2,21 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(PointsHandler))]
-public class BusMover : MonoBehaviour, IMoveCorrector
+public class BusMover : MonoBehaviour, IMoveCorrector, IStopOrMove
 {
     [SerializeField] private float _speed;
 
     private readonly float _directionForward = 1f;
 
-    private IBusReceiver _busStop;
     private PointsHandler _pointsHandler;
     private IPoints _points;
     private Vector3 _velocity = Vector3.forward;
     private Vector3 _target = Vector3.zero;
     private Vector3 _initialPlace;
     private float _direction = 1f;
-    private bool _canMove = false;
     private bool _isMoveForward = true;
 
+    public bool CanMove { get; private set; }
     public bool IsFilled { get; private set; }
 
     private void Awake()
@@ -32,9 +31,6 @@ public class BusMover : MonoBehaviour, IMoveCorrector
         Move();
     }
 
-    public void InitializeBusStop(IBusReceiver busStop) =>
-        _busStop = busStop;
-
     public void InitializeData(int stopIndex)
     {
         _pointsHandler.InitializePoints(stopIndex);
@@ -44,7 +40,7 @@ public class BusMover : MonoBehaviour, IMoveCorrector
     }
 
     public void EnableMovement() =>
-        _canMove = true;
+        CanMove = true;
 
     public void EnableForwardMovement() =>
         _isMoveForward = true;
@@ -53,7 +49,7 @@ public class BusMover : MonoBehaviour, IMoveCorrector
         _isMoveForward = false;
 
     public void DisableMovement() =>
-        _canMove = false;
+        CanMove = false;
 
     public void ResetTarget() =>
         _target = Vector3.zero;
@@ -63,7 +59,7 @@ public class BusMover : MonoBehaviour, IMoveCorrector
         target.y = transform.position.y;
         transform.LookAt(target);
         _direction = _directionForward;
-        _canMove = true;
+        CanMove = true;
     }
 
     public void GoBackwardsToPoint()
@@ -84,12 +80,12 @@ public class BusMover : MonoBehaviour, IMoveCorrector
     {
         IsFilled = true;
         SetTarget(_points.StopPointer, false);
-        _canMove = true;
+        CanMove = true;
     }
 
     private void Move()
     {
-        if (_canMove == false)
+        if (CanMove == false)
             return;
 
         if (_isMoveForward)

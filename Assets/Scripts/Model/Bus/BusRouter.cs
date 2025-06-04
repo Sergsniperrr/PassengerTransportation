@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BusMover))]
 [RequireComponent(typeof(TriggerHandler))]
-[RequireComponent(typeof(TransformChanger))]
+[RequireComponent(typeof(BusView))]
 [RequireComponent(typeof(PointsHandler))]
 [RequireComponent(typeof(DirectionHandler))]
 public class BusRouter : MonoBehaviour
@@ -16,7 +16,7 @@ public class BusRouter : MonoBehaviour
     private BusMover _mover;
     private TriggerHandler _trigger;
     private IBusReceiver _busStop;
-    private TransformChanger _transformChanger;
+    private BusView _view;
     private PointsHandler _pointsHandler;
     private DirectionHandler _directionHandler;
 
@@ -29,16 +29,16 @@ public class BusRouter : MonoBehaviour
     {
         _mover = GetComponent<BusMover>();
         _trigger = GetComponent<TriggerHandler>();
-        _transformChanger = GetComponent<TransformChanger>();
+        _view = GetComponent<BusView>();
         _pointsHandler = GetComponent<PointsHandler>();
         _directionHandler = GetComponent<DirectionHandler>();
     }
 
-    public void InitializeData(IBusReceiver busStop, BusPointsCalculator calculator)
+    public void InitializeData(IBusReceiver busStop, BusPointsCalculator calculator, ParticleSystem sparks)
     {
         _busStop = busStop ?? throw new ArgumentNullException(nameof(busStop));
+        _view.InitializeData(sparks);
 
-        _mover.InitializeBusStop(busStop);
         _pointsHandler.InitializeData(calculator);
     }
 
@@ -51,7 +51,7 @@ public class BusRouter : MonoBehaviour
 
         _mover.EnableMovement();
         IsActive = false;
-        _transformChanger.EnableSmoke();
+        _view.EnableSmoke();
 
         _trigger.BusCrashed += BackToInitialPlace;
         _directionHandler.BusStopArrived += GoToStopPointer;
@@ -69,7 +69,7 @@ public class BusRouter : MonoBehaviour
         _trigger.BusCrashed -= BackToInitialPlace;
         _directionHandler.BusStopArrived -= GoToStopPointer;
 
-        _transformChanger.DisableSmoke();
+        _view.DisableSmoke();
         _mover.GoBackwardsToPoint();
         _busStop.ReleaseStop(StopIndex);
 
@@ -87,7 +87,7 @@ public class BusRouter : MonoBehaviour
 
         _busStop.ReleaseStop(StopIndex);
         _mover.MoveOutFromBusStop();
-        _transformChanger.EnableSmoke();
+        _view.EnableSmoke();
 
         _pointsHandler.EndpointArrived += Finish;
     }
@@ -95,9 +95,9 @@ public class BusRouter : MonoBehaviour
     private void GoToStopPointer()
     {
         _trigger.BusCrashed -= BackToInitialPlace;
-        _trigger.BusStopTriggered -= GoToStopPointer;
+        _directionHandler.BusStopArrived -= GoToStopPointer;
 
-        _transformChanger.GrowToHalfSizeAtStop();
+        _view.GrowToHalfSizeAtStop();
         _mover.InitializeData(StopIndex);
 
         _pointsHandler.ArrivedToBusStop += WaitForFilling;

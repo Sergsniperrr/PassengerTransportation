@@ -2,11 +2,11 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(BusMover))]
-[RequireComponent(typeof(TransformChanger))]
+[RequireComponent(typeof(BusView))]
 public class PointsHandler : MonoBehaviour
 {
     private BusPointsCalculator _calculator;
-    private TransformChanger _transformChanger;
+    private BusView _busView;
     private Vector3 _initialPlace;
     private IMoveCorrector _mover;
 
@@ -20,7 +20,7 @@ public class PointsHandler : MonoBehaviour
     {
         _initialPlace = transform.position;
         _mover = GetComponent<BusMover>();
-        _transformChanger = GetComponent<TransformChanger>();
+        _busView = GetComponent<BusView>();
     }
 
     public void InitializeData(BusPointsCalculator calculator)
@@ -43,7 +43,7 @@ public class PointsHandler : MonoBehaviour
             _mover.EnableForwardMovement();
             _mover.DisableMovement();
             _mover.ResetTarget();
-            _transformChanger.DisableSmoke();
+            _busView.DisableSmoke();
             ReturnedToInitialPlace?.Invoke();
         }
         else if (target == Points.StopPointer)
@@ -60,9 +60,9 @@ public class PointsHandler : MonoBehaviour
         }
         else if (target == Points.BusStop)
         {
-            _transformChanger.GrowToFullSizeAtStop();
-            _transformChanger.DisableRoof();
-            _transformChanger.DisableSmoke();
+            _busView.GrowToFullSizeAtStop();
+            _busView.DisableRoof();
+            _busView.DisableSmoke();
             _mover.DisableMovement();
             _mover.ResetTarget();
 
