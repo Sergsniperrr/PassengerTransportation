@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,11 @@ public class Level : MonoBehaviour
     [SerializeField] private BusPointsCalculator _busNavigator;
     [SerializeField] private PassengerQueue _queue;
     [SerializeField] private Train _train;
-    [SerializeField] private ParticleSystem _sparks;
+    [SerializeField] private Effects _effects;
+    [SerializeField] private PassengerCounter _passengerCounter;
+    [SerializeField] private GameButtons _gameButtons;
+    [SerializeField] private GameMenu _gameMenu;
+    [SerializeField] private Music _music;
 
     private Colors _colors;
     private ColorsHandler _colorsHandler;
@@ -36,6 +41,8 @@ public class Level : MonoBehaviour
         _busStop.BusReceived += RemoveBus;
         _train.ArrivedAtStation += ActivatePassengers;
         _train.LeftStation += LevelComplete;
+        _busStop.PassengerLeft += _passengerCounter.DecrementValue;
+        _gameMenu.GameActiveChanged += ChangeGameActivity;
     }
 
     private void OnDisable()
@@ -44,15 +51,20 @@ public class Level : MonoBehaviour
         _busStop.BusReceived -= RemoveBus;
         _train.ArrivedAtStation -= ActivatePassengers;
         _train.LeftStation -= LevelComplete;
+        _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
+        _gameMenu.GameActiveChanged -= ChangeGameActivity;
     }
 
     private void Start()
     {
         SetBusesRandomColor();
-        _colorsHandler.InitializeColors();
+        _colorsHandler.InitializePassengerColors();
         _queue.InitializeColorsSpawner(_colorsHandler);
 
         _train.MoveToStation();
+        _passengerCounter.SetValue(_colorsHandler.ColorsCount);
+
+        _queue.PassengersCreated += ActivatePlayerInput;
     }
 
     public void SetBusesRandomColor()
@@ -83,10 +95,12 @@ public class Level : MonoBehaviour
         lastBus.Removed -= SendOutTrain;
 
         _train.LeaveStation();
+        _music.Stop();
+        _effects.PlayLevelComplete();
     }
 
     private void InitializeBusData(Bus bus) =>
-        bus.InitializeData(_busStop, _busNavigator, _sparks);
+        bus.InitializeData(_busStop, _busNavigator, _effects);
 
     private void RunBus(Bus bus)
     {
@@ -97,7 +111,19 @@ public class Level : MonoBehaviour
     private void ActivatePassengers()
     {
         _queue.Spawn();
-        _canBusMove = true;
+    }
+
+    private void ActivatePlayerInput()
+    {
+        _queue.PassengersCreated -= ActivatePlayerInput;
+
+        ChangeGameActivity(true);
+    }
+
+    private void ChangeGameActivity(bool isActive)
+    {
+        _canBusMove = isActive;
+        _gameButtons.SetActive(isActive);
     }
 
     private void LevelComplete()

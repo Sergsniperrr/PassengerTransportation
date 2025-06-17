@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BusRouter))]
 [RequireComponent(typeof(ColorSetter))]
-[RequireComponent(typeof(Loader))]
+[RequireComponent(typeof(PassengerReception))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(BusView))]
 public class Bus : MonoBehaviour, ISenderOfFillingCompletion
@@ -14,33 +14,37 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     private BusRouter _router;
     private Roof _roof;
     private ColorSetter _color;
-    private Loader _loader;
+    private PassengerReception _passengerReception;
     private BusView _transformChanger;
+    private Effects _effects;
 
     public event Action<Bus> FillingCompleted;
     public event Action<Bus> Removed;
 
     public bool IsActive => _router.IsActive;
     public int StopIndex => _router.StopIndex;
-    public int SeatsCount => _loader.Count;
+    public int SeatsCount => _passengerReception.Count;
     public Material Material => _color.Material;
-    public bool IsEmptySeat => _loader.IsEmptySeat;
-    public int FreeSeatsCount => _loader.EmptySeatCount;
+    public bool IsEmptySeat => _passengerReception.IsEmptySeat;
+    public int FreeSeatsCount => _passengerReception.EmptySeatCount;
 
     private void Awake()
     {
         _router = GetComponent<BusRouter>();
         _roof = GetComponentInChildren<Roof>();
         _color = GetComponentInChildren<ColorSetter>();
-        _loader = GetComponent<Loader>();
+        _passengerReception = GetComponent<PassengerReception>();
         _transformChanger = GetComponent<BusView>();
 
         if (_roof == null)
             throw new NullReferenceException(nameof(_roof));
     }
 
-    public void InitializeData(IBusReceiver busStop, BusPointsCalculator navigator, ParticleSystem sparks) =>
-        _router.InitializeData(busStop, navigator, sparks);
+    public void InitializeData(IBusReceiver busStop, BusPointsCalculator navigator, Effects effects)
+    {
+        _router.InitializeData(busStop, navigator, effects);
+        _effects = effects != null ? effects : throw new NullReferenceException(nameof(effects));
+    }
 
     public void SetColor(Material material) =>
         _color.SetMateral(material);
@@ -49,12 +53,12 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _router.StartMove();
 
     public int ReserveFreePlace() =>
-        _loader.ReserveFreePlace();
+        _passengerReception.ReserveFreePlace();
 
     public void TakePassenger(Passenger passenger)
     {
-        _loader.TakePassenger(passenger);
-        _transformChanger.PulsateSize();
+        _passengerReception.TakePassenger(passenger);
+        _transformChanger.BoardingEffect();
     }
 
     public void MoveOutFromBusStop()
@@ -66,6 +70,8 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
 
     public void CompleteFilling()
     {
+        _effects.PlayBusFillingComplete();
+
         FillingCompleted?.Invoke(this);
     }
 

@@ -17,6 +17,8 @@ public class PassengerQueue : MonoBehaviour
     private float _changeLastPassengerCounter;
     private bool _isNeedUpdateLastPassenger;
 
+    public event Action PassengersCreated;
+
     public Passenger LastPassenger { get; private set; }
     public Passenger[] Passengers => _queue.ToArray();
 
@@ -104,5 +106,6 @@ public class PassengerQueue : MonoBehaviour
         }
 
         _isNeedUpdateLastPassenger = true;
+        PassengersCreated?.Invoke();
     }
 }

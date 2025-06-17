@@ -26,6 +26,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private bool _canLeave = true;
 
     public event Action<Bus> BusReceived;
+    public event Action PassengerLeft;
 
     public int StopsCount => _stopsCount;
 
@@ -118,6 +119,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
         passenger.GotOnBus -= GetOnBus;
 
         passenger.Bus.TakePassenger(passenger);
+        PassengerLeft?.Invoke();
     }
 
     private void HandleBusesMoveOut()

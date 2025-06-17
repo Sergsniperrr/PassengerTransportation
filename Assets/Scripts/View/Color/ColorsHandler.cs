@@ -1,33 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using UnityEngine;
 
 public class ColorsHandler : MonoBehaviour, IColorGetter
 {
     private Queue<Material> _colors;
-    private List<Material> _colorsBuffer;
 
     public int ColorsCount => _colors.Count;
     public List<Material> Colors => _colors.ToList();
 
-    public void InitializeColors() =>
+    public void InitializePassengerColors() =>
         _colors = CreateRandomColors(ReadColors());
-
-    public int MaterialsCount => _colors.Count;
 
     public Material DequeuePassengerColor() =>
         _colors.Dequeue();
-
-    public void EnqueuePassengerColor(Material color)
-    {
-        if (color == null)
-            throw new ArgumentNullException(nameof(color));
-
-        _colors.Enqueue(color);
-
-        Debug.Log("Enqueue color!!!");
-    }
 
     public void SetColorsQueue(List<Material> colors)
     {

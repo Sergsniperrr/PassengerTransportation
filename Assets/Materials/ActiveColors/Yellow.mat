@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _SEGMENTED_ON
+  - _SHNOVERLAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -76,25 +77,25 @@ Material:
     - _Lumin: 0
     - _MaxLight: 1
     - _Metallic: 0
-    - _MinLight: 0.6
+    - _MinLight: 0.7
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Offset: 0
     - _Parallax: 0.02
     - _Segmented: 1
     - _ShnIntense: 0
-    - _ShnOverlap: 0
-    - _ShnRange: 0.15
+    - _ShnOverlap: 1
+    - _ShnRange: 1
     - _ShnSmooth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Steps: 3
+    - _Steps: 5
     - _StpSmooth: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0.8, b: 0.2, a: 1}
+    - _Color: {r: 0.9607843, g: 0.9019608, b: 0.39215687, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ShnColor: {r: 1, g: 1, b: 0, a: 1}
+    - _ShnColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
