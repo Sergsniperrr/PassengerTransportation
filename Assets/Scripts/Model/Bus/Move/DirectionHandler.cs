@@ -17,6 +17,8 @@ public class DirectionHandler : MonoBehaviour
     private Collider _collider;
     private Vector3 _position;
 
+
+    public event Action LeftParkingLot;
     public event Action BusStopArrived;
 
     private void Awake()
@@ -44,8 +46,7 @@ public class DirectionHandler : MonoBehaviour
         }
         else if (_position.z < _minPositionZ)
         {
-            if (_collider.enabled == true)
-                _collider.enabled = false;
+            DisableCollider();
         }
         else if (_position.x < _minPositionX)
         {
@@ -84,5 +85,7 @@ public class DirectionHandler : MonoBehaviour
     {
         if (_collider.enabled == true)
             _collider.enabled = false;
+
+        LeftParkingLot?.Invoke();
     }
 }

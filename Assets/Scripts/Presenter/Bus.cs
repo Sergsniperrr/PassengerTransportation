@@ -18,6 +18,8 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     private BusView _transformChanger;
     private Effects _effects;
 
+    public event Action StartedMove;
+    public event Action LeftParkingLot;
     public event Action<Bus> FillingCompleted;
     public event Action<Bus> Removed;
 
@@ -49,8 +51,21 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     public void SetColor(Material material) =>
         _color.SetMateral(material);
 
-    public void Run() =>
+    public void Run()
+    {
         _router.StartMove();
+
+        StartedMove?.Invoke();
+
+        _router.LeftParkingLot += InformThatLeftParkingLot;
+    }
+
+    private void InformThatLeftParkingLot()
+    {
+        _router.LeftParkingLot -= InformThatLeftParkingLot;
+
+        LeftParkingLot?.Invoke();
+    }
 
     public int ReserveFreePlace() =>
         _passengerReception.ReserveFreePlace();

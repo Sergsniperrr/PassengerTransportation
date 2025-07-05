@@ -1,8 +1,9 @@
 using System;
-using System.Collections;
+using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(MouseInputHandler))]
 [RequireComponent(typeof(Colors))]
@@ -16,14 +17,22 @@ public class Level : MonoBehaviour
     [SerializeField] private Effects _effects;
     [SerializeField] private PassengerCounter _passengerCounter;
     [SerializeField] private GameButtons _gameButtons;
-    [SerializeField] private GameMenu _gameMenu;
+    [SerializeField] private WindowsHandler _windows;
+    [SerializeField] private LevelStatisticsView _statisticsView;
     [SerializeField] private Music _music;
+    [SerializeField] private TextMeshProUGUI _textLevelNomber;
+    [SerializeField] private GameResetter _resetter;
 
     private Colors _colors;
     private ColorsHandler _colorsHandler;
     private List<Bus> _buses;
     private MouseInputHandler _input;
+    private Music _menuMusic;
+    private int _currentLevel;
     private bool _canBusMove;
+
+    public event Action<Queue<Bus>> GameActivated;
+    public event Action Completed;
 
     public List<Bus> Buses => new(_buses);
 
@@ -32,7 +41,6 @@ public class Level : MonoBehaviour
         _input = GetComponent<MouseInputHandler>();
         _colors = GetComponent<Colors>();
         _colorsHandler = GetComponent<ColorsHandler>();
-        InitializeBuses();
     }
 
     private void OnEnable()
@@ -40,9 +48,7 @@ public class Level : MonoBehaviour
         _input.BusSelected += RunBus;
         _busStop.BusReceived += RemoveBus;
         _train.ArrivedAtStation += ActivatePassengers;
-        _train.LeftStation += LevelComplete;
         _busStop.PassengerLeft += _passengerCounter.DecrementValue;
-        _gameMenu.GameActiveChanged += ChangeGameActivity;
     }
 
     private void OnDisable()
@@ -50,21 +56,7 @@ public class Level : MonoBehaviour
         _input.BusSelected -= RunBus;
         _busStop.BusReceived -= RemoveBus;
         _train.ArrivedAtStation -= ActivatePassengers;
-        _train.LeftStation -= LevelComplete;
         _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
-        _gameMenu.GameActiveChanged -= ChangeGameActivity;
-    }
-
-    private void Start()
-    {
-        SetBusesRandomColor();
-        _colorsHandler.InitializePassengerColors();
-        _queue.InitializeColorsSpawner(_colorsHandler);
-
-        _train.MoveToStation();
-        _passengerCounter.SetValue(_colorsHandler.ColorsCount);
-
-        _queue.PassengersCreated += ActivatePlayerInput;
     }
 
     public void SetBusesRandomColor()
@@ -76,9 +68,36 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void InitializeBuses()
+    public void Begin(int levelNumber, Music music, List<Bus> buses)
     {
-        _buses = GetComponentsInChildren<Bus>().ToList();
+        _currentLevel = levelNumber;
+        _textLevelNomber.text = $"{levelNumber + 1}";
+        _menuMusic = music;
+        _buses = buses ?? throw new ArgumentNullException(nameof(buses));
+        _statisticsView.InitializeData(levelNumber, _buses.Count);
+        _windows.OpenBeginLevel().Closed += PlayGame;
+    }
+
+    public void ChangeGameActivity(bool isActive)
+    {
+        _canBusMove = isActive;
+        _gameButtons.SetActive(isActive);
+    }
+
+    private void PlayGame(SimpleWindow window)
+    {
+        window.Closed -= PlayGame;
+
+        SetBusesRandomColor();
+        _colorsHandler.InitializePassengerColors();
+        _queue.InitializeColorsSpawner(_colorsHandler);
+        _train.MoveToStation();
+        _passengerCounter.SetValue(_colorsHandler.ColorsCount);
+        _menuMusic.Stop();
+        _music.Play();
+
+        _queue.PassengersCreated += ActivatePlayerInput;
+        _busStop.AllPlacesOccupied += OpenDialog;
     }
 
     private void RemoveBus(Bus bus)
@@ -87,16 +106,20 @@ public class Level : MonoBehaviour
             _buses.Remove(bus);
 
         if (_buses.Count == 1)
-            _buses[0].Removed += SendOutTrain;
+            _buses[0].Removed += Complete;
     }
 
-    private void SendOutTrain(Bus lastBus)
+    private void Complete(Bus lastBus)
     {
-        lastBus.Removed -= SendOutTrain;
+        lastBus.Removed -= Complete;
+
+        float delay = 2f;
 
         _train.LeaveStation();
         _music.Stop();
         _effects.PlayLevelComplete();
+        _windows.OpenLevelComplete(delay).Closed += Complete;
+        _gameButtons.SetActive(false);
     }
 
     private void InitializeBusData(Bus bus) =>
@@ -118,16 +141,32 @@ public class Level : MonoBehaviour
         _queue.PassengersCreated -= ActivatePlayerInput;
 
         ChangeGameActivity(true);
+
+        GameActivated?.Invoke(new Queue<Bus>(_buses));
     }
 
-    private void ChangeGameActivity(bool isActive)
+    private void Complete(SimpleWindow window)
     {
-        _canBusMove = isActive;
-        _gameButtons.SetActive(isActive);
+        window.Closed -= Complete;
+        _busStop.AllPlacesOccupied -= OpenDialog;
+        Completed?.Invoke();
     }
 
-    private void LevelComplete()
+    private void OpenDialog()
     {
-        
+        if (_buses.Count == 0)
+            return;
+
+        _windows.OpenWarningWindow();
+
+        _windows.ResultResieved += HandleDialog;
+    }
+
+    private void HandleDialog(bool result)
+    {
+        _windows.ResultResieved -= HandleDialog;
+
+        if (result == false)
+            _resetter.BackInMainMenu(_currentLevel);
     }
 }

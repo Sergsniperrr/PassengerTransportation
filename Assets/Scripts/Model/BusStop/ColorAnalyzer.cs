@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class ColorAnalyzer : MonoBehaviour
@@ -16,6 +17,9 @@ public class ColorAnalyzer : MonoBehaviour
 
         return FailedIndex;
     }
+
+    public bool CheckDesiredColor(Material passengerColor, Bus[] stops) =>
+        stops.Any(stop => stop.Material == passengerColor);
 
     private int GetStopIndexWithBusOfDesiredColor(Material passengerColor, Bus[] stops)
     {

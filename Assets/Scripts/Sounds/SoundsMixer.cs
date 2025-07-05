@@ -12,7 +12,6 @@ public class SoundsMixer : MonoBehaviour
     [SerializeField] private AudioMixerGroup _mixerEffectsGroup;
     [SerializeField] private string _musicVariableName;
     [SerializeField] private string _effectsVariableName;
-    [SerializeField] private AudioSource _soundEffectDemo;
     [SerializeField] private AudioSource _initialMusic;
 
     private const float MinVolume = 0.001f;

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameMenu : MonoBehaviour
 {
@@ -9,11 +10,15 @@ public class GameMenu : MonoBehaviour
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _leaderboardButton;
     [SerializeField] private Window _soundSettings;
+    [SerializeField] private GameResetter _resetter;
+
+    private const string IsRestartPrefName = "IsRestart";
 
     public event Action<bool> GameActiveChanged;
 
     private void OnEnable()
     {
+        _soundSettings.gameObject.SetActive(true);
         _soundSettingsButton.onClick.AddListener(OpenSoundSettingsMenu);
         _restartButton.onClick.AddListener(Restart);
     }
@@ -28,7 +33,7 @@ public class GameMenu : MonoBehaviour
     {
         _restartButton.onClick.RemoveListener(Restart);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        _resetter.RestartLevel();
     }
 
     private void OpenSoundSettingsMenu()

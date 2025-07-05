@@ -24,7 +24,7 @@ public class Window : MonoBehaviour
         float maxScale = _initialScale.x * _maxScaleMultiplier;
         _maxScale = new(maxScale, maxScale, maxScale);
         transform.localScale = Vector3.zero;
-        _background.color = Color.clear;
+        _background.gameObject.SetActive(true);
         gameObject.SetActive(false);
     }
 

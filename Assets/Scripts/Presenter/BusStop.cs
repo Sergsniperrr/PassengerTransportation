@@ -15,6 +15,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     [SerializeField] private PassengerQueue _queue;
 
     private readonly float _delayOfUpdateQueue = 0.06f;
+    private readonly WaitForSeconds _waitForCheckGameOver = new(1f);
 
     private ColorAnalyzer _colorAnalyzer;
     private WaitForSeconds _delayBeforeLeave = new(0.3f);
@@ -24,9 +25,11 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private Queue<Bus> _outGoingBuses = new();
     private float _updateCounter;
     private bool _canLeave = true;
+    private bool _isFreePlace = true;
 
     public event Action<Bus> BusReceived;
     public event Action PassengerLeft;
+    public event Action AllPlacesOccupied;
 
     public int StopsCount => _stopsCount;
 
@@ -54,6 +57,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
         {
             HandlePassengersBoarding();
             HandleBusesMoveOut();
+
             _updateCounter = _delayOfUpdateQueue;
         }
     }
@@ -111,8 +115,15 @@ public class BusStop : MonoBehaviour, IBusReceiver
                     _queue.RemoveLastPassenger();
                 }
             }
+            else
+            {
+                HandleGameOver();
+            }
         }
     }
+
+    public void ResetFreePlaces() =>
+        _isFreePlace = true;
 
     private void GetOnBus(Passenger passenger)
     {
@@ -145,5 +156,33 @@ public class BusStop : MonoBehaviour, IBusReceiver
         yield return _delayBeforeLeave;
 
         _canLeave = true;
+    }
+
+    private void HandleGameOver()
+    {
+        if (_isFreePlace == false)
+            return;
+
+        if (_stops.Contains(null))
+            return;
+
+        _isFreePlace = false;
+
+        StartCoroutine(HandleGameOverAfterDelay());
+    }
+
+    private IEnumerator HandleGameOverAfterDelay()
+    {
+        yield return _waitForCheckGameOver;
+
+        if (_stops.Contains(null) == false &&
+            _colorAnalyzer.CheckDesiredColor(_queue.LastPassenger.Material, _stops) == false)
+        {
+            AllPlacesOccupied?.Invoke();
+        }
+        else
+        {
+            ResetFreePlaces();
+        }
     }
 }

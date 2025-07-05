@@ -52,6 +52,7 @@ public class PassengerColorShuffler : MonoBehaviour
         }
 
         _colorHandler.SetColorsQueue(colors);
+        _busStop.ResetFreePlaces();
     }
 
     private Queue<Material> GetFreePlacesColorsOfBuses()
