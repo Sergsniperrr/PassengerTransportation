@@ -17,7 +17,7 @@ public class LevelsDataContainer
         if (levelNumber >= _levels.Count && levelNumber < 0)
             throw new ArgumentOutOfRangeException(nameof(levelNumber));
 
-        return _levels[levelNumber];
+        return _levels[levelNumber - 1];
     }
 
     public void AddLevel(LevelData level)

@@ -23,6 +23,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private Bus[] _stops;
     private Bus _outGoingBus;
     private Queue<Bus> _outGoingBuses = new();
+    private Coroutine _coroutine;
     private float _updateCounter;
     private bool _canLeave = true;
     private bool _isFreePlace = true;
@@ -30,6 +31,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     public event Action<Bus> BusReceived;
     public event Action PassengerLeft;
     public event Action AllPlacesOccupied;
+    public event Action AllPlacesReleased;
 
     public int StopsCount => _stopsCount;
 
@@ -86,6 +88,11 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
         _reservations[index] = true;
         _stops[index] = null;
+
+        int occupiedPlaceCount = _stops.Count(place => place != null);
+
+        if (occupiedPlaceCount == 0)
+            AllPlacesReleased?.Invoke();
     }
 
     public void TakeBus(Bus bus, int platformIndex)
@@ -122,8 +129,13 @@ public class BusStop : MonoBehaviour, IBusReceiver
         }
     }
 
-    public void ResetFreePlaces() =>
+    public void ResetFreePlaces()
+    {
         _isFreePlace = true;
+
+        if (_coroutine != null)
+            StopCoroutine(_coroutine);
+    }
 
     private void GetOnBus(Passenger passenger)
     {
@@ -168,7 +180,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
         _isFreePlace = false;
 
-        StartCoroutine(HandleGameOverAfterDelay());
+        _coroutine = StartCoroutine(HandleGameOverAfterDelay());
     }
 
     private IEnumerator HandleGameOverAfterDelay()
@@ -176,7 +188,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
         yield return _waitForCheckGameOver;
 
         if (_stops.Contains(null) == false &&
-            _colorAnalyzer.CheckDesiredColor(_queue.LastPassenger.Material, _stops) == false)
+            _colorAnalyzer.CheckDesiredColor(_queue.LastPassenger?.Material, _stops) == false)
         {
             AllPlacesOccupied?.Invoke();
         }

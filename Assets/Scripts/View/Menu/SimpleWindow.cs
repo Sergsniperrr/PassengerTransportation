@@ -73,6 +73,7 @@ public class SimpleWindow : MonoBehaviour
             _fadeTween.Kill(false);
         }
 
+        _canvas.DOKill();
         _fadeTween = _canvas.DOFade(endValue, duration);
         _fadeTween.onComplete += onEnd;
     }

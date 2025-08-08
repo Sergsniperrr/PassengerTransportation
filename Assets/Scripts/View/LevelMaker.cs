@@ -67,10 +67,10 @@ public class LevelMaker : MonoBehaviour
         if (levelNumber == FailedIndex)
             return;
 
-        Insert(CreateLevel(), levelNumber);
+        Insert(CreateLevel(), levelNumber - 1);
 
         int count = _container.GetLevel(levelNumber).Buses.Length;
-        Debug.Log($"Level {levelNumber + 1} ({count} buses) has been successfully writed!");
+        Debug.Log($"Level {levelNumber} ({count} buses) has been successfully writed!");
     }
 
     private void Read()
@@ -92,7 +92,7 @@ public class LevelMaker : MonoBehaviour
             return FailedIndex;
         }
 
-        return --levelNumber;
+        return levelNumber;
     }
 
     private void Insert(LevelData level, int levelNumber)
@@ -121,11 +121,7 @@ public class LevelMaker : MonoBehaviour
 
         foreach (Bus bus in buses)
         {
-            BusData busData = new();
-
-            busData.SetSeatsCount(bus.SeatsCount);
-            busData.SetPosition(bus.transform.position);
-            busData.SetRotation(bus.transform.rotation);
+            BusData busData = new(bus.SeatsCount, bus.transform.position, bus.transform.rotation);
 
             busesData.Add(busData);
         }

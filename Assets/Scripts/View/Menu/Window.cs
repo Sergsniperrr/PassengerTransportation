@@ -8,6 +8,7 @@ public class Window : MonoBehaviour
     [SerializeField] private Button _closeButton;
     [SerializeField] private Image _background;
     [SerializeField] private AudioSource _windowsAudio;
+    [SerializeField] private GameButtons _buttons;
     [SerializeField] private float _maxScaleMultiplier = 1.1f;
 
     private Color _darkBackground = new(0, 0, 0, 0.6f);
@@ -42,6 +43,7 @@ public class Window : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence();
 
+        _buttons.SetActive(false);
         _background.DOColor(_darkBackground, _outsideDuration);
         _background.raycastTarget = true;
 
@@ -65,6 +67,7 @@ public class Window : MonoBehaviour
             {
                 Closed?.Invoke();
 
+                _buttons.SetActive(true);
                 _background.raycastTarget = false;
                 gameObject.SetActive(false);
             });

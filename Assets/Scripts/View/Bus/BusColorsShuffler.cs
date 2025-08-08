@@ -9,6 +9,8 @@ public class BusColorsShuffler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private Level _level;
 
+    private UndergroundBuses _undergroundBuses;
+
     private void OnEnable()
     {
         _button.onClick.AddListener(ShuffleColors);
@@ -19,12 +21,15 @@ public class BusColorsShuffler : MonoBehaviour
         _button.onClick.RemoveListener(ShuffleColors);
     }
 
+    public void InitializeUndergroundBuses(UndergroundBuses buses) =>
+        _undergroundBuses = buses != null ? buses : throw new ArgumentNullException(nameof(buses));
+
     public void ShuffleColors()
     {
         Material material;
-        Dictionary<Bus, Bus> duplicates = CreateBusesDuplicates();
+        Dictionary<IBusParameters, IBusParameters> duplicates = CreateBusesDuplicates();
 
-        foreach (KeyValuePair<Bus,Bus> duplicate in duplicates)
+        foreach (KeyValuePair<IBusParameters, IBusParameters> duplicate in duplicates)
         {
             material = duplicate.Key.Material;
             duplicate.Key.SetColor(duplicate.Value.Material);
@@ -32,13 +37,17 @@ public class BusColorsShuffler : MonoBehaviour
         }
     }
 
-    private Dictionary<Bus, Bus> CreateBusesDuplicates()
+    private Dictionary<IBusParameters, IBusParameters> CreateBusesDuplicates()
     {
-        List<Bus> buses = _level.Buses;
-        Dictionary<Bus, Bus> duplicates = new();
-        Bus busKey;
-        Bus busValue;
-        Bus[] values;
+        IEnumerable<IBusParameters> enumerableBuses = _level.Buses;
+        IEnumerable<IBusParameters> enumerableUndergroundBuses = _undergroundBuses.Buses;
+
+        List<IBusParameters> buses = enumerableBuses.Concat(enumerableUndergroundBuses).ToList();
+        Dictionary<IBusParameters, IBusParameters> duplicates = new();
+
+        IBusParameters busKey;
+        IBusParameters busValue;
+        IBusParameters[] values;
 
         while (buses.Count > 0)
         {
@@ -50,10 +59,11 @@ public class BusColorsShuffler : MonoBehaviour
             {
                 busValue = values[UnityEngine.Random.Range(0, values.Length)];
                 buses.Remove(busValue);
-                duplicates.Add(busKey, busValue);
+
+                if (duplicates.Keys.Contains(busKey) == false)
+                    duplicates.Add(busKey, busValue);
             }
         }
-
 
         return duplicates;
     }

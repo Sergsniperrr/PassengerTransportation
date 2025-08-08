@@ -49,10 +49,10 @@ public class TutorialFinger : MonoBehaviour
 
         _buses = buses ?? throw new ArgumentNullException(nameof(buses));
 
-        PointNextPosition();
+        PointNextPosition(null);
     }
 
-    private void PointNextPosition()
+    private void PointNextPosition(Bus _)
     {
         if (_pointsQueue.Count > 0)
         {

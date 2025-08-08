@@ -5,7 +5,7 @@ using UnityEngine;
 public class DirectionHandler : MonoBehaviour
 {
     private readonly float _busStopPositionZ = 9.96f;
-    private readonly float _minPositionZ = 12.04f;
+    private readonly float _minPositionZ = 11.7f;
     private readonly float _minPositionX = -31.9f;
     private readonly float _maxPositionX = -19.34f;
     private readonly float _maxPositionZ = 23.47f;
@@ -16,7 +16,6 @@ public class DirectionHandler : MonoBehaviour
 
     private Collider _collider;
     private Vector3 _position;
-
 
     public event Action LeftParkingLot;
     public event Action BusStopArrived;

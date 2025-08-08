@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Effects : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _crashParticle;
     [SerializeField] private ParticleSystem _fireWork;
+    [SerializeField] private ParticleSystem _crashParticle;
     [SerializeField] private AudioSource _crashAudio;
     [SerializeField] private AudioSource _boardingBusAudio;
     [SerializeField] private AudioSource _levelCompleteAudio;
@@ -12,9 +12,14 @@ public class Effects : MonoBehaviour
     private readonly float _minRandomPitch = 0.85f;
     private readonly float _maxRandomPitch = 1.15f;
 
-    public void PlayCrash(Vector3 position)
+    public void PlayCrash(Vector3 position, Transform busTransform)
     {
-        _crashParticle.transform.position = position;
+        Transform parent = _crashParticle.transform.parent;
+
+        _crashParticle.transform.SetParent(busTransform);
+        _crashParticle.transform.localPosition = position;
+        _crashParticle.transform.SetParent(parent);
+
         _crashParticle.Play();
         _crashAudio.Play();
     }

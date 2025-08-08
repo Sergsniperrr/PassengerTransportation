@@ -9,8 +9,8 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
     public int ColorsCount => _colors.Count;
     public List<Material> Colors => _colors.ToList();
 
-    public void InitializePassengerColors() =>
-        _colors = CreateRandomColors(ReadColors());
+    public void InitializePassengerColors(Bus[] visibleBases, BusUnderground[] undergroundBuses ) =>
+        _colors = CreateRandomColors(ReadColors(visibleBases, undergroundBuses));
 
     public Material DequeuePassengerColor() =>
         _colors.Dequeue();
@@ -21,12 +21,12 @@ public class ColorsHandler : MonoBehaviour, IColorGetter
         _colors = new Queue<Material>(colors);
     }
 
-    private List<Material> ReadColors()
+    private List<Material> ReadColors(IBusParameters[] visibleBases, BusUnderground[] undergroundBuses)
     {
         List<Material> materials = new();
-        Bus[] buses = GetComponentsInChildren<Bus>();
+        IBusParameters[] buses = visibleBases.Concat(undergroundBuses.Cast<IBusParameters>()).ToArray();
 
-        foreach (Bus bus in buses)
+        foreach (IBusParameters bus in buses)
             for (int i = 0; i < bus.SeatsCount; i++)
                 materials.Add(bus.Material);
 

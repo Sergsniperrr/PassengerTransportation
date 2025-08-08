@@ -15,6 +15,9 @@ public class MaterialSetter : MonoBehaviour
 
     public void SetMateral(Material material)
     {
+        if (_renderer == null)
+            return;
+
         Material[] materials = _renderer.materials.ToArray();
         materials[_materalIndex] = material;
         _renderer.materials = materials;

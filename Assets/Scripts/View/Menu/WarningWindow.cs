@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class WarningWindow : SimpleWindow
 {
     [SerializeField] private Button _passengersArrangingButton;
-    //[SerializeField] private FadePulsation _busStopContour;
 
     public bool IsGameContinues { get; private set; }
 

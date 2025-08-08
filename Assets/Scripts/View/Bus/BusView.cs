@@ -20,6 +20,7 @@ public class BusView : MonoBehaviour
     private Vector3 _initialRotation;
     private Vector3 _sparksShiftPosition;
     private PassengerReception _passengerReception;
+    private bool _isSwingEnabled = true;
 
     private void Awake()
     {
@@ -31,11 +32,13 @@ public class BusView : MonoBehaviour
             throw new NullReferenceException(nameof(_roof));
 
         _initialRotation = transform.rotation.eulerAngles;
-        _sparksShiftPosition = CalculateSparksPosition();
     }
 
-    public void InitializeData(Effects effects) =>
+    public void InitializeData(Effects effects)
+    {
         _effects = effects != null ? effects : throw new NullReferenceException(nameof(effects));
+        _sparksShiftPosition = CalculateSparksPosition();
+    }
 
     public void GrowToHalfSizeAtStop()
     {
@@ -48,6 +51,12 @@ public class BusView : MonoBehaviour
 
     public void DisableRoof() =>
         _roof.gameObject.SetActive(false);
+
+    public void EnableSwingEffect() =>
+        _isSwingEnabled = true;
+
+    public void DisableSwingEffect() =>
+        _isSwingEnabled = false;
 
     public void BoardingEffect()
     {
@@ -64,6 +73,9 @@ public class BusView : MonoBehaviour
 
     public void Swing()
     {
+        if (_isSwingEnabled == false)
+            return;
+
         Vector3 forwardSwing = _initialRotation;
         Vector3 backwardSwing = _initialRotation;
 
@@ -77,27 +89,18 @@ public class BusView : MonoBehaviour
     }
 
     public void PlayCrashEffect() =>
-        _effects.PlayCrash(transform.position + _sparksShiftPosition);
+        _effects.PlayCrash(_sparksShiftPosition, transform);
 
     private Vector3 CalculateSparksPosition()
     {
         Vector3 sparksShift = new(0f, 0.39f, 0f);
-        float flipAngle = 180f;
-        float rotation = _initialRotation.y;
-        float rotationStep = 90f;
         int trippleDevider = 3;
         float minDistanceToSparks = 0.85f;
         float stepSize = 0.175f;
         int stepsCount = _passengerReception.Count / trippleDevider - 1;
         float distanseToSparks = minDistanceToSparks + (stepSize * stepsCount);
 
-        if (rotation > flipAngle)
-            rotation = flipAngle - rotation;
-
-        if (Math.Abs(rotation) == rotationStep)
-            sparksShift.x = rotation / Math.Abs(rotation) * distanseToSparks;
-        else
-            sparksShift.z = (1 - (rotation / rotationStep)) * distanseToSparks;
+        sparksShift.z = distanseToSparks;
 
         return sparksShift;
     }

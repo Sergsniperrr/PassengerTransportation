@@ -5,9 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(BusRouter))]
 [RequireComponent(typeof(ColorSetter))]
 [RequireComponent(typeof(PassengerReception))]
-[RequireComponent(typeof(MeshRenderer))]
+//[RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(BusView))]
-public class Bus : MonoBehaviour, ISenderOfFillingCompletion
+public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
 {
     private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
 
@@ -19,9 +19,9 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
     private Effects _effects;
 
     public event Action StartedMove;
-    public event Action LeftParkingLot;
+    public event Action<Bus> LeftParkingLot;
     public event Action<Bus> FillingCompleted;
-    public event Action<Bus> Removed;
+    //public event Action<Bus> Removed;
 
     public bool IsActive => _router.IsActive;
     public int StopIndex => _router.StopIndex;
@@ -48,6 +48,12 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _effects = effects != null ? effects : throw new NullReferenceException(nameof(effects));
     }
 
+    public void Activate() =>
+        _router.Activate();
+
+    public void Disable() =>
+        _router.Disable();
+
     public void SetColor(Material material) =>
         _color.SetMateral(material);
 
@@ -60,12 +66,11 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         _router.LeftParkingLot += InformThatLeftParkingLot;
     }
 
-    private void InformThatLeftParkingLot()
-    {
-        _router.LeftParkingLot -= InformThatLeftParkingLot;
+    public void EnableSwingEffect() =>
+        _transformChanger.EnableSwingEffect();
 
-        LeftParkingLot?.Invoke();
-    }
+    public void DisableSwingEffect() =>
+        _transformChanger.DisableSwingEffect();
 
     public int ReserveFreePlace() =>
         _passengerReception.ReserveFreePlace();
@@ -90,13 +95,18 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion
         FillingCompleted?.Invoke(this);
     }
 
+    private void InformThatLeftParkingLot()
+    {
+        _router.LeftParkingLot -= InformThatLeftParkingLot;
+
+        LeftParkingLot?.Invoke(this);
+    }
+
     private void Finish()
     {
         _router.WayFinished -= Finish;
 
         StartCoroutine(DestroyAfterCheckPassengers());
-
-        Removed?.Invoke(this);
     }
 
     private void ReleasePassengers()

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af3b0fa0e4db7a146a0638b1965a9008, type: 3}
+  m_Name: Elevator2
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 2154217747597001351, guid: 40fcf2717716fe64ca6eafeab8f5466c, type: 3}
+  <Rotation>k__BackingField: {x: -0.024124868, y: 0.99959934, z: 0.00000011920929, w: 0.0148069095}
+  <Position>k__BackingField: {x: -36.12, y: -1.06, z: 18.3}
+  <BottomPlatformPosition>k__BackingField: {x: -33.44, y: -6.19, z: -49.09}

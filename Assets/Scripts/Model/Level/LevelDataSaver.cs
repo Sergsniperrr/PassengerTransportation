@@ -5,7 +5,7 @@ public static class LevelDataSaver
 {
     public static void Save(LevelsDataContainer currentLevelsData)
     {
-        string localSavePath = "F:/GitProjects/PassengerTransportation/Assets/Data";
+        string localSavePath = "F:/GitProjects/PassengerTransportation/Assets/Resources";
 
         string json = JsonUtility.ToJson(currentLevelsData, true);
 

@@ -9,7 +9,7 @@ public class LevelStatisticsView : MonoBehaviour
 
     public void InitializeData(int levelNumber, int busesCount)
     {
-        _textLevelNumber.text = $"{++levelNumber}";
+        _textLevelNumber.text = $"{levelNumber}";
         _textBusesCount.text = $"{busesCount}";
     }
 }

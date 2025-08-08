@@ -1,0 +1,87 @@
+{
+    "<Position>k__BackingField": {
+        "<MultiplierOnX>k__BackingField": {
+            "x": -0.9503632187843323,
+            "y": -0.04734674096107483,
+            "z": -0.0300328116863966
+        },
+        "<MultiplierOnY>k__BackingField": {
+            "x": -0.021432140842080118,
+            "y": -0.8331201076507568,
+            "z": -0.5113871693611145
+        },
+        "<ZeroPosition>k__BackingField": {
+            "x": -16.767257690429689,
+            "y": 0.809844970703125,
+            "z": 20.291912078857423
+        }
+    },
+    "<Rotation>k__BackingField": {
+        "<MultiplierOnX>k__BackingField": {
+            "x": -0.000004130137313040905,
+            "y": -0.16035817563533784,
+            "z": 0.0000016875015944606276
+        },
+        "<MultiplierOnY>k__BackingField": {
+            "x": 0.0,
+            "y": 0.06272166967391968,
+            "z": -1.0155588370253099e-7
+        },
+        "<ZeroPosition>k__BackingField": {
+            "x": 304.8418884277344,
+            "y": 1.3373817205429078,
+            "z": 3.7360109672590627e-7
+        }
+    },
+    "<BackgroundPosition>k__BackingField": {
+        "<MultiplierOnX>k__BackingField": {
+            "x": 0.026390546932816507,
+            "y": -0.0010826123179867864,
+            "z": 0.000541048008017242
+        },
+        "<MultiplierOnY>k__BackingField": {
+            "x": 0.003837441559880972,
+            "y": -0.017908833920955659,
+            "z": 0.012791797518730164
+        },
+        "<ZeroPosition>k__BackingField": {
+            "x": -20.190000534057618,
+            "y": -9.100000381469727,
+            "z": -48.31999969482422
+        }
+    },
+    "<BottomPlatformPosition>k__BackingField": {
+        "<MultiplierOnX>k__BackingField": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "<MultiplierOnY>k__BackingField": {
+            "x": 0.0,
+            "y": -0.016629483550786973,
+            "z": 0.007674883119761944
+        },
+        "<ZeroPosition>k__BackingField": {
+            "x": -20.079999923706056,
+            "y": -9.729999542236329,
+            "z": -47.380001068115237
+        }
+    },
+    "<CounterPosition>k__BackingField": {
+        "<MultiplierOnX>k__BackingField": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "<MultiplierOnY>k__BackingField": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "<ZeroPosition>k__BackingField": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}

@@ -66,12 +66,15 @@ public class BusRouter : MonoBehaviour
         LeftParkingLot?.Invoke();
     }
 
-    public void SetActive()
+    public void Activate()
     {
-        _pointsHandler.ReturnedToInitialPlace -= SetActive;
+        _pointsHandler.ReturnedToInitialPlace -= Activate;
 
         IsActive = true;
     }
+
+    public void Disable() =>
+        IsActive = false;
 
     public void BackToInitialPlace()
     {
@@ -82,7 +85,7 @@ public class BusRouter : MonoBehaviour
         _mover.GoBackwardsToPoint();
         _busStop.ReleaseStop(StopIndex);
 
-        _pointsHandler.ReturnedToInitialPlace += SetActive;
+        _pointsHandler.ReturnedToInitialPlace += Activate;
     }
 
     public void MoveOutFromBusStop()

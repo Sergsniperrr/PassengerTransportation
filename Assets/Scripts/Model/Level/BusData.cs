@@ -9,18 +9,12 @@ public struct BusData
     [field: SerializeField] public Vector3 Position { get; private set; }
     [field: SerializeField] public Quaternion Rotation { get; private set; }
 
-    public void SetSeatsCount(int count)
-    {
-        SeatsCount = count > 0 ? count : throw new ArgumentOutOfRangeException(nameof(count));
-    }
+    public Material Material => throw new NotImplementedException();
 
-    public void SetPosition(Vector3 position)
+    public BusData(int seatsCount, Vector3 position, Quaternion rotation)
     {
-        Position = position != Vector3.zero ? position : throw new ArgumentException(nameof(position));
-    }
-
-    public void SetRotation(Quaternion rotation)
-    {
+        SeatsCount = seatsCount;
+        Position = position;
         Rotation = rotation;
     }
 }
