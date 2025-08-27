@@ -11,8 +11,10 @@ public class SimpleWindow : MonoBehaviour
     [SerializeField] private Background _background;
     [SerializeField] private GameButtons _gameButtons;
 
-    private const float MinTransparent = 0f;
-    private const float MaxTransparent = 1f;
+    protected const float MinTransparent = 0f;
+    protected const float MaxTransparent = 1f;
+
+    protected readonly float FadeDuration = 0.5f; 
 
     private Tween _fadeTween;
 
@@ -25,33 +27,36 @@ public class SimpleWindow : MonoBehaviour
 
     public virtual void Open(float delay = 0f)
     {
-        float duration = 0.5f;
-
         if (delay > 0)
             _button.gameObject.SetActive(false);
 
         _gameButtons.SetActive(false);
         _background.gameObject.SetActive(true);
-        _background.Show(duration);
+        _background.Show(FadeDuration);
 
-        Fade(MaxTransparent, duration, (() =>
+        Fade(MaxTransparent, FadeDuration, (() =>
         {
-            StartCoroutine(DelayButtonEnable(delay));
+            if (delay >= 0)
+                StartCoroutine(DelayButtonEnable(delay));
 
             _button.onClick.AddListener(Close);
         }));
     }
 
+    protected void EnableOkButton() =>
+        _button.gameObject.SetActive(true);
+
+    protected void DisableOkButton() =>
+        _button.gameObject.SetActive(false);
+
     protected void Close()
     {
-        float duration = 0.5f;
-
         _button.onClick.RemoveListener(Close);
-        _background.Hide(duration);
+        _background.Hide(FadeDuration);
 
         Closed?.Invoke(this);
 
-        Fade(MinTransparent, duration, (() =>
+        Fade(MinTransparent, FadeDuration, (() =>
         {
             gameObject.SetActive(false);
         }));

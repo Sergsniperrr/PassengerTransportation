@@ -1,0 +1,60 @@
+{
+    "_data": [
+        {
+            "<PassengersArrangeCount>k__BackingField": 4,
+            "<BusShuffleCount>k__BackingField": 11,
+            "<BusesCount>k__BackingField": 50
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 3,
+            "<BusShuffleCount>k__BackingField": 38,
+            "<BusesCount>k__BackingField": 52
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 5,
+            "<BusShuffleCount>k__BackingField": 19,
+            "<BusesCount>k__BackingField": 54
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 3,
+            "<BusShuffleCount>k__BackingField": 23,
+            "<BusesCount>k__BackingField": 56
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 5,
+            "<BusShuffleCount>k__BackingField": 33,
+            "<BusesCount>k__BackingField": 58
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 3,
+            "<BusShuffleCount>k__BackingField": 33,
+            "<BusesCount>k__BackingField": 60
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 4,
+            "<BusShuffleCount>k__BackingField": 46,
+            "<BusesCount>k__BackingField": 62
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 4,
+            "<BusShuffleCount>k__BackingField": 37,
+            "<BusesCount>k__BackingField": 64
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 4,
+            "<BusShuffleCount>k__BackingField": 31,
+            "<BusesCount>k__BackingField": 66
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 4,
+            "<BusShuffleCount>k__BackingField": 43,
+            "<BusesCount>k__BackingField": 68
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 3,
+            "<BusShuffleCount>k__BackingField": 26,
+            "<BusesCount>k__BackingField": 70
+        }
+    ],
+    "<PlayerName>k__BackingField": "Mom3"
+}

@@ -1,0 +1,55 @@
+{
+    "_data": [
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 3
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 8
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 9
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 10
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 1,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 11
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 1,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 12
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 1,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 13
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 14
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 1,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 15
+        },
+        {
+            "<PassengersArrangeCount>k__BackingField": 0,
+            "<BusShuffleCount>k__BackingField": 0,
+            "<BusesCount>k__BackingField": 20
+        }
+    ],
+    "<PlayerName>k__BackingField": "Dad0"
+}

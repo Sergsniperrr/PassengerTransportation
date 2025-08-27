@@ -21,7 +21,6 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
     public event Action StartedMove;
     public event Action<Bus> LeftParkingLot;
     public event Action<Bus> FillingCompleted;
-    //public event Action<Bus> Removed;
 
     public bool IsActive => _router.IsActive;
     public int StopIndex => _router.StopIndex;
@@ -90,7 +89,7 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
 
     public void CompleteFilling()
     {
-        _effects.PlayBusFillingComplete();
+        _effects.PlayBusFillingComplete(StopIndex);
 
         FillingCompleted?.Invoke(this);
     }

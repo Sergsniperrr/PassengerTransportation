@@ -11,6 +11,8 @@ public class BusColorsShuffler : MonoBehaviour
 
     private UndergroundBuses _undergroundBuses;
 
+    public event Action BusesShuffled;
+
     private void OnEnable()
     {
         _button.onClick.AddListener(ShuffleColors);
@@ -35,6 +37,8 @@ public class BusColorsShuffler : MonoBehaviour
             duplicate.Key.SetColor(duplicate.Value.Material);
             duplicate.Value.SetColor(material);
         }
+
+        BusesShuffled?.Invoke();
     }
 
     private Dictionary<IBusParameters, IBusParameters> CreateBusesDuplicates()

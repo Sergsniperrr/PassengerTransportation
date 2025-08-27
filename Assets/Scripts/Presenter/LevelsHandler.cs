@@ -25,8 +25,8 @@ public class LevelsHandler : MonoBehaviour
     private void Awake()
     {
         _levelsData = JsonUtility.FromJson<LevelsDataContainer>(_jsonResource.text);
-        //PlayerPrefs.SetInt(LevelPrefName, 0); // ÍÓÆÍÎ ÓÄÀËÈÒÜ ÏÅÐÅÄ ÇÀËÈÂÊÎÉ !!!!!!!
-        //_currentLevel = PlayerPrefs.GetInt(LevelPrefName, 0);
+        //PlayerPrefs.SetInt(LevelPrefName, 2); // ÍÓÆÍÎ ÓÄÀËÈÒÜ ÏÅÐÅÄ ÇÀËÈÂÊÎÉ !!!!!!!
+        //_currentLevel = PlayerPrefs.GetInt(LevelPrefName, 1);
         _currentLevel = _testLevel;
         _music.Stop();
     }
@@ -100,19 +100,8 @@ public class LevelsHandler : MonoBehaviour
         _busSpawner.BusLeftParkingLot -= _level.RemoveBus;
 
         _currentLevel++;
-
-        //if (_currentLevel >= _levelsData.Count)
-        //{
-        //    DOTween.Clear(true);
-        //    _resetter.BackInMainMenu(--_currentLevel);
-        //}
-
-        //DOTween.Clear(true);
         PlayerPrefs.SetInt(LevelPrefName, _currentLevel);
 
-        //_resetter.BackInMainMenu(_currentLevel);
-
         StartLevel();
-        //StartGame();
     }
 }

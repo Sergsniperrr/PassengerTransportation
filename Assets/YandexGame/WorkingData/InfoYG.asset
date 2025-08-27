@@ -34,8 +34,8 @@ MonoBehaviour:
   testErrorOfRewardedAdsInEditor: 0
   saveCloud: 1
   flush: 0
-  localSaveSync: 1
-  saveCloudInterval: 5
+  localSaveSync: 0
+  saveCloudInterval: 0
   saveOnQuitGame: 0
   quitGameParameters:
     objectName: YandexGame

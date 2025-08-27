@@ -8,6 +8,7 @@ public class GameButtons : MonoBehaviour
     [SerializeField] private Button _gameReset;
     [SerializeField] private Button _passengerShuffle;
     [SerializeField] private Button _busShuffle;
+    [SerializeField] private Button _viewAd;
 
     private void Awake()
     {
@@ -21,5 +22,6 @@ public class GameButtons : MonoBehaviour
         _gameReset.gameObject.SetActive(isActive);
         _passengerShuffle.gameObject.SetActive(isActive);
         _busShuffle.gameObject.SetActive(isActive);
+        _viewAd.gameObject.SetActive(isActive);
     }
 }

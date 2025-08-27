@@ -22,12 +22,12 @@ public class TutorialFinger : MonoBehaviour
 
     private void Awake()
     {
-        _pointsQueue = new Queue<Vector3>(_points);
+        int currentLevel = PlayerPrefs.GetInt(LevelPrefName, 1);
 
-        int currentLevel = PlayerPrefs.GetInt(LevelPrefName, 0);
-
-        if (currentLevel > 0)
+        if (currentLevel > 1)
             gameObject.SetActive(false);
+
+        _pointsQueue = new Queue<Vector3>(_points);
     }
 
     private void OnEnable()

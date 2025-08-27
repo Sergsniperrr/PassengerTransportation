@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class LevelBusCalculator
 {
+    private const int HalfDevider = 2;
+
     private readonly int _minLevel = 20;
     private readonly int _levelPeriod = 10;
     private readonly int _incrementPerLevel = 1;
@@ -25,7 +27,7 @@ public class LevelBusCalculator
 
         int levelPeriodCount = level / _levelPeriod - 1;
         int levelInPeriod = level % _levelPeriod;
-        int busInPeriod = levelPeriodCount * _incrementPerLevelPeriod;
+        int busInPeriod = levelPeriodCount * _incrementPerLevelPeriod - (_incrementPerLevelPeriod / HalfDevider);
         int busInLevel = levelInPeriod * _incrementPerLevel;
         UndergroundBusesCount = busInPeriod + busInLevel;
     }

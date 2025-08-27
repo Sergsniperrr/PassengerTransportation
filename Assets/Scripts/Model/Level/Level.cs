@@ -21,6 +21,7 @@ public class Level : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private TextMeshProUGUI _textLevelNomber;
     [SerializeField] private GameResetter _resetter;
+    [SerializeField] private CoinsHandler _coinsHandler;
 
     private ColorsHandler _colorsHandler;
     private List<Bus> _buses;
@@ -28,26 +29,27 @@ public class Level : MonoBehaviour
     private MouseInputHandler _input;
     private Music _menuMusic;
     private Coroutine _coroutine;
-    private int _currentLevel;
     private bool _canBusMove;
 
     public event Action GameStarted;
     public event Action<Queue<Bus>> GameActivated;
     public event Action Completed;
+    public event Action<int> BussesCountInitialized;
+
+    public int CurrentLevel { get; private set; }
 
     public List<Bus> Buses => new(_buses);
 
     private void Awake()
     {
         _input = GetComponent<MouseInputHandler>();
-
+        _coinsHandler.HideCounters();
         _colorsHandler = GetComponent<ColorsHandler>();
     }
 
     private void OnEnable()
     {
         _input.BusSelected += RunBus;
-        //_busStop.BusReceived += RemoveBus;
         _train.ArrivedAtStation += ActivatePassengers;
         _busStop.PassengerLeft += _passengerCounter.DecrementValue;
     }
@@ -55,14 +57,13 @@ public class Level : MonoBehaviour
     private void OnDisable()
     {
         _input.BusSelected -= RunBus;
-        //_busStop.BusReceived -= RemoveBus;
         _train.ArrivedAtStation -= ActivatePassengers;
         _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
     }
 
     public void Begin(int levelNumber, Music music, List<Bus> buses, UndergroundBuses undergroundBuses)
     {
-        _currentLevel = levelNumber;
+        CurrentLevel = levelNumber;
         _textLevelNomber.text = $"{levelNumber}";
         _menuMusic = music;
         _buses = buses ?? throw new ArgumentNullException(nameof(buses));
@@ -71,6 +72,9 @@ public class Level : MonoBehaviour
             undergroundBuses : throw new ArgumentNullException(nameof(undergroundBuses));
 
         _statisticsView.InitializeData(levelNumber, _buses.Count + undergroundBuses.Count);
+        _coinsHandler.InitializeNewLevel(levelNumber, _buses.Count + undergroundBuses.Count);
+
+        BussesCountInitialized?.Invoke(_buses.Count + undergroundBuses.Count);
 
         _windows.OpenBeginLevel().Closed += PlayGame;
     }
@@ -93,8 +97,6 @@ public class Level : MonoBehaviour
     {
         if (bus != null)
             _buses.Remove(bus);
-
-        Debug.Log($"{_undergroundBuses.Count}; {_buses.Count}; {_coroutine == null}");
 
         if (_undergroundBuses.Count == 0 && _buses.Count == 0 && _coroutine == null)
             _coroutine = StartCoroutine(CheckBusCountForZero());
@@ -120,12 +122,17 @@ public class Level : MonoBehaviour
     {
         _busStop.AllPlacesReleased -= Complete;
 
-        float delay = 2f;
+        float delay = -1f;
 
+        _coinsHandler.CompleteLevel();
         _train.LeaveStation();
         _music.Stop();
         _effects.PlayLevelComplete();
-        _windows.OpenLevelComplete(delay).Closed += Complete;
+
+        LevelCompleteWindow window = (LevelCompleteWindow)_windows.OpenLevelComplete(delay);
+        window.InitializeCoins(_coinsHandler.TemporaryMoney, _coinsHandler.TemporaryScore);
+        window.Closed += Complete;
+
         _gameButtons.SetActive(false);
     }
 
@@ -145,12 +152,14 @@ public class Level : MonoBehaviour
         _queue.PassengersCreated -= ActivatePlayerInput;
 
         ChangeGameActivity(true);
+        _coinsHandler.ShowCounters();
 
         GameActivated?.Invoke(new Queue<Bus>(_buses));
     }
 
     private void Complete(SimpleWindow window)
     {
+        _coinsHandler.HideCounters();
         window.Closed -= Complete;
         _busStop.AllPlacesOccupied -= OpenDialog;
         Completed?.Invoke();
@@ -171,7 +180,7 @@ public class Level : MonoBehaviour
         _windows.ResultResieved -= HandleDialog;
 
         if (result == false)
-            _resetter.BackInMainMenu(_currentLevel);
+            _resetter.BackInMainMenu(CurrentLevel);
 
         _gameButtons.SetActive(true);
     }
@@ -181,8 +190,6 @@ public class Level : MonoBehaviour
         WaitForSeconds wait = new(0.2f);
 
         yield return wait;
-
-        Debug.Log($"Underground buses: {_undergroundBuses.Count}; buses: {_buses.Count}");
 
         if (_undergroundBuses.Count == 0 && _buses.Count == 0)
             _busStop.AllPlacesReleased += Complete;

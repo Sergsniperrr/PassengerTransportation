@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ public class PassengerColorShuffler : MonoBehaviour
     [SerializeField] private PassengerQueue _queue;
     [SerializeField] private BusStop _busStop;
     [SerializeField] private ColorsHandler _colorHandler;
+
+    public event Action PassengersArranged;
 
     private void OnEnable()
     {
@@ -53,6 +56,8 @@ public class PassengerColorShuffler : MonoBehaviour
 
         _colorHandler.SetColorsQueue(colors);
         _busStop.ResetFreePlaces();
+
+        PassengersArranged?.Invoke();
     }
 
     private Queue<Material> GetFreePlacesColorsOfBuses()

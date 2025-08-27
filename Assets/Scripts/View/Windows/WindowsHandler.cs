@@ -4,7 +4,7 @@ using UnityEngine;
 public class WindowsHandler : MonoBehaviour
 {
     [SerializeField] private SimpleWindow _windowBeginLevel;
-    [SerializeField] private SimpleWindow _windowLevelComplete;
+    [SerializeField] private LevelCompleteWindow _windowLevelComplete;
     [SerializeField] private FailWindows _windowLevelFailed;
     [SerializeField] private WarningWindow _windowWarning;
 
