@@ -15,7 +15,7 @@ public class CoinsRecipient : MonoBehaviour
     private float _delayBeforeTransfer = 0.5f;
 
     private float _scoreTransferDelay = 0.5f;
-    private float _durationPerOne = 0.06f;
+    private float _durationPerOne = 0.07f; //0.06f
     //private float _receiptDelay = 0.7f;
 
     public event Action TransferCompleted;
@@ -51,6 +51,7 @@ public class CoinsRecipient : MonoBehaviour
     {
         _money.ResetCompleted -= StartTransferScore;
         _moneyCoinsSpawner.StopSpawn();
+
 
         if (_score.Value == 0)
         {

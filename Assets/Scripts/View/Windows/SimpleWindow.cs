@@ -30,7 +30,7 @@ public class SimpleWindow : MonoBehaviour
         if (delay > 0)
             _button.gameObject.SetActive(false);
 
-        _gameButtons.SetActive(false);
+        _gameButtons.gameObject.SetActive(false);
         _background.gameObject.SetActive(true);
         _background.Show(FadeDuration);
 

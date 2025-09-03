@@ -82,7 +82,7 @@ public class Level : MonoBehaviour
     public void ChangeGameActivity(bool isActive)
     {
         _canBusMove = isActive;
-        _gameButtons.SetActive(isActive);
+        _gameButtons.gameObject.SetActive(isActive);
     }
 
     public void AddUndergroundBus(Bus bus)
@@ -133,7 +133,7 @@ public class Level : MonoBehaviour
         window.InitializeCoins(_coinsHandler.TemporaryMoney, _coinsHandler.TemporaryScore);
         window.Closed += Complete;
 
-        _gameButtons.SetActive(false);
+        _gameButtons.gameObject.SetActive(false);
     }
 
     private void RunBus(Bus bus)
@@ -182,7 +182,7 @@ public class Level : MonoBehaviour
         if (result == false)
             _resetter.BackInMainMenu(CurrentLevel);
 
-        _gameButtons.SetActive(true);
+        _gameButtons.gameObject.SetActive(true);
     }
 
     private IEnumerator CheckBusCountForZero()

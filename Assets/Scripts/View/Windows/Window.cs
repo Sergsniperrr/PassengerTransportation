@@ -43,7 +43,7 @@ public class Window : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence();
 
-        _buttons.SetActive(false);
+        _buttons.gameObject.SetActive(false);
         _background.DOColor(_darkBackground, _outsideDuration);
         _background.raycastTarget = true;
 
@@ -67,7 +67,7 @@ public class Window : MonoBehaviour
             {
                 Closed?.Invoke();
 
-                _buttons.SetActive(true);
+                _buttons.gameObject.SetActive(true);
                 _background.raycastTarget = false;
                 gameObject.SetActive(false);
             });

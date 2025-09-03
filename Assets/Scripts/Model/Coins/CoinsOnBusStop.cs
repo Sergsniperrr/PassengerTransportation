@@ -23,10 +23,10 @@ public class CoinsOnBusStop : MonoBehaviour
 
         for (int i = 0; i < _positions.Length; i++)
         {
-            coin = Instantiate(_prefab, transform.position, Quaternion.identity, transform);
-            coin.InitializePosition(_positions[i]);
+            coin = Instantiate(_prefab, _positions[i], Quaternion.identity, transform);
+            //coin.InitializePosition(_positions[i]);
 
-            coin.MoveComplete += FinishCoinMoving;
+            coin.Died += FinishCoinMoving;
 
             coin.gameObject.SetActive(false);
             _coins[i] = coin;
@@ -36,7 +36,7 @@ public class CoinsOnBusStop : MonoBehaviour
     private void OnDisable()
     {
         foreach (Coin coin in _coins)
-            coin.MoveComplete -= FinishCoinMoving;
+            coin.Died -= FinishCoinMoving;
     }
 
     public void ShowCoin(int busStopIndex)

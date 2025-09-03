@@ -8,16 +8,15 @@ using System.Collections;
 public class CoinsCounterView : MonoBehaviour
 {
     [SerializeField] private Effects _effects;
-    //[SerializeField] private TemporaryCounter _temporaryCounter;
 
-    private readonly float _durationPerOne = 0.06f;
+    private readonly float _durationPerOne = 0.07f;
 
     private TextMeshProUGUI _text;
     private Tween _tween;
     private Coroutine _coroutine;
     private float _scaleDuration = 0.2f;
 
-    public event Action ValueChanged;
+    public event Action ChangeCompleted;
 
     private void Awake()
     {
@@ -31,7 +30,6 @@ public class CoinsCounterView : MonoBehaviour
     {
         if (newValue < 0)
             throw new ArgumentOutOfRangeException(nameof(newValue));
-
 
         if (isFastChange)
         {
@@ -64,6 +62,9 @@ public class CoinsCounterView : MonoBehaviour
         if (delta == 0)
             return;
 
+        if (_coroutine != null)
+            StopCoroutine(_coroutine);
+
         _coroutine = StartCoroutine(PlayCountingCoinsSound());
 
         DOTween.To(
@@ -80,6 +81,7 @@ public class CoinsCounterView : MonoBehaviour
         .OnComplete(() => 
         {
             StopCoroutine(_coroutine);
+            ChangeCompleted?.Invoke();
         });
     }
 

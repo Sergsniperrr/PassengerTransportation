@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class Coin : MonoBehaviour
+public class Coin : SpawnableObject<Coin>
 {
     private const float MaxAlfa = 1f;
 
@@ -19,42 +19,37 @@ public class Coin : MonoBehaviour
     private Vector3 _initialPosition;
     private Vector3 _targetPosition;
     private Color _minAlfaColor;
-    private float newPositionY;
-
-    public event Action<Coin> MoveComplete;
+    private float _newPositionY;
+    private bool _isDisableOnFinish;
 
     public float MoveDuration { get; private set; } = 0.7f;
 
     private void Awake()
     {
         _renderer = GetComponent<SpriteRenderer>();
+        _initialPosition = transform.position;
         _minAlfaColor = _renderer.color;
         _minAlfaColor.a = 0f;
-    }
-
-    public void InitializePosition(Vector3 position)
-    {
-        _initialPosition = position;
     }
 
     public float CalculateDuration() =>
         Mathf.Abs(_targetPosition.x - transform.position.x) * _multiplier + _shift;
 
-    public void Show(Vector3 targetPosition, bool canUpMove = true)
+    public void Show(Vector3 targetPosition, bool canUpMove = true, bool isDisableOnFinish = true)
     {
+        _isDisableOnFinish = isDisableOnFinish;
         _targetPosition = targetPosition;
-        newPositionY = _initialPosition.y + _distance;
-        transform.localPosition = _initialPosition;
-        transform.localRotation = Quaternion.identity;
 
         if (canUpMove)
         {
-            transform.DOLocalMoveY(newPositionY, _beginMoveDuration).OnComplete(MoveToTarget);
+            transform.localPosition = _initialPosition;
+            transform.localRotation = Quaternion.identity;
+            _newPositionY = _initialPosition.y + _distance;
+            transform.DOLocalMoveY(_newPositionY, _beginMoveDuration).OnComplete(MoveToTarget);
         }
         else
         {
             MoveToTarget();
-            //FadeIn();
             StartCoroutine(FadeFast());
         }
     }
@@ -70,16 +65,10 @@ public class Coin : MonoBehaviour
 
     private void Disable()
     {
-        MoveComplete?.Invoke(this);
+        Die(this);
 
-        transform.DOKill();
-        gameObject.SetActive(false);
-    }
-
-    private void FadeIn()
-    {
-        _renderer.color = _minAlfaColor;
-        _renderer.DOFade(MaxAlfa, _fadeDuration);
+        if (_isDisableOnFinish)
+            gameObject.SetActive(false);
     }
 
     private IEnumerator FadeFast()

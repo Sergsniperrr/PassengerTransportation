@@ -5,6 +5,9 @@ using UnityEngine;
 public class CoinsCounter : MonoBehaviour
 {
     private CoinsCounterView _view;
+    private int _deferredChange;
+
+    public event Action<int> ValueChanged;
 
     public int Coins { get; private set; }
 
@@ -15,10 +18,10 @@ public class CoinsCounter : MonoBehaviour
 
     public void SetValue(int value)
     {
-        if (value < 0)
-            throw new ArgumentOutOfRangeException(nameof(value));
-
+        Coins = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value));
         _view.SetValue(value);
+
+        ValueChanged?.Invoke(Coins);
     }
 
     public void Add(int value) =>
@@ -29,24 +32,46 @@ public class CoinsCounter : MonoBehaviour
         if (value > Coins)
             throw new ArgumentOutOfRangeException(nameof(value));
 
-        ChangeValue(-value);
+        ChangeValue(-value, true);
     }
 
     public void AddOneCoin(bool canShowEffect = false)
     {
         Coins++;
-
         _view.ChangeValue(Coins - 1, Coins, canShowEffect);
+
+        ValueChanged?.Invoke(Coins);
     }
 
-    private void ChangeValue(int value)
+    private void ChangeValue(int value, bool isFastChange = false)
     {
-        if (value < 0)
+        if (Coins + value < 0)
             throw new ArgumentOutOfRangeException(nameof(value));
 
         int currentValue = Coins;
-        Coins += value;
 
-        _view.ChangeValue(currentValue, Coins, false);
+        if (isFastChange)
+        {
+            Coins += value;
+            _view.ChangeValue(currentValue, Coins, isFastChange);
+            ValueChanged?.Invoke(Coins);
+        }
+        else
+        {
+            _deferredChange = Coins + value;
+            _view.ChangeValue(currentValue, _deferredChange, isFastChange);
+
+            _view.ChangeCompleted += ChangeValueDeferred;
+        }
+
+
+    }
+
+    private void ChangeValueDeferred()
+    {
+        _view.ChangeCompleted -= ChangeValueDeferred;
+
+        Coins = _deferredChange;
+        ValueChanged?.Invoke(Coins);
     }
 }

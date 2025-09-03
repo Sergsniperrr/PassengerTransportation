@@ -1,22 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CoinsPool))]
-public class CoinsSpawner : MonoBehaviour
+public class CoinsSpawner : Spawner<Coin>
 {
-    [SerializeField] private Coin _prefab;
     [SerializeField] private Transform _target;
 
-    private CoinsPool _pool;
     private Coroutine _coroutine;
+    private Coin _coin;
 
     public float MoveDuration { get; private set; } = 0.7f;
 
-    private void Awake()
+    protected override void Awake()
     {
-        _pool = GetComponent<CoinsPool>();
-        _pool.InitializePrefab(_prefab);
+        InitialPosition = transform.position;
+        base.Awake();
     }
 
     public void StartSpawn(float period)
@@ -44,17 +41,8 @@ public class CoinsSpawner : MonoBehaviour
 
     private void Spawn()
     {
-        Coin coin = _pool.GetObject();
-        coin.Show(_target.position, false);
-        MoveDuration = coin.MoveDuration;
-
-        coin.MoveComplete += ReturnCointToPool;
-    }
-
-    public void ReturnCointToPool(Coin coin)
-    {
-        coin.MoveComplete -= ReturnCointToPool;
-
-        _pool.PutObject(coin);
+        _coin = GetObject();
+        _coin.Show(_target.position, false, false);
+        MoveDuration = _coin.MoveDuration;
     }
 }

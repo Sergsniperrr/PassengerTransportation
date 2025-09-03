@@ -10,7 +10,6 @@ public class Effects : MonoBehaviour
     [SerializeField] private AudioSource _busFillingCompleteAudio;
     [SerializeField] private AudioSource _coinsAudio;
     [SerializeField] private CoinsOnBusStop _coins;
-    [SerializeField] private CoinsGravityEffect _coinsGravity;
 
     private readonly float _minRandomPitch = 0.85f;
     private readonly float _maxRandomPitch = 1.15f;
@@ -49,13 +48,4 @@ public class Effects : MonoBehaviour
     {
         _coinsAudio.PlayOneShot(_coinsAudio.clip);
     }
-
-    public void PlayMoneyGravity() =>
-        _coinsGravity.PlayMoney();
-
-    public void PlayScoreGravity() =>
-        _coinsGravity.PlayScore();
-
-    public void StopCoinsGravity() =>
-        _coinsGravity.Stop();
 }
