@@ -99,6 +99,8 @@ public class LevelsHandler : MonoBehaviour
         _busSpawner.BusUndergroundSpawned -= _level.AddUndergroundBus;
         _busSpawner.BusLeftParkingLot -= _level.RemoveBus;
 
+        //Social.
+
         _currentLevel++;
         PlayerPrefs.SetInt(LevelPrefName, _currentLevel);
 
