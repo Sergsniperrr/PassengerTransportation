@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using YG;
 
 public class LevelsHandler : MonoBehaviour
 {
@@ -16,18 +17,21 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private int _testLevel;
     [SerializeField] private LevelMaker _levelMaker;
 
-    private const string LevelPrefName = "CurrentLevel";
     private const string IsRestartPrefName = "IsRestart";
+    private const string LeaderboardName = "BestCarriers";
 
     private LevelsDataContainer _levelsData;
     private int _currentLevel;
 
     private void Awake()
     {
-        _levelsData = JsonUtility.FromJson<LevelsDataContainer>(_jsonResource.text);
-        //PlayerPrefs.SetInt(LevelPrefName, 2); // Õ”∆ÕŒ ”ƒ¿À»“‹ œ≈–≈ƒ «¿À»¬ Œ… !!!!!!!
-        //_currentLevel = PlayerPrefs.GetInt(LevelPrefName, 1);
-        _currentLevel = _testLevel;
+        _levelsData = DataLoader.GetLevelData(_jsonResource);
+        //PlayerPrefs.SetInt("CurrentLevel", 1); // Õ”∆ÕŒ ”ƒ¿À»“‹ œ≈–≈ƒ «¿À»¬ Œ… !!!!!!!
+        _currentLevel = DataLoader.CurrentLevel;
+        _level.Coins.SetMoneyBuffer(DataLoader.Money);
+        _level.Coins.Score.SetValue(DataLoader.Score);
+
+        //_currentLevel = _testLevel;
         _music.Stop();
     }
 
@@ -99,10 +103,10 @@ public class LevelsHandler : MonoBehaviour
         _busSpawner.BusUndergroundSpawned -= _level.AddUndergroundBus;
         _busSpawner.BusLeftParkingLot -= _level.RemoveBus;
 
-        //Social.
+        YG2.SetLeaderboard(LeaderboardName, _level.Coins.Score.Count);
 
         _currentLevel++;
-        PlayerPrefs.SetInt(LevelPrefName, _currentLevel);
+        DataSaver.SaveLevelData(_currentLevel, _level.Coins.Money.Count, _level.Coins.Score.Count);
 
         StartLevel();
     }

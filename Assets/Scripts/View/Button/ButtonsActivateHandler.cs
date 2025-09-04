@@ -44,7 +44,7 @@ public class ButtonsActivateHandler : MonoBehaviour
 
     private void HandleActivateButtons()
     {
-        HandleActivateButtons(_wallet.Coins);
+        HandleActivateButtons(_wallet.Count);
     }
 
     private bool CheckForEnoughMoney(int money, ButtonDisabler button)

@@ -21,7 +21,8 @@ public class Level : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private TextMeshProUGUI _textLevelNomber;
     [SerializeField] private GameResetter _resetter;
-    [SerializeField] private CoinsHandler _coinsHandler;
+
+    [field: SerializeField] public CoinsHandler Coins { get; private set; }
 
     private ColorsHandler _colorsHandler;
     private List<Bus> _buses;
@@ -43,7 +44,7 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         _input = GetComponent<MouseInputHandler>();
-        _coinsHandler.HideCounters();
+        Coins.HideCounters();
         _colorsHandler = GetComponent<ColorsHandler>();
     }
 
@@ -72,7 +73,7 @@ public class Level : MonoBehaviour
             undergroundBuses : throw new ArgumentNullException(nameof(undergroundBuses));
 
         _statisticsView.InitializeData(levelNumber, _buses.Count + undergroundBuses.Count);
-        _coinsHandler.InitializeNewLevel(levelNumber, _buses.Count + undergroundBuses.Count);
+        Coins.InitializeNewLevel(levelNumber, _buses.Count + undergroundBuses.Count);
 
         BussesCountInitialized?.Invoke(_buses.Count + undergroundBuses.Count);
 
@@ -124,13 +125,13 @@ public class Level : MonoBehaviour
 
         float delay = -1f;
 
-        _coinsHandler.CompleteLevel();
+        Coins.CompleteLevel();
         _train.LeaveStation();
         _music.Stop();
         _effects.PlayLevelComplete();
 
         LevelCompleteWindow window = (LevelCompleteWindow)_windows.OpenLevelComplete(delay);
-        window.InitializeCoins(_coinsHandler.TemporaryMoney, _coinsHandler.TemporaryScore);
+        window.InitializeCoins(Coins.TemporaryMoney, Coins.TemporaryScore);
         window.Closed += Complete;
 
         _gameButtons.gameObject.SetActive(false);
@@ -152,14 +153,14 @@ public class Level : MonoBehaviour
         _queue.PassengersCreated -= ActivatePlayerInput;
 
         ChangeGameActivity(true);
-        _coinsHandler.ShowCounters();
+        Coins.ShowCounters();
 
         GameActivated?.Invoke(new Queue<Bus>(_buses));
     }
 
     private void Complete(SimpleWindow window)
     {
-        _coinsHandler.HideCounters();
+        Coins.HideCounters();
         window.Closed -= Complete;
         _busStop.AllPlacesOccupied -= OpenDialog;
         Completed?.Invoke();

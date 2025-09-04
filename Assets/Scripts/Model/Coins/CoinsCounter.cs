@@ -9,7 +9,7 @@ public class CoinsCounter : MonoBehaviour
 
     public event Action<int> ValueChanged;
 
-    public int Coins { get; private set; }
+    public int Count { get; private set; }
 
     private void Awake()
     {
@@ -18,10 +18,10 @@ public class CoinsCounter : MonoBehaviour
 
     public void SetValue(int value)
     {
-        Coins = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        Count = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value));
         _view.SetValue(value);
 
-        ValueChanged?.Invoke(Coins);
+        ValueChanged?.Invoke(Count);
     }
 
     public void Add(int value) =>
@@ -29,7 +29,7 @@ public class CoinsCounter : MonoBehaviour
 
     public void Remove(int value)
     {
-        if (value > Coins)
+        if (value > Count)
             throw new ArgumentOutOfRangeException(nameof(value));
 
         ChangeValue(-value, true);
@@ -37,28 +37,28 @@ public class CoinsCounter : MonoBehaviour
 
     public void AddOneCoin(bool canShowEffect = false)
     {
-        Coins++;
-        _view.ChangeValue(Coins - 1, Coins, canShowEffect);
+        Count++;
+        _view.ChangeValue(Count - 1, Count, canShowEffect);
 
-        ValueChanged?.Invoke(Coins);
+        ValueChanged?.Invoke(Count);
     }
 
     private void ChangeValue(int value, bool isFastChange = false)
     {
-        if (Coins + value < 0)
+        if (Count + value < 0)
             throw new ArgumentOutOfRangeException(nameof(value));
 
-        int currentValue = Coins;
+        int currentValue = Count;
 
         if (isFastChange)
         {
-            Coins += value;
-            _view.ChangeValue(currentValue, Coins, isFastChange);
-            ValueChanged?.Invoke(Coins);
+            Count += value;
+            _view.ChangeValue(currentValue, Count, isFastChange);
+            ValueChanged?.Invoke(Count);
         }
         else
         {
-            _deferredChange = Coins + value;
+            _deferredChange = Count + value;
             _view.ChangeValue(currentValue, _deferredChange, isFastChange);
 
             _view.ChangeCompleted += ChangeValueDeferred;
@@ -71,7 +71,7 @@ public class CoinsCounter : MonoBehaviour
     {
         _view.ChangeCompleted -= ChangeValueDeferred;
 
-        Coins = _deferredChange;
-        ValueChanged?.Invoke(Coins);
+        Count = _deferredChange;
+        ValueChanged?.Invoke(Count);
     }
 }

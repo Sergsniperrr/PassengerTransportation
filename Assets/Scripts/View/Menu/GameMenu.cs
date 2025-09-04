@@ -10,6 +10,7 @@ public class GameMenu : MonoBehaviour
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _leaderboardButton;
     [SerializeField] private Window _soundSettings;
+    [SerializeField] private Window _leaderboard;
     [SerializeField] private GameResetter _resetter;
 
     private const string IsRestartPrefName = "IsRestart";
@@ -20,12 +21,15 @@ public class GameMenu : MonoBehaviour
     {
         _soundSettings.gameObject.SetActive(true);
         _soundSettingsButton.onClick.AddListener(OpenSoundSettingsMenu);
+        _leaderboard.gameObject.SetActive(true);
+        _leaderboardButton.onClick.AddListener(OpenLeaderboard);
         _restartButton.onClick.AddListener(Restart);
     }
 
     private void OnDisable()
     {
         _soundSettingsButton.onClick.RemoveListener(OpenSoundSettingsMenu);
+        _leaderboardButton.onClick.RemoveListener(OpenLeaderboard);
         _restartButton.onClick.RemoveListener(Restart);
     }
 
@@ -36,19 +40,26 @@ public class GameMenu : MonoBehaviour
         _resetter.RestartLevel();
     }
 
-    private void OpenSoundSettingsMenu()
+    private void OpenSoundSettingsMenu() =>
+        OpenWindow(_soundSettings);
+
+    private void OpenLeaderboard() =>
+        OpenWindow(_leaderboard);
+
+    private void OpenWindow(Window window)
     {
-        _soundSettings.gameObject.SetActive(true);
-        _soundSettings.Open();
+        window.gameObject.SetActive(true);
+        window.Open();
 
         GameActiveChanged?.Invoke(false);
 
-        _soundSettings.Closed += ActivateGame;
+        window.Closed += ActivateGame;
     }
 
     private void ActivateGame()
     {
         _soundSettings.Closed -= ActivateGame;
+        _leaderboard.Closed -= ActivateGame;
 
         GameActiveChanged?.Invoke(true);
     }

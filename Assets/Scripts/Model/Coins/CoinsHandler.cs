@@ -27,6 +27,11 @@ public class CoinsHandler : MonoBehaviour
         _coinsRecipient = GetComponent<CoinsRecipient>();
     }
 
+    public void SetMoneyBuffer(int value)
+    {
+        MoneyBuffer = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+
     public void ShowCounters() =>
         _countersView.Show();
 
@@ -68,7 +73,7 @@ public class CoinsHandler : MonoBehaviour
     {
         _coinsRecipient.TransferCompleted -= UpdateMoneyBuffer;
 
-        MoneyBuffer = Money.Coins;
+        MoneyBuffer = Money.Count;
     }
 
     private void Buy(int price) =>
