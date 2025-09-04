@@ -20674,37 +20674,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4503127613492028443, guid: b1212047fe5072840803a2b9b9e90441, type: 3}
   m_PrefabInstance: {fileID: 532397300}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &541111751
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 541111752}
-  m_Layer: 0
-  m_Name: Liderboard
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &541111752
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541111751}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &555269930
 GameObject:
   m_ObjectHideFlags: 0
@@ -33319,14 +33288,13 @@ GameObject:
   - component: {fileID: 719746334}
   - component: {fileID: 719746337}
   - component: {fileID: 719746336}
-  - component: {fileID: 719746335}
   m_Layer: 5
   m_Name: Leaderboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &719746334
 RectTransform:
   m_ObjectHideFlags: 0
@@ -33349,20 +33317,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -0.00025547433}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &719746335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 719746333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb4d6ec8e0031774e9b3bf5c6facb4c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _textLevelNumber: {fileID: 0}
-  _textBusesCount: {fileID: 1816355875}
 --- !u!114 &719746336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33376,7 +33330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 719746337}
-  _button: {fileID: 0}
+  _button: {fileID: 726310666}
   _background: {fileID: 872657416}
   _gameButtons: {fileID: 761905398}
 --- !u!225 &719746337
@@ -105432,4 +105386,3 @@ SceneRoots:
   - {fileID: 456062870}
   - {fileID: 1864822266}
   - {fileID: 1447720261}
-  - {fileID: 541111752}

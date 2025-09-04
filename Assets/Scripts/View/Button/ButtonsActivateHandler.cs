@@ -18,12 +18,11 @@ public class ButtonsActivateHandler : MonoBehaviour
             else
                 throw new MissingComponentException(nameof(MoneySpender));
         }
-    }
 
-    private void OnEnable()
-    {
         _wallet.ValueChanged += HandleActivateButtons;
         _gameButtons.ButtonsActivated += HandleActivateButtons;
+
+        _gameButtons.gameObject.SetActive(false);
     }
 
     private void OnDisable()
