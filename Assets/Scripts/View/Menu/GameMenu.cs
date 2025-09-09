@@ -13,8 +13,6 @@ public class GameMenu : MonoBehaviour
     [SerializeField] private Window _leaderboard;
     [SerializeField] private GameResetter _resetter;
 
-    private const string IsRestartPrefName = "IsRestart";
-
     public event Action<bool> GameActiveChanged;
 
     private void OnEnable()

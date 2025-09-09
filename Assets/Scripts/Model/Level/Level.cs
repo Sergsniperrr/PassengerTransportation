@@ -21,6 +21,7 @@ public class Level : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private TextMeshProUGUI _textLevelNomber;
     [SerializeField] private GameResetter _resetter;
+    [SerializeField] private Prices _prices;
 
     [field: SerializeField] public CoinsHandler Coins { get; private set; }
 
@@ -116,7 +117,7 @@ public class Level : MonoBehaviour
 
         GameStarted?.Invoke();
         _queue.PassengersCreated += ActivatePlayerInput;
-        _busStop.AllPlacesOccupied += OpenDialog;
+        _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
     }
 
     private void Complete()
@@ -162,8 +163,16 @@ public class Level : MonoBehaviour
     {
         Coins.HideCounters();
         window.Closed -= Complete;
-        _busStop.AllPlacesOccupied -= OpenDialog;
+        _busStop.AllPlacesOccupied -= HandleOccupiedSeatsEvent;
         Completed?.Invoke();
+    }
+
+    private void HandleOccupiedSeatsEvent()
+    {
+        if (Coins.Money.Count < _prices.ArrangingPassengers)
+            OpenDialog();
+        else
+            _gameButtons.PlayButtonPassengerArrangePulsation();
     }
 
     private void OpenDialog()

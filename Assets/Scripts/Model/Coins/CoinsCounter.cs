@@ -24,47 +24,45 @@ public class CoinsCounter : MonoBehaviour
         ValueChanged?.Invoke(Count);
     }
 
-    public void Add(int value) =>
-        ChangeValue(value);
+    public void Add(int value, float duration = 0f) =>
+        ChangeValue(value, duration);
 
     public void Remove(int value)
     {
         if (value > Count)
             throw new ArgumentOutOfRangeException(nameof(value));
 
-        ChangeValue(-value, true);
+        ChangeValue(-value);
     }
 
-    public void AddOneCoin(bool canShowEffect = false)
+    public void AddOneCoin()
     {
         Count++;
-        _view.ChangeValue(Count - 1, Count, canShowEffect);
+        _view.ChangeValue(Count - 1, Count);
 
         ValueChanged?.Invoke(Count);
     }
 
-    private void ChangeValue(int value, bool isFastChange = false)
+    private void ChangeValue(int value, float duration = 0f)
     {
         if (Count + value < 0)
             throw new ArgumentOutOfRangeException(nameof(value));
 
         int currentValue = Count;
 
-        if (isFastChange)
+        if (duration == 0f)
         {
             Count += value;
-            _view.ChangeValue(currentValue, Count, isFastChange);
+            _view.ChangeValue(currentValue, Count);
             ValueChanged?.Invoke(Count);
         }
         else
         {
             _deferredChange = Count + value;
-            _view.ChangeValue(currentValue, _deferredChange, isFastChange);
+            _view.ChangeValue(currentValue, _deferredChange, duration);
 
             _view.ChangeCompleted += ChangeValueDeferred;
         }
-
-
     }
 
     private void ChangeValueDeferred()

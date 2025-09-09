@@ -9,8 +9,6 @@ public class CoinsCounterView : MonoBehaviour
 {
     [SerializeField] private Effects _effects;
 
-    private readonly float _durationPerOne = 0.07f;
-
     private TextMeshProUGUI _text;
     private Tween _tween;
     private Coroutine _coroutine;
@@ -26,19 +24,19 @@ public class CoinsCounterView : MonoBehaviour
     public void SetValue(int value) =>
         _text.text = $"{value}";
 
-    public void ChangeValue(int currentValue, int newValue, bool isFastChange)
+    public void ChangeValue(int currentValue, int newValue, float duration = 0)
     {
         if (newValue < 0)
             throw new ArgumentOutOfRangeException(nameof(newValue));
 
-        if (isFastChange)
+        if (duration == 0)
         {
             _text.text = $"{newValue}";
             PulsateText();
         }
         else
         {
-            ChangeValueSmooth(currentValue, newValue);
+            ChangeValueSmooth(currentValue, newValue, duration);
         }
     }
 
@@ -55,7 +53,7 @@ public class CoinsCounterView : MonoBehaviour
             });
     }
 
-    private void ChangeValueSmooth(int currentValue, int newValue)
+    private void ChangeValueSmooth(int currentValue, int newValue, float duration)
     {
         int delta = Mathf.Abs(newValue - currentValue);
 
@@ -71,7 +69,7 @@ public class CoinsCounterView : MonoBehaviour
             () => currentValue,
             x => currentValue = x,
             newValue,
-            _durationPerOne * delta
+            duration
         )
         .SetEase(Ease.Linear)
         .OnUpdate(() =>

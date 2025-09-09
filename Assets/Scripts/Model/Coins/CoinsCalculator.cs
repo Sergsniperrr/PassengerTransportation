@@ -13,9 +13,11 @@ public static class CoinsCalculator
 
     public static int CalculateScore(int busCount, int moneySpent, float playerSkillRatio)
     {
-        float _coefficient = 0.5f;
-        float _multiplier = 2f;
+        float maxSkillRatio = 1f;
+        float coefficient = 0.5f;
+        float multiplier = 2f;
+        float score = busCount / (coefficient * moneySpent + busCount) * busCount * multiplier;
 
-        return (int)Mathf.Round(busCount / (_coefficient * moneySpent + busCount) * busCount * _multiplier);
+        return Mathf.RoundToInt(score / Mathf.Min(playerSkillRatio, maxSkillRatio));
     }
 }

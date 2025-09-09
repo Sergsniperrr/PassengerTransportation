@@ -11,12 +11,11 @@ public class CoinsRecipient : MonoBehaviour
     [SerializeField] private TemporaryCounter _score;
     [SerializeField] private MoneyCounter _moneyWallet;
     [SerializeField] private ScoreCounter _scoreWallet;
+    [SerializeField] private float _maxTransferDuration = 3f;
 
-    private float _delayBeforeTransfer = 0.5f;
-
-    private float _scoreTransferDelay = 0.5f;
-    private float _durationPerOne = 0.07f; //0.06f
-    //private float _receiptDelay = 0.7f;
+    private readonly float _delayBeforeTransfer = 0.5f;
+    private readonly float _scoreTransferDelay = 0.5f;
+    private readonly float _durationPerOne = 0.07f;
 
     public event Action TransferCompleted;
 
@@ -40,11 +39,10 @@ public class CoinsRecipient : MonoBehaviour
             return;
         }
 
-        _moneyCoinsSpawner.StartSpawn(_durationPerOne);
+        _moneyCoinsSpawner.StartSpawn();
         StartCoroutine(StartReceiptAfterDelay(_moneyWallet, _money.Value, _moneyCoinsSpawner));
-        _money.ResetValue(_durationPerOne);
+        _money.ResetValue(CalculateTransferDuration(_money.Value));
         _money.ResetCompleted += StartTransferScore;
-
     }
 
     private void StartTransferScore()
@@ -68,9 +66,9 @@ public class CoinsRecipient : MonoBehaviour
 
         yield return wait;
 
-        _scoreCoinsSpawner.StartSpawn(_durationPerOne);
+        _scoreCoinsSpawner.StartSpawn();
         StartCoroutine(StartReceiptAfterDelay(_scoreWallet, _score.Value, _scoreCoinsSpawner));
-        _score.ResetValue(_durationPerOne);
+        _score.ResetValue(CalculateTransferDuration(_score.Value));
 
         _score.ResetCompleted += FinishTransfer;
     }
@@ -101,6 +99,9 @@ public class CoinsRecipient : MonoBehaviour
 
         yield return wait;
 
-        counter.Add(coinsForTransfer);
+        counter.Add(coinsForTransfer, CalculateTransferDuration(coinsForTransfer));
     }
+
+    private float CalculateTransferDuration(int coinsCount) =>
+        Mathf.Min(_durationPerOne * coinsCount, _maxTransferDuration);
 }

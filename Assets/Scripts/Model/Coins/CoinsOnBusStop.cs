@@ -13,7 +13,7 @@ public class CoinsOnBusStop : MonoBehaviour
     private Coin[] _coins;
     private Vector3[] _positions;
 
-    public event Action<bool> CoinResieved;
+    public event Action CoinResieved;
 
     private void Awake()
     {
@@ -60,6 +60,6 @@ public class CoinsOnBusStop : MonoBehaviour
     {
         _effects.PlayCoinsAudio();
 
-        CoinResieved?.Invoke(true);
+        CoinResieved?.Invoke();
     }
 }

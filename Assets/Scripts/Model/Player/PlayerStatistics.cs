@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
+using YG;
 
 [RequireComponent(typeof(PlayerStatisticsCollector))]
 public class PlayerStatistics : MonoBehaviour
 {
     private readonly int _busCountAtOneAd = 20;
     private readonly float _playerSkillMultiplier = 0.95f;
+    private readonly int _minLevelToStartCalculatingPlayerSkill = 10;
 
     private PlayerStatisticsCollector _statisticsCollector;
 
@@ -20,6 +22,13 @@ public class PlayerStatistics : MonoBehaviour
         _statisticsCollector = GetComponent<PlayerStatisticsCollector>();
     }
 
+    private void Start()
+    {
+        TotalBusesCount = YG2.saves.TotalBusesCount;
+        TotalAdsViewsCount = YG2.saves.TotalAdsViewsCount;
+        PlayerSkill = YG2.saves.PlayerSkill;
+    }
+
     public void StartCollectData(int busesCount)
     {
         if (busesCount < 0)
@@ -30,19 +39,25 @@ public class PlayerStatistics : MonoBehaviour
         BusesCount = busesCount;
     }
 
-    public void FinishCollectData()
+    public void FinishCollectData(int level)
     {
         TotalAdsViewsCount += _statisticsCollector.AdsViewCount;
+        CalculatePlayerSkill(level);
+        MoneySpent = _statisticsCollector.MoneySpent;
+    }
 
-        float adsViewRatio = TotalAdsViewsCount / _busCountAtOneAd;
+    private void CalculatePlayerSkill(int level)
+    {
+        if (level < _minLevelToStartCalculatingPlayerSkill)
+            return;
+
+        float adsViewRatio = _busCountAtOneAd / TotalBusesCount * TotalAdsViewsCount;
 
         if (adsViewRatio > 1)
             IncreasePlayerSkill();
 
         if (adsViewRatio < 1)
             DecreasePlayerSkill();
-
-        MoneySpent = _statisticsCollector.MoneySpent;
     }
 
     private void IncreasePlayerSkill() =>

@@ -12,7 +12,6 @@ public class MoneySpendView : SpawnableObject<MoneySpendView>
     private readonly float _fadeOutDelay = 0.4f;
 
     private TextMeshProUGUI _text;
-    private Vector3 _initialPosition;
     private Color _maxColor;
     private Color _minColor;
 
@@ -31,7 +30,6 @@ public class MoneySpendView : SpawnableObject<MoneySpendView>
 
     private void OnDisable()
     {
-        //transform.DOKill();
         _text.DOKill();
     }
 

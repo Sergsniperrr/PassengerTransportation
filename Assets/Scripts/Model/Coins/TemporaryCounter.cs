@@ -23,7 +23,7 @@ public class TemporaryCounter : MonoBehaviour
         _text.text = $"{Value}";
     }
 
-    public void ResetValue(float durationPerOne)
+    public void ResetValue(float duration)
     {
         if (Int32.TryParse(_text.text, out int value) == false)
             value = 0;
@@ -32,7 +32,7 @@ public class TemporaryCounter : MonoBehaviour
            () => value,
            x => value = x,
            0,
-           durationPerOne * value)
+           duration)
        .SetEase(Ease.Linear)
        .OnUpdate(() =>
        {

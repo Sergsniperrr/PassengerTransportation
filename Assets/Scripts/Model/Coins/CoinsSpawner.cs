@@ -4,24 +4,23 @@ using UnityEngine;
 public class CoinsSpawner : Spawner<Coin>
 {
     [SerializeField] private Transform _target;
+    [SerializeField] private float _spawnInterval = 0.08f;
 
     private Coroutine _coroutine;
     private Coin _coin;
+    private WaitForSeconds _waitForSpawn;
 
     public float MoveDuration { get; private set; } = 0.7f;
 
     protected override void Awake()
     {
         InitialPosition = transform.position;
+        _waitForSpawn = new(_spawnInterval);
         base.Awake();
     }
 
-    public void StartSpawn(float period)
-    {
-        WaitForSeconds wait = new(period);
-
-        _coroutine = StartCoroutine(SpawnEveryTime(wait));
-    }
+    public void StartSpawn() =>
+        _coroutine = StartCoroutine(SpawnEveryTime());
 
     public void StopSpawn()
     {
@@ -29,13 +28,13 @@ public class CoinsSpawner : Spawner<Coin>
             StopCoroutine(_coroutine);
     }
 
-    private IEnumerator SpawnEveryTime(WaitForSeconds wait)
+    private IEnumerator SpawnEveryTime()
     {
         while (enabled)
         {
             Spawn();
 
-            yield return wait;
+            yield return _waitForSpawn;
         }
     }
 

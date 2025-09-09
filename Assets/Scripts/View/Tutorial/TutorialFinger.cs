@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using YG;
 
 public class TutorialFinger : MonoBehaviour
 {
@@ -22,16 +23,16 @@ public class TutorialFinger : MonoBehaviour
 
     private void Awake()
     {
-        int currentLevel = PlayerPrefs.GetInt(LevelPrefName, 1);
 
-        if (currentLevel > 1)
-            gameObject.SetActive(false);
-
-        _pointsQueue = new Queue<Vector3>(_points);
     }
 
     private void OnEnable()
     {
+        if (YG2.saves.Level > 1)
+            gameObject.SetActive(false);
+
+        _pointsQueue = new Queue<Vector3>(_points);
+
         _level.GameActivated += Activate;
     }
 

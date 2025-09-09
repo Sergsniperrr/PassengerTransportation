@@ -1,9 +1,6 @@
-using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using YG;
 
 public class LevelsHandler : MonoBehaviour
@@ -16,6 +13,8 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private GameResetter _resetter;
     [SerializeField] private int _testLevel;
     [SerializeField] private LevelMaker _levelMaker;
+    [SerializeField] private PlayerSaver _saver;
+    [SerializeField] private Initializer _initializer;
 
     private const string IsRestartPrefName = "IsRestart";
     private const string LeaderboardName = "BestCarriers";
@@ -26,19 +25,18 @@ public class LevelsHandler : MonoBehaviour
     private void Awake()
     {
         _levelsData = DataLoader.GetLevelData(_jsonResource);
-        //PlayerPrefs.SetInt("CurrentLevel", 1); // Õ”∆ÕŒ ”ƒ¿À»“‹ œ≈–≈ƒ «¿À»¬ Œ… !!!!!!!
-        _currentLevel = DataLoader.CurrentLevel;
-        _level.Coins.SetMoneyBuffer(DataLoader.Money);
-        _level.Coins.Score.SetValue(DataLoader.Score);
+        //DataSaver.SaveLevelData(1, 0, 0); // Õ”∆ÕŒ ”ƒ¿À»“‹ œ≈–≈ƒ «¿À»¬ Œ… !!!!!!!
 
-        //_currentLevel = _testLevel;
+        _currentLevel = _testLevel;
         _music.Stop();
     }
 
     private void Start()
     {
+        _currentLevel = YG2.saves.Level;
+
         if (_levelMaker.gameObject.activeSelf == false)
-          StartGame();
+            StartGame();
     }
 
     private void OnDisable()
@@ -103,10 +101,13 @@ public class LevelsHandler : MonoBehaviour
         _busSpawner.BusUndergroundSpawned -= _level.AddUndergroundBus;
         _busSpawner.BusLeftParkingLot -= _level.RemoveBus;
 
+        _currentLevel++;
+
+        _saver.Save();
+        YG2.SaveProgress();
         YG2.SetLeaderboard(LeaderboardName, _level.Coins.Score.Count);
 
-        _currentLevel++;
-        DataSaver.SaveLevelData(_currentLevel, _level.Coins.Money.Count, _level.Coins.Score.Count);
+        //DataSaver.SaveLevelData(_currentLevel, _level.Coins.Money.Count, _level.Coins.Score.Count);
 
         StartLevel();
     }

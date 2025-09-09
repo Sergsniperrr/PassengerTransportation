@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using YG;
 
 [RequireComponent(typeof(CoinsView))]
 [RequireComponent(typeof(PlayerStatistics))]
@@ -14,8 +15,8 @@ public class CoinsHandler : MonoBehaviour
     private PlayerStatistics _statistics;
     private CoinsView _countersView;
     private CoinsRecipient _coinsRecipient;
-    private int _level;
 
+    public int Level { get; private set; }
     public int TemporaryMoney { get; private set; }
     public int TemporaryScore { get; private set; }
     public int MoneyBuffer { get; private set; }
@@ -27,9 +28,9 @@ public class CoinsHandler : MonoBehaviour
         _coinsRecipient = GetComponent<CoinsRecipient>();
     }
 
-    public void SetMoneyBuffer(int value)
+    private void OnEnable()
     {
-        MoneyBuffer = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        MoneyBuffer = YG2.saves.Money;
     }
 
     public void ShowCounters() =>
@@ -48,7 +49,7 @@ public class CoinsHandler : MonoBehaviour
 
         Money.SetValue(MoneyBuffer);
         _statistics.StartCollectData(busCount);
-        _level = level;
+        Level = level;
 
         _shuffleBusesBuyer.PurchaseCompleted += Buy;
         _arrangePassengerBuyer.PurchaseCompleted += Buy;
@@ -59,9 +60,9 @@ public class CoinsHandler : MonoBehaviour
         _shuffleBusesBuyer.PurchaseCompleted -= Buy;
         _arrangePassengerBuyer.PurchaseCompleted -= Buy;
 
-        _statistics.FinishCollectData();
+        _statistics.FinishCollectData(Level);
 
-        TemporaryMoney = CoinsCalculator.CalculateMoney(_level, _statistics.BusesCount, _statistics.PlayerSkill);
+        TemporaryMoney = CoinsCalculator.CalculateMoney(Level, _statistics.BusesCount, _statistics.PlayerSkill);
         TemporaryScore = CoinsCalculator.CalculateScore(_statistics.BusesCount,
                                                          _statistics.MoneySpent,
                                                          _statistics.PlayerSkill);

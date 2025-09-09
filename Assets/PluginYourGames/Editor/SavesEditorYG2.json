@@ -1,0 +1,17 @@
+{
+    "intExample": 5,
+    "strExample": "Hello!",
+    "boolExample": [
+        false,
+        false,
+        false,
+        false
+    ],
+    "idSave": 5,
+    "<Level>k__BackingField": 6,
+    "<Money>k__BackingField": 41,
+    "<Score>k__BackingField": 82,
+    "<TotalBusesCount>k__BackingField": 41,
+    "<TotalAdsViewsCount>k__BackingField": 0,
+    "<PlayerSkill>k__BackingField": 1.0
+}
