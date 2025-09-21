@@ -48,7 +48,7 @@ public class CoinsHandler : MonoBehaviour
             throw new ArgumentOutOfRangeException(nameof(level));
 
         Money.SetValue(MoneyBuffer);
-        _statistics.StartCollectData(busCount);
+        _statistics.StartCollectData(busCount, level);
         Level = level;
 
         _shuffleBusesBuyer.PurchaseCompleted += Buy;

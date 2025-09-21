@@ -17,6 +17,7 @@ public class BusView : MonoBehaviour
     private Roof _roof;
     private ParticleSystem _smoke;
     private Effects _effects;
+    private Tween _tween;
     private Vector3 _initialRotation;
     private Vector3 _sparksShiftPosition;
     private PassengerReception _passengerReception;
@@ -62,7 +63,9 @@ public class BusView : MonoBehaviour
     {
         _effects.PlayBoardingBus();
         transform.localScale = _pulsationScale;
-        transform.DOScale(_sizeAtStop, _pulsationDuration);
+
+        _tween.Kill();
+        _tween = transform.DOScale(_sizeAtStop, _pulsationDuration);
     }
 
     public void EnableSmoke() =>

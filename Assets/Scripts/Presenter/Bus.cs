@@ -12,10 +12,10 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
     private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
 
     private BusRouter _router;
+    private BusView _transformChanger;
     private Roof _roof;
     private ColorSetter _color;
     private PassengerReception _passengerReception;
-    private BusView _transformChanger;
     private Effects _effects;
 
     public event Action StartedMove;

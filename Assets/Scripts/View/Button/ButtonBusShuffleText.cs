@@ -4,6 +4,6 @@ public class ButtonBusShuffleText : FrontButton
     {
         base.Awake();
 
-        SetText($"-{Prices.ShufflingBuses}");
+        SetText($"{Prices.ShufflingBuses}");
     }
 }

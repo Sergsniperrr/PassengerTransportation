@@ -10,6 +10,7 @@ public class PlayerStatistics : MonoBehaviour
     private readonly int _minLevelToStartCalculatingPlayerSkill = 10;
 
     private PlayerStatisticsCollector _statisticsCollector;
+    private float _adsViewRatio;
 
     public int TotalAdsViewsCount { get; private set; }
     public int TotalBusesCount { get; private set; }
@@ -29,10 +30,13 @@ public class PlayerStatistics : MonoBehaviour
         PlayerSkill = YG2.saves.PlayerSkill;
     }
 
-    public void StartCollectData(int busesCount)
+    public void StartCollectData(int busesCount, int level)
     {
         if (busesCount < 0)
             throw new ArgumentOutOfRangeException(nameof(busesCount));
+
+        if (level < _minLevelToStartCalculatingPlayerSkill)
+            return;
 
         TotalBusesCount += busesCount;
         _statisticsCollector.ResetValues();
@@ -41,22 +45,22 @@ public class PlayerStatistics : MonoBehaviour
 
     public void FinishCollectData(int level)
     {
-        TotalAdsViewsCount += _statisticsCollector.AdsViewCount;
-        CalculatePlayerSkill(level);
-        MoneySpent = _statisticsCollector.MoneySpent;
-    }
-
-    private void CalculatePlayerSkill(int level)
-    {
         if (level < _minLevelToStartCalculatingPlayerSkill)
             return;
 
-        float adsViewRatio = _busCountAtOneAd / TotalBusesCount * TotalAdsViewsCount;
+        TotalAdsViewsCount += _statisticsCollector.AdsViewCount;
+        CalculatePlayerSkill();
+        MoneySpent = _statisticsCollector.MoneySpent;
+    }
 
-        if (adsViewRatio > 1)
+    private void CalculatePlayerSkill()
+    {
+        _adsViewRatio = (float)_busCountAtOneAd / TotalBusesCount * TotalAdsViewsCount;
+
+        if (_adsViewRatio > 1f)
             IncreasePlayerSkill();
 
-        if (adsViewRatio < 1)
+        if (_adsViewRatio < 1f)
             DecreasePlayerSkill();
     }
 

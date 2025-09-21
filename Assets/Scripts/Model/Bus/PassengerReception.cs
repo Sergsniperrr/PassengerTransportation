@@ -11,6 +11,7 @@ public class PassengerReception : MonoBehaviour
     [field: SerializeField] public float BackInterval { get; private set; }
 
     private readonly int _failedIndex = -1;
+    private readonly Vector3 _passengerLocalScale = new(0.76f, 0.94f, 0.89f);
 
     private Vector3[] _coordinates;
     private bool[] _reservations;
@@ -50,6 +51,7 @@ public class PassengerReception : MonoBehaviour
         passenger.transform.SetParent(transform);
         passenger.transform.localPosition = _coordinates[passenger.BusPlaceIndex];
         passenger.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        passenger.gameObject.transform.localScale = _passengerLocalScale;
 
         _places[passenger.BusPlaceIndex] = passenger;
 

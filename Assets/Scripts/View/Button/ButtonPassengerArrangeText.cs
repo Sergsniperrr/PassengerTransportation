@@ -4,6 +4,6 @@ public class ButtonPassengerArrangeText : FrontButton
     {
         base.Awake();
 
-        SetText($"-{Prices.ArrangingPassengers}");
+        SetText($"{Prices.ArrangingPassengers}");
     }
 }

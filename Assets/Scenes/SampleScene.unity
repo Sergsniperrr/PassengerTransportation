@@ -34038,7 +34038,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 93c9f73a5bf6d8f44b779b5c3317d843, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9f9dfd1daa43b174a8c71aed44a2e056, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -34693,14 +34693,14 @@ RectTransform:
   m_GameObject: {fileID: 786395383}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.06378498}
-  m_LocalScale: {x: 0.58, y: 0.8199999, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.588, y: 0.8313102, z: 1.0137931}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1429991716}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19.5, y: 15.099998}
+  m_AnchoredPosition: {x: 19.5, y: -22.67}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &786395385
@@ -34727,15 +34727,15 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32b65d45f58cd564187765e678797cb0, type: 2}
-  m_sharedMaterial: {fileID: -7797205025275720760, guid: 32b65d45f58cd564187765e678797cb0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bc52b332039c27c4ea4cceb9acbcae40, type: 2}
+  m_sharedMaterial: {fileID: -7797205025275720760, guid: bc52b332039c27c4ea4cceb9acbcae40, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4282203021
+  m_fontColor: {r: 0.5529412, g: 0.23137255, b: 0.23921569, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -34752,8 +34752,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49
-  m_fontSizeBase: 49
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -36754,7 +36754,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _passengerShuffler: {fileID: 764639204}
   _busShuffler: {fileID: 1429991720}
-  _viewingAds: {fileID: 1538192580}
+  _viewingAdsInWarningWindow: {fileID: 1538192580}
+  _buttonViewAds: {fileID: 1894681258}
   _prices: {fileID: 1780207087}
 --- !u!1 &952506953
 GameObject:
@@ -56926,8 +56927,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 18.900002, y: 15.099998}
-  m_SizeDelta: {x: 0, y: -50}
+  m_AnchoredPosition: {x: 18.900002, y: -22.35}
+  m_SizeDelta: {x: 0, y: -124.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1420587389
 MonoBehaviour:
@@ -56953,15 +56954,15 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32b65d45f58cd564187765e678797cb0, type: 2}
-  m_sharedMaterial: {fileID: -7797205025275720760, guid: 32b65d45f58cd564187765e678797cb0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bc52b332039c27c4ea4cceb9acbcae40, type: 2}
+  m_sharedMaterial: {fileID: -7797205025275720760, guid: bc52b332039c27c4ea4cceb9acbcae40, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4282203021
+  m_fontColor: {r: 0.5529412, g: 0.23137255, b: 0.23921569, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -56978,8 +56979,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49
-  m_fontSizeBase: 49
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -57381,7 +57382,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: af0148e91f501cf479f358802f5e9beb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c1f2eb995027e7d48a6070ac908f59e7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

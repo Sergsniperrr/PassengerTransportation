@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,11 +11,6 @@ public class ElevatorsHandler : MonoBehaviour
     private List<Elevator> _elevators = new();
 
     public event Action<Elevator> ElevatorReleased;
-
-    private void Start()
-    {
-        //SpawnElevators(_buses);
-    }
 
     private void OnDisable()
     {
