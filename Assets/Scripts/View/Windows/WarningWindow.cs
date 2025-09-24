@@ -1,27 +1,40 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class WarningWindow : SimpleWindow
 {
     [SerializeField] private Button _passengersArrangingButton;
+    [SerializeField] private PassengerColorArranger _colorArranger;
+
+    private const string RewardId = "PassengerArrange";
+
+    public event Action AdViewed;
 
     public bool IsGameContinues { get; private set; }
 
     public override void Open(float delay = 0)
     {
         base.Open(delay);
-        IsGameContinues = false;
 
-        _passengersArrangingButton.onClick.AddListener(ArrangePassengers);
+        IsGameContinues = false;
+        _passengersArrangingButton.onClick.AddListener(ViewAd);
     }
 
-    private void ArrangePassengers()
+    private void ViewAd()
     {
-        _passengersArrangingButton.onClick.RemoveListener(ArrangePassengers);
+        YG2.RewardedAdvShow(RewardId, TakeReward);
+    }
 
+    private void TakeReward()
+    {
+        _passengersArrangingButton.onClick.RemoveListener(ViewAd);
+
+        _colorArranger.ArrangeColors();
         IsGameContinues = true;
+
+        AdViewed?.Invoke();
 
         Close();
     }

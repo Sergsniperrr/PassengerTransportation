@@ -5,9 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(BusRouter))]
 [RequireComponent(typeof(ColorSetter))]
 [RequireComponent(typeof(PassengerReception))]
-//[RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(BusView))]
-public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
+public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters, IParkingExitHandler
 {
     private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
 
@@ -61,8 +60,6 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
         _router.StartMove();
 
         StartedMove?.Invoke();
-
-        _router.LeftParkingLot += InformThatLeftParkingLot;
     }
 
     public void EnableSwingEffect() =>
@@ -94,12 +91,8 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters
         FillingCompleted?.Invoke(this);
     }
 
-    private void InformThatLeftParkingLot()
-    {
-        _router.LeftParkingLot -= InformThatLeftParkingLot;
-
+    public void HandleParkingExit() =>
         LeftParkingLot?.Invoke(this);
-    }
 
     private void Finish()
     {

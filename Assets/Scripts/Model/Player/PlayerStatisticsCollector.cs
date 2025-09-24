@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatisticsCollector : MonoBehaviour
 {
-    [SerializeField] private PassengerColorShuffler _passengerShuffler;
+    [SerializeField] private PassengerColorArranger _passengerShuffler;
     [SerializeField] private BusColorsShuffler _busShuffler;
-    [SerializeField] private PassengerColorShuffler _viewingAdsInWarningWindow;
+    [SerializeField] private WarningWindow _warningWindow;
     [SerializeField] private Button _buttonViewAds;
     [SerializeField] private Prices _prices;
 
@@ -18,7 +16,7 @@ public class PlayerStatisticsCollector : MonoBehaviour
     {
         _passengerShuffler.PassengersArranged += AddPassengerArrangeCost;
         _busShuffler.BusesShuffled += AddBusShuffleCost;
-        _viewingAdsInWarningWindow.PassengersArranged += HandleViewAdsInWarningWindow;
+        _warningWindow.AdViewed += HandleViewAdsInWarningWindow;
         _buttonViewAds.onClick.AddListener(AddOneViewAd);
     }
 
@@ -26,7 +24,7 @@ public class PlayerStatisticsCollector : MonoBehaviour
     {
         _passengerShuffler.PassengersArranged -= AddPassengerArrangeCost;
         _busShuffler.BusesShuffled -= AddBusShuffleCost;
-        _viewingAdsInWarningWindow.PassengersArranged -= HandleViewAdsInWarningWindow;
+        _warningWindow.AdViewed -= HandleViewAdsInWarningWindow;
         _buttonViewAds.onClick.RemoveListener(AddOneViewAd);
     }
 

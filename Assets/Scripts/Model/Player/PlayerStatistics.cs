@@ -5,7 +5,7 @@ using YG;
 [RequireComponent(typeof(PlayerStatisticsCollector))]
 public class PlayerStatistics : MonoBehaviour
 {
-    private readonly int _busCountAtOneAd = 20;
+    private readonly int _busCountAtOneAd = 30;
     private readonly float _playerSkillMultiplier = 0.95f;
     private readonly int _minLevelToStartCalculatingPlayerSkill = 10;
 
@@ -35,12 +35,13 @@ public class PlayerStatistics : MonoBehaviour
         if (busesCount < 0)
             throw new ArgumentOutOfRangeException(nameof(busesCount));
 
+        BusesCount = busesCount;
+
         if (level < _minLevelToStartCalculatingPlayerSkill)
             return;
 
         TotalBusesCount += busesCount;
         _statisticsCollector.ResetValues();
-        BusesCount = busesCount;
     }
 
     public void FinishCollectData(int level)

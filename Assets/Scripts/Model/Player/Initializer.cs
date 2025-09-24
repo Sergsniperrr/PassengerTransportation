@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using YG;
 
@@ -20,6 +21,16 @@ public class Initializer : MonoBehaviour
         YG2.onDefaultSaves -= FirstInitializePlayerData;
     }
 
+    private IEnumerator WaitForPluginInit()
+    {
+        while (!YG2.isSDKEnabled)
+        {
+            yield return null;
+        }
+
+        YG2.SaveProgress();
+    }
+
     private void FirstInitializePlayerData()
     {
         YG2.saves.WriteLevel(_initialLevel);
@@ -30,5 +41,7 @@ public class Initializer : MonoBehaviour
         YG2.saves.WritePlayerSkill(_initialPlayerSkill);
 
         Debug.Log($"PlayerSkillInitialized: {YG2.saves.PlayerSkill} !!!");
+
+        StartCoroutine(WaitForPluginInit());
     }
 }

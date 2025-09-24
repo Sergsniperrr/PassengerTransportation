@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using YG;
+using System.Collections;
 
 public class TutorialFinger : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class TutorialFinger : MonoBehaviour
     [SerializeField] private Level _level;
 
     private const int EternalCycle = -1;
-    private const string LevelPrefName = "CurrentLevel";
 
     private Bus _bus;
     private Queue<Bus> _buses;
@@ -18,13 +18,9 @@ public class TutorialFinger : MonoBehaviour
     private Queue<Vector3> _pointsQueue;
     private Vector3 _hiddenPosition;
     private Vector3 _lastPosition;
+    private WaitForSeconds _waitForGameActivity = new(1f);
     private float _shift = 1f;
     private float _moveDuration = 0.25f;
-
-    private void Awake()
-    {
-
-    }
 
     private void OnEnable()
     {
@@ -86,9 +82,20 @@ public class TutorialFinger : MonoBehaviour
     {
         _bus.StartedMove -= Hide;
 
+        StartCoroutine(DelayBeforeGameActivity());
+
         _tweener.Kill();
         transform.position = _hiddenPosition;
 
         _bus.LeftParkingLot += PointNextPosition;
+    }
+
+    private IEnumerator DelayBeforeGameActivity()
+    {
+        _level.ChangeGameActivity(false);
+
+        yield return _waitForGameActivity;
+
+        _level.ChangeGameActivity(true);
     }
 }

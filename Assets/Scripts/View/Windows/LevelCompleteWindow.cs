@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections;
 using System;
 using UnityEngine;
-using TMPro;
 
 public class LevelCompleteWindow : SimpleWindow
 {

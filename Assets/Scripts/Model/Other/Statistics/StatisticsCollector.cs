@@ -6,8 +6,8 @@ public class StatisticsCollector : MonoBehaviour
 {
     [SerializeField] private string _playerName;
     [SerializeField] private Level _level;
-    [SerializeField] private PassengerColorShuffler _passengerArranger;
-    [SerializeField] private PassengerColorShuffler _viewingAds;
+    [SerializeField] private PassengerColorArranger _passengerArranger;
+    [SerializeField] private PassengerColorArranger _viewingAds;
     [SerializeField] private BusColorsShuffler _busShuffler;
 
     private Statistics _statistics;

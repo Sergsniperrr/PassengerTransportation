@@ -33927,6 +33927,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buttonPassengerArrange: {fileID: 764639210}
+  _buttonBusShuffler: {fileID: 1429991724}
 --- !u!1 &764639199
 GameObject:
   m_ObjectHideFlags: 0
@@ -33946,6 +33947,7 @@ GameObject:
   - component: {fileID: 764639208}
   - component: {fileID: 764639209}
   - component: {fileID: 764639210}
+  - component: {fileID: 764639211}
   m_Layer: 5
   m_Name: ButtonPassengersArrange
   m_TagString: Untagged
@@ -34068,7 +34070,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22193b01aa33be046a80973d2bbcbd15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _button: {fileID: 764639201}
   _queue: {fileID: 358280146}
   _busStop: {fileID: 710734712}
   _colorHandler: {fileID: 1780207079}
@@ -34160,6 +34161,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd95be33d0e2a546bf8e2528cd558f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &764639211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764639199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2fb5f3967556de45afeb016153fe5bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 764639201}
 --- !u!1 &766383165
 GameObject:
   m_ObjectHideFlags: 0
@@ -36754,7 +36768,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _passengerShuffler: {fileID: 764639204}
   _busShuffler: {fileID: 1429991720}
-  _viewingAdsInWarningWindow: {fileID: 1538192580}
+  _warningWindow: {fileID: 1538192579}
   _buttonViewAds: {fileID: 1894681258}
   _prices: {fileID: 1780207087}
 --- !u!1 &952506953
@@ -57758,7 +57772,7 @@ MonoBehaviour:
   _playerName: Dad3
   _level: {fileID: 1780207077}
   _passengerArranger: {fileID: 764639204}
-  _viewingAds: {fileID: 1538192580}
+  _viewingAds: {fileID: 0}
   _busShuffler: {fileID: 1429991720}
 --- !u!4 &1447720261
 Transform:
@@ -63157,7 +63171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22193b01aa33be046a80973d2bbcbd15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _button: {fileID: 1507295223}
   _queue: {fileID: 358280146}
   _busStop: {fileID: 710734712}
   _colorHandler: {fileID: 1780207079}
@@ -63643,7 +63656,6 @@ GameObject:
   - component: {fileID: 1538192578}
   - component: {fileID: 1538192576}
   - component: {fileID: 1538192579}
-  - component: {fileID: 1538192580}
   m_Layer: 5
   m_Name: WarningWindow
   m_TagString: Untagged
@@ -63711,22 +63723,7 @@ MonoBehaviour:
   _background: {fileID: 1058071624}
   _gameButtons: {fileID: 761905398}
   _passengersArrangingButton: {fileID: 1366304094}
---- !u!114 &1538192580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538192574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22193b01aa33be046a80973d2bbcbd15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _button: {fileID: 1366304094}
-  _queue: {fileID: 358280146}
-  _busStop: {fileID: 710734712}
-  _colorHandler: {fileID: 1780207079}
+  _colorArranger: {fileID: 764639204}
 --- !u!1001 &1542912867
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66043,10 +66040,8 @@ MonoBehaviour:
   _music: {fileID: 1484695696}
   _jsonResource: {fileID: 4900000, guid: 851424d295086bb448fef9089c4f1fad, type: 3}
   _resetter: {fileID: 1780207086}
-  _testLevel: 25
   _levelMaker: {fileID: 980110512}
   _saver: {fileID: 1832192151}
-  _initializer: {fileID: 0}
 --- !u!114 &1780207085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105219,7 +105214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: quantityTop
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: quantityAround
@@ -105231,7 +105226,7 @@ PrefabInstance:
       objectReference: {fileID: 7785758769085365830, guid: eca1ef63033b6ba409e71721f6d884cf, type: 3}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: maxQuantityPlayers
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -8,7 +8,7 @@ using System.Collections;
 
 [RequireComponent(typeof(MouseInputHandler))]
 [RequireComponent(typeof(ColorsHandler))]
-public class Level : MonoBehaviour
+public class Level : MonoBehaviour,ILevelCompleteable
 {
     [SerializeField] private BusStop _busStop;
     [SerializeField] private PassengerQueue _queue;
@@ -47,6 +47,7 @@ public class Level : MonoBehaviour
         _input = GetComponent<MouseInputHandler>();
         Coins.HideCounters();
         _colorsHandler = GetComponent<ColorsHandler>();
+        _busStop.InitializeLevelCompleter(this);
     }
 
     private void OnEnable()
@@ -95,13 +96,19 @@ public class Level : MonoBehaviour
         _buses.Add(bus);
     }
 
+    private void RunBus(Bus bus)
+    {
+        if (_canBusMove)
+            bus.Run();
+    }
+
     public void RemoveBus(Bus bus)
     {
         if (bus != null)
             _buses.Remove(bus);
 
-        if (_undergroundBuses.Count == 0 && _buses.Count == 0 && _coroutine == null)
-            _coroutine = StartCoroutine(CheckBusCountForZero());
+        if (_undergroundBuses.Count == 0 && _buses.Count == 0)
+            TryCompleteLevel();
     }
 
     private void PlayGame(SimpleWindow window)
@@ -120,12 +127,17 @@ public class Level : MonoBehaviour
         _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
     }
 
+    public void TryCompleteLevel()
+    {
+        if (_coroutine == null && _busStop.IsAllPlacesReleased)
+            _coroutine = StartCoroutine(CheckBusCountForZero());
+    }
+
     private void Complete()
     {
-        _busStop.AllPlacesReleased -= Complete;
-
         float delay = -1f;
 
+        _coroutine = null;
         Coins.CompleteLevel();
         _train.LeaveStation();
         _music.Stop();
@@ -136,12 +148,6 @@ public class Level : MonoBehaviour
         window.Closed += Complete;
 
         _gameButtons.gameObject.SetActive(false);
-    }
-
-    private void RunBus(Bus bus)
-    {
-        if (_canBusMove)
-            bus.Run();
     }
 
     private void ActivatePassengers()
@@ -199,11 +205,11 @@ public class Level : MonoBehaviour
     {
         WaitForSeconds wait = new(0.2f);
 
-        yield return wait;
+        while (_undergroundBuses.Count > 0 || _buses.Count > 0 || _busStop.IsAllPlacesReleased == false)
+        {
+            yield return wait;
+        }
 
-        if (_undergroundBuses.Count == 0 && _buses.Count == 0)
-            _busStop.AllPlacesReleased += Complete;
-
-        _coroutine = null;
+        Complete();
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameButtons : MonoBehaviour
 {
     [SerializeField] private ButtonPassengerArrangeView _buttonPassengerArrange;
+    [SerializeField] private ButtonDisabler _buttonBusShuffler;
 
     public event Action ButtonsActivated;
 
@@ -12,6 +13,9 @@ public class GameButtons : MonoBehaviour
         ButtonsActivated?.Invoke();
     }
 
-    public void PlayButtonPassengerArrangePulsation() =>
+    public void PlayButtonPassengerArrangePulsation()
+    {
         _buttonPassengerArrange.EnablePulsation();
+        _buttonBusShuffler.Disable();
+    }
 }

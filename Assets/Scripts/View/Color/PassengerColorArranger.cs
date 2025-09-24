@@ -1,28 +1,16 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PassengerColorShuffler : MonoBehaviour
+public class PassengerColorArranger : MonoBehaviour
 {
-    [SerializeField] private Button _button;
     [SerializeField] private PassengerQueue _queue;
     [SerializeField] private BusStop _busStop;
     [SerializeField] private ColorsHandler _colorHandler;
 
     public event Action PassengersArranged;
 
-    private void OnEnable()
-    {
-        _button.onClick.AddListener(ShuffleColors);
-    }
-
-    private void OnDisable()
-    {
-        _button.onClick.RemoveListener(ShuffleColors);
-    }
-
-    private void ShuffleColors()
+    public void ArrangeColors()
     {
         Queue<Material> freePlacesColors = GetFreePlacesColorsOfBuses();
         List<Material> colors = _colorHandler.Colors;

@@ -17,6 +17,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private readonly float _delayOfUpdateQueue = 0.06f;
     private readonly WaitForSeconds _waitForCheckGameOver = new(1f);
 
+    private ILevelCompleteable _levelCompleter;
     private ColorAnalyzer _colorAnalyzer;
     private WaitForSeconds _delayBeforeLeave = new(0.3f);
     private bool[] _reservations;
@@ -31,9 +32,9 @@ public class BusStop : MonoBehaviour, IBusReceiver
     public event Action<Bus> BusReceived;
     public event Action PassengerLeft;
     public event Action AllPlacesOccupied;
-    public event Action AllPlacesReleased;
 
     public int StopsCount => _stopsCount;
+    public bool IsAllPlacesReleased { get; private set; }
 
     private void Awake()
     {
@@ -64,6 +65,9 @@ public class BusStop : MonoBehaviour, IBusReceiver
         }
     }
 
+    public void InitializeLevelCompleter(ILevelCompleteable levelCompleter) =>
+        _levelCompleter = levelCompleter ?? throw new ArgumentNullException(nameof(levelCompleter));
+
     public Bus GetBusOnStopByIndex(int index) =>
         _stops[index];
 
@@ -74,6 +78,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
             if (_reservations[i])
             {
                 _reservations[i] = false;
+                IsAllPlacesReleased = false;
                 return i;
             }
         }
@@ -92,7 +97,10 @@ public class BusStop : MonoBehaviour, IBusReceiver
         int occupiedPlaceCount = _stops.Count(place => place != null);
 
         if (occupiedPlaceCount == 0)
-            AllPlacesReleased?.Invoke();
+        {
+            IsAllPlacesReleased = true;
+            _levelCompleter.TryCompleteLevel();
+        }
     }
 
     public void TakeBus(Bus bus, int platformIndex)
@@ -101,6 +109,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
             throw new ArgumentOutOfRangeException(nameof(platformIndex));
 
         _stops[platformIndex] = bus;
+        IsAllPlacesReleased = false;
         BusReceived?.Invoke(bus);
 
         bus.FillingCompleted += AddToLeavingBusesQueue;

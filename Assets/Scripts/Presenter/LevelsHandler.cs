@@ -11,10 +11,8 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private TextAsset _jsonResource;
     [SerializeField] private GameResetter _resetter;
-    [SerializeField] private int _testLevel;
     [SerializeField] private LevelMaker _levelMaker;
     [SerializeField] private PlayerSaver _saver;
-    [SerializeField] private Initializer _initializer;
 
     private const string IsRestartPrefName = "IsRestart";
     private const string LeaderboardName = "BestCarriers";
@@ -25,9 +23,6 @@ public class LevelsHandler : MonoBehaviour
     private void Awake()
     {
         _levelsData = DataLoader.GetLevelData(_jsonResource);
-        //DataSaver.SaveLevelData(1, 0, 0); // Õ”∆ÕŒ ”ƒ¿À»“‹ œ≈–≈ƒ «¿À»¬ Œ… !!!!!!!
-
-        _currentLevel = _testLevel;
         _music.Stop();
     }
 
@@ -107,7 +102,7 @@ public class LevelsHandler : MonoBehaviour
         YG2.SaveProgress();
         YG2.SetLeaderboard(LeaderboardName, _level.Coins.Score.Count);
 
-        //DataSaver.SaveLevelData(_currentLevel, _level.Coins.Money.Count, _level.Coins.Score.Count);
+        YG2.InterstitialAdvShow();
 
         StartLevel();
     }

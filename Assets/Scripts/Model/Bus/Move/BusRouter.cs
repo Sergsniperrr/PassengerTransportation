@@ -20,7 +20,6 @@ public class BusRouter : MonoBehaviour
     private PointsHandler _pointsHandler;
     private DirectionHandler _directionHandler;
 
-    public event Action LeftParkingLot;
     public event Action WayFinished;
 
     public int StopIndex { get; private set; } = FailedIndex;
@@ -55,15 +54,7 @@ public class BusRouter : MonoBehaviour
         _view.EnableSmoke();
 
         _trigger.BusCrashed += BackToInitialPlace;
-        _directionHandler.LeftParkingLot += InformThatLeftParkingLot;
         _directionHandler.BusStopArrived += GoToStopPointer;
-    }
-
-    private void InformThatLeftParkingLot()
-    {
-        _directionHandler.LeftParkingLot -= InformThatLeftParkingLot;
-
-        LeftParkingLot?.Invoke();
     }
 
     public void Activate()
