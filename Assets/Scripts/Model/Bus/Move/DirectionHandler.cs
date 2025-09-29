@@ -6,7 +6,6 @@ using UnityEngine;
 public class DirectionHandler : MonoBehaviour
 {
     private readonly float _busStopPositionZ = 9.96f;
-    private readonly float _minPositionZ = 11.7f;
     private readonly float _minPositionX = -31.9f;
     private readonly float _maxPositionX = -19.34f;
     private readonly float _maxPositionZ = 23.47f;
@@ -41,14 +40,11 @@ public class DirectionHandler : MonoBehaviour
             _position.z = _busStopPositionZ;
             transform.position = _position;
 
+            HandleParkingExit();
+
             BusStopArrived?.Invoke();
 
             enabled = false;
-        }
-        else if (_position.z < _minPositionZ)
-        {
-            DisableCollider();
-            _bus.HandleParkingExit();
         }
         else if (_position.x < _minPositionX)
         {
@@ -73,19 +69,22 @@ public class DirectionHandler : MonoBehaviour
         else
             transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, _leftDirectionY, 0f));
 
-        DisableCollider();
+        HandleParkingExit();
     }
 
     private void SetUpDirection(float positionX)
     {
         _position.x = positionX;
         transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, _upDirectionY, 0f));
-        DisableCollider();
+
+        HandleParkingExit();
     }
 
-    private void DisableCollider()
+    private void HandleParkingExit()
     {
         if (_collider.enabled == true)
             _collider.enabled = false;
+
+        _bus.HandleParkingExit();
     }
 }

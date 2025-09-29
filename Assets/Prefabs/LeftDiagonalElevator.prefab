@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 1381307037489975486}
   - component: {fileID: 3841798999433385692}
   - component: {fileID: 2005702537187676080}
+  - component: {fileID: 8814407914940619415}
   m_Layer: 0
   m_Name: LeftDiagonalElevator
   m_TagString: Untagged
@@ -176,6 +177,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _jsonResource: {fileID: 4900000, guid: 03fbd54dc68d5004c8eec65fe1373439, type: 3}
   _busZeroPosition: {x: -29.368, y: 0.51, z: 20.1967}
+--- !u!114 &8814407914940619415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2465332565833312373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03311965d7379b14f8add8e315030ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3185614847728468612
 GameObject:
   m_ObjectHideFlags: 0

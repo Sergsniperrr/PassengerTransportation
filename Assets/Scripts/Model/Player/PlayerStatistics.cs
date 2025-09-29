@@ -5,7 +5,7 @@ using YG;
 [RequireComponent(typeof(PlayerStatisticsCollector))]
 public class PlayerStatistics : MonoBehaviour
 {
-    private readonly int _busCountAtOneAd = 30;
+    private readonly int _busCountAtOneAd = 20;
     private readonly float _playerSkillMultiplier = 0.95f;
     private readonly int _minLevelToStartCalculatingPlayerSkill = 10;
 

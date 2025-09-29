@@ -1,9 +1,7 @@
 using System;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using DG.Tweening;
 using System.Collections;
 
 [RequireComponent(typeof(MouseInputHandler))]
@@ -102,15 +100,6 @@ public class Level : MonoBehaviour,ILevelCompleteable
             bus.Run();
     }
 
-    public void RemoveBus(Bus bus)
-    {
-        if (bus != null)
-            _buses.Remove(bus);
-
-        if (_undergroundBuses.Count == 0 && _buses.Count == 0)
-            TryCompleteLevel();
-    }
-
     private void PlayGame(SimpleWindow window)
     {
         window.Closed -= PlayGame;
@@ -127,10 +116,21 @@ public class Level : MonoBehaviour,ILevelCompleteable
         _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
     }
 
+    public void RemoveBus(Bus bus)
+    {
+        if (bus != null)
+            _buses.Remove(bus);
+
+        TryCompleteLevel();
+    }
+
     public void TryCompleteLevel()
     {
-        if (_coroutine == null && _busStop.IsAllPlacesReleased)
+        if (_coroutine == null && _busStop.IsAllPlacesReleased &&
+            _undergroundBuses.Count == 0 && _buses.Count == 0)
+        {
             _coroutine = StartCoroutine(CheckBusCountForZero());
+        }
     }
 
     private void Complete()
@@ -205,11 +205,11 @@ public class Level : MonoBehaviour,ILevelCompleteable
     {
         WaitForSeconds wait = new(0.2f);
 
-        while (_undergroundBuses.Count > 0 || _buses.Count > 0 || _busStop.IsAllPlacesReleased == false)
-        {
-            yield return wait;
-        }
+        yield return wait;
 
-        Complete();
+        if (_undergroundBuses.Count == 0 && _buses.Count == 0 && _busStop.IsAllPlacesReleased)
+            Complete();
+
+        _coroutine = null;
     }
 }

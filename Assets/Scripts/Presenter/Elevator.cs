@@ -8,6 +8,7 @@ public class Elevator : MonoBehaviour
     [field: SerializeField] public string Name { get; private set; }
 
     private ElevatorMover _mover;
+    private ElevatorView _view;
     private PositionCalculator _calculator;
     private BusCounter _counter;
     private Bus _bus;
@@ -21,6 +22,7 @@ public class Elevator : MonoBehaviour
     private void Awake()
     {
         _mover = GetComponent<ElevatorMover>();
+        _view = GetComponent<ElevatorView>();
         _calculator = GetComponent<PositionCalculator>();
         _counter = GetComponentInChildren<BusCounter>();
 
@@ -91,6 +93,9 @@ public class Elevator : MonoBehaviour
     private void ActivateBus(Bus bus)
     {
         _mover.BusLifted -= ActivateBus;
+
+        if (_counter.Count == 0)
+            _view.Hide();
 
         BusLifted?.Invoke(bus, this);
     }

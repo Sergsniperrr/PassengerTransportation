@@ -459,6 +459,7 @@ GameObject:
   - component: {fileID: 2941632153771805490}
   - component: {fileID: 223227117169004104}
   - component: {fileID: 7011329942416133743}
+  - component: {fileID: 1410996481503151998}
   m_Layer: 0
   m_Name: HorizontalElevator
   m_TagString: Untagged
@@ -526,6 +527,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _jsonResource: {fileID: 4900000, guid: 03c1fe73046426b41b7fc4d84964843a, type: 3}
   _busZeroPosition: {x: -29.368, y: 0.51, z: 20.1967}
+--- !u!114 &1410996481503151998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078572149821105391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03311965d7379b14f8add8e315030ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8025510413586397323
 PrefabInstance:
   m_ObjectHideFlags: 0

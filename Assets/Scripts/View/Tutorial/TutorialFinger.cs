@@ -24,12 +24,18 @@ public class TutorialFinger : MonoBehaviour
 
     private void OnEnable()
     {
-        if (YG2.saves.Level > 1)
+        if (YG2.saves.Level == 1)
+        {
+            _pointsQueue = new Queue<Vector3>(_points);
+
+            _level.GameActivated += Activate;
+
+        }
+        else
+        {
             gameObject.SetActive(false);
+        }
 
-        _pointsQueue = new Queue<Vector3>(_points);
-
-        _level.GameActivated += Activate;
     }
 
     private void OnDisable()
