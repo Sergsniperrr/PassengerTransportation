@@ -2,14 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private string _sceneForLoading;
     [SerializeField] private Slider _bar;
 
-    private void Awake()
+    private void Start()
     {
         StartCoroutine(LoadAsync());
     }

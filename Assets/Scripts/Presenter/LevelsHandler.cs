@@ -80,12 +80,12 @@ public class LevelsHandler : MonoBehaviour
         _busSpawner.BusLeftParkingLot += _level.RemoveBus;
         _level.Completed += LevelComplete;
         _busSpawner.BusUndergroundSpawned += _level.AddUndergroundBus;
-        _level.GameStarted += StartElevators;
+        _level.Started += StartElevators;
     }
 
     private void StartElevators()
     {
-        _level.GameStarted -= StartElevators;
+        _level.Started -= StartElevators;
 
         _busSpawner.StartElevators();
     }

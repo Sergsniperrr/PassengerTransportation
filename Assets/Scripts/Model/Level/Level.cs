@@ -31,13 +31,13 @@ public class Level : MonoBehaviour,ILevelCompleteable
     private Coroutine _coroutine;
     private bool _canBusMove;
 
-    public event Action GameStarted;
+    public event Action Started;
     public event Action<Queue<Bus>> GameActivated;
     public event Action Completed;
     public event Action<int> BussesCountInitialized;
+    public event Action AllBussesLeft;
 
     public int CurrentLevel { get; private set; }
-
     public List<Bus> Buses => new(_buses);
 
     private void Awake()
@@ -111,7 +111,7 @@ public class Level : MonoBehaviour,ILevelCompleteable
         _menuMusic.Stop();
         _music.Play();
 
-        GameStarted?.Invoke();
+        Started?.Invoke();
         _queue.PassengersCreated += ActivatePlayerInput;
         _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
     }
@@ -136,6 +136,8 @@ public class Level : MonoBehaviour,ILevelCompleteable
     private void Complete()
     {
         float delay = -1f;
+
+        AllBussesLeft?.Invoke();
 
         _coroutine = null;
         Coins.CompleteLevel();
