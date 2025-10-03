@@ -32,6 +32,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     public event Action<Bus> BusReceived;
     public event Action PassengerLeft;
     public event Action AllPlacesOccupied;
+    public event Action<bool> PlacesVacateChanged;
 
     public int StopsCount => _stopsCount;
     public bool IsAllPlacesReleased { get; private set; }
@@ -100,6 +101,8 @@ public class BusStop : MonoBehaviour, IBusReceiver
         {
             IsAllPlacesReleased = true;
             _levelCompleter.TryCompleteLevel();
+
+            PlacesVacateChanged?.Invoke(true);
         }
     }
 
@@ -111,6 +114,8 @@ public class BusStop : MonoBehaviour, IBusReceiver
         _stops[platformIndex] = bus;
         IsAllPlacesReleased = false;
         BusReceived?.Invoke(bus);
+
+        PlacesVacateChanged?.Invoke(false);
 
         bus.FillingCompleted += AddToLeavingBusesQueue;
     }

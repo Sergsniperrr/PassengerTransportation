@@ -1,26 +1,34 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonsActivateHandler : MonoBehaviour
 {
-    [SerializeField] private ButtonDisabler[] _buttons;
+    [SerializeField] private ButtonDisabler _passengersArrangeButton;
+    [SerializeField] private ButtonDisabler _busesShuffleButton;
     [SerializeField] private MoneyCounter _wallet;
     [SerializeField] private GameButtons _gameButtons;
+    [SerializeField] private BusStop _busStop;
 
     private Dictionary<ButtonDisabler, int> _buttonsPrices = new();
+    private bool _isAllPlacesVacate = true;
+    private ButtonDisabler _buttonPassengerArrange;
 
     private void Start()
     {
-        foreach (ButtonDisabler button in _buttons)
-        {
-            if (button.TryGetComponent(out MoneySpender moneySpender))
-                _buttonsPrices.Add(button, moneySpender.Price);
-            else
-                throw new MissingComponentException(nameof(MoneySpender));
-        }
+        if (_passengersArrangeButton.TryGetComponent(out MoneySpender passengerArrange))
+            _buttonsPrices.Add(_passengersArrangeButton, passengerArrange.Price);
+        else
+            throw new MissingComponentException(nameof(MoneySpender));
+
+        if (_busesShuffleButton.TryGetComponent(out MoneySpender busesShuffle))
+            _buttonsPrices.Add(_busesShuffleButton, busesShuffle.Price);
+        else
+            throw new MissingComponentException(nameof(MoneySpender));
 
         _wallet.ValueChanged += HandleActivateButtons;
         _gameButtons.ButtonsActivated += HandleActivateButtons;
+        _busStop.PlacesVacateChanged += ChangePlacesVacateFlag;
 
         _gameButtons.gameObject.SetActive(false);
     }
@@ -29,22 +37,41 @@ public class ButtonsActivateHandler : MonoBehaviour
     {
         _wallet.ValueChanged -= HandleActivateButtons;
         _gameButtons.ButtonsActivated -= HandleActivateButtons;
+        _busStop.PlacesVacateChanged -= ChangePlacesVacateFlag;
     }
 
     private void HandleActivateButtons(int money)
     {
-        foreach (ButtonDisabler button in _buttons)
-        {
-            if (CheckForEnoughMoney(money, button))
-                button.Enable();
-            else
-                button.Disable();
-        }
+        HandleActivateBusesShuffleButton(money);
+        HandleActivatePassengersArrangeButton(money);
     }
 
     private void HandleActivateButtons()
     {
         HandleActivateButtons(_wallet.Count);
+    }
+
+    private void HandleActivateBusesShuffleButton(int money)
+    {
+        if (CheckForEnoughMoney(money, _busesShuffleButton))
+            _busesShuffleButton.Enable();
+        else
+            _busesShuffleButton.Disable();
+    }
+
+    private void HandleActivatePassengersArrangeButton(int money)
+    {
+        if (_isAllPlacesVacate)
+        {
+            _passengersArrangeButton.Disable();
+
+            return;
+        }
+
+        if (CheckForEnoughMoney(money, _passengersArrangeButton))
+            _passengersArrangeButton.Enable();
+        else
+            _passengersArrangeButton.Disable();
     }
 
     private bool CheckForEnoughMoney(int money, ButtonDisabler button)
@@ -58,5 +85,21 @@ public class ButtonsActivateHandler : MonoBehaviour
             result = money >= _buttonsPrices[button];
 
         return result;
+    }
+
+    private bool CheckForEnoughMoneyForPassengerArrange()
+    {
+        bool result = false;
+
+        if (_wallet.Count > 0)
+            result = _wallet.Count >= _buttonsPrices[_buttonPassengerArrange];
+
+        return result;
+    }
+
+    private void ChangePlacesVacateFlag(bool isAllPlacesVacate)
+    {
+        _isAllPlacesVacate = isAllPlacesVacate;
+        HandleActivatePassengersArrangeButton(_wallet.Count);
     }
 }
