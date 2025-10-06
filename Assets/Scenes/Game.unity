@@ -7912,16 +7912,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 280918856}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1067446810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 576.53}
-  m_SizeDelta: {x: 635, y: 164}
+  m_AnchoredPosition: {x: 0, y: 661}
+  m_SizeDelta: {x: 762, y: 289}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &280918858
 MonoBehaviour:
@@ -7943,7 +7943,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bcd30c46fb44af64dbdea547473ab1e8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f357a61437207244a911e7c8f5cb4f94, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -26882,10 +26882,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2132.747, y: 3638.6897, z: 1}
-  m_Center: {x: 1.9403752, y: -0.45625645, z: 0.013489514}
+  m_Size: {x: 12480.818, y: 19756.705, z: 1}
+  m_Center: {x: 433.2843, y: -5034.217, z: 0.019094067}
 --- !u!1 &626602838
 GameObject:
   m_ObjectHideFlags: 0
@@ -35021,7 +35021,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795907109}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 0.85, y: 0.85, z: 0.0084999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -35029,7 +35029,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -95.600006, y: -319.12}
+  m_AnchoredPosition: {x: -95.600006, y: -287.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &795907111
@@ -38094,7 +38094,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 841bb9f1d95639e4ebdad44164c11f89, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6aa123a9ce4de004b9c6319785e4de99, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -105645,13 +105645,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: LB
       objectReference: {fileID: 0}
+    - target: {fileID: 1729117981132667255, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1813327030403046370, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: m_SizeDelta.x
       value: -5.520045
       objectReference: {fileID: 0}
     - target: {fileID: 1813327030403046370, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -15.540317
+      value: -22.11037
       objectReference: {fileID: 0}
     - target: {fileID: 1813327030403046370, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -105659,7 +105663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1813327030403046370, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -7.7698364
+      value: -11.05481
       objectReference: {fileID: 0}
     - target: {fileID: 3425622759639334392, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: m_Spacing.x
@@ -105763,11 +105767,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: quantityTop
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: quantityAround
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6192657909561084962, guid: e4600ae1924da2b46b20142bbe977e4b, type: 3}
       propertyPath: playerDataPrefab
