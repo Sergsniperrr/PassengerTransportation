@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//[RequireComponent(typeof(QueuePositionsCalculator))]
 public class PassengerPool : MonoBehaviour
 {
     [SerializeField] private Passenger _prefab;

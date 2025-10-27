@@ -17,7 +17,6 @@ public abstract class Spawner<T> : MonoBehaviour where T : SpawnableObject<T>
     protected T GetObject()
     {
         _spawnableObject = Pool.GetObject();
-        //_spawnableObject = Instantiate(_prefab, InitialPosition, Quaternion.identity, transform);
 
         _spawnableObject.Died += PutObject;
 

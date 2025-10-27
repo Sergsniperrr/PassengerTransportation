@@ -49,14 +49,6 @@ public class PassengerQueue : MonoBehaviour
         _spawner.InitializeColors(colors);
     }
 
-    public Passenger GetPassengerByIndex(int index)
-    {
-        if (index < 0 || index >= _queue.Count)
-            throw new ArgumentOutOfRangeException(nameof(index));
-
-        return _queue[index];
-    }
-
     public void Enqueue()
     {
         _passenger = _spawner.Spawn();

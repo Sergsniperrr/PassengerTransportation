@@ -20,17 +20,6 @@ public class UndergroundBuses : MonoBehaviour
         }
     }
 
-    public List<Material> GetSeatsColors()
-    {
-        List<Material> materials = new();
-
-        foreach (BusUnderground bus in _buses)
-            for (int i = 0; i < bus.SeatsCount; i++)
-                materials.Add(bus.Material);
-
-        return materials;
-    }
-
     public BusUnderground Dequeue()
     {
         if (_buses.Count == 0)

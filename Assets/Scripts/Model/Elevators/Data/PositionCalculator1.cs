@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PositionCalculator1
 {
-    //private Vector3 _zeroPosition;
     private Vector3 _shiftOnX;
     private Vector3 _shiftOnY;
 
@@ -10,8 +9,6 @@ public class PositionCalculator1
 
     public PositionCalculator1 (Vector3 zeroPosition, Vector3 topRightPosition, Vector3 bottomLeftPosition, Vector2 maxBusShift)
     {
-        //_zeroPosition = zeroPosition;
-
         Vector3 x = (bottomLeftPosition - zeroPosition) / maxBusShift.x;
         Vector3 y = (topRightPosition - zeroPosition) / maxBusShift.y;
 

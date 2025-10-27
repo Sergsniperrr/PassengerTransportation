@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,19 +6,10 @@ public class QueuePositionsCalculator : MonoBehaviour
     private List<Vector3> _positions = new();
 
     public int QueueSize { get; } = 25;
-    public Vector3[] Positions => _positions.ToArray();
 
     private void Awake()
     {
         CalculatePositions();
-    }
-
-    public Vector3 GetPositionAtIndex(int index)
-    {
-        if (index >= _positions.Count && index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
-
-        return _positions[index];
     }
 
     private void CalculatePositions()

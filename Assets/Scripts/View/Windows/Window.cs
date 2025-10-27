@@ -11,7 +11,6 @@ public class Window : MonoBehaviour
     [SerializeField] private GameButtons _buttons;
     [SerializeField] private float _maxScaleMultiplier = 1.1f;
 
-    private Color _darkBackground = new(0, 0, 0, 0.6f);
     private Vector3 _initialScale;
     private Vector3 _maxScale;
     private float _outsideDuration = 0.05f;
@@ -44,8 +43,6 @@ public class Window : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         _buttons.gameObject.SetActive(false);
-        //_background.DOColor(_darkBackground, _outsideDuration);
-        //_background.raycastTarget = true;
         _background.Show();
 
         _windowsAudio.Play();

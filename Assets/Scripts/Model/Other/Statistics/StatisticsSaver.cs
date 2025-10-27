@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -21,7 +20,7 @@ public static class StatisticsSaver
 
     public static void ExportStatistics(List<string> dataList)
     {
-        string filePath = "C:/Users/Sergsniper/Downloads/GameStats/—татистика“рат»гровыхƒенег.txt";
+        string filePath = "C:/Users/Sergsniper/Downloads/GameStats/StatisticsOnSpendingGameMoney.txt";
 
         using (StreamWriter writer = new(filePath))
         {
@@ -31,6 +30,6 @@ public static class StatisticsSaver
             }
         }
 
-        Debug.Log("ƒанные успешно сохранены в файл");
+        Debug.Log("The data has been successfully saved to a file!");
     }
 }

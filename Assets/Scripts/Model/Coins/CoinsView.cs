@@ -3,6 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class CoinsView : MonoBehaviour
 {
+    private const float MaxAlfa = 1f;
+    private const float MinAlfa = 0f;
+
     private CanvasGroup _canvasGroup;
 
     private void Awake()
@@ -11,8 +14,8 @@ public class CoinsView : MonoBehaviour
     }
 
     public void Show() =>
-        _canvasGroup.alpha = 1f;
+        _canvasGroup.alpha = MaxAlfa;
 
     public void Hide() =>
-        _canvasGroup.alpha = 0f;
+        _canvasGroup.alpha = MinAlfa;
 }

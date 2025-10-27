@@ -16,9 +16,6 @@ public class WindowsHandler : MonoBehaviour
     public SimpleWindow OpenLevelComplete(float delay = 0f) =>
         Open(_windowLevelComplete, delay);
 
-    public SimpleWindow OpenLevelFailed(float delay = 0f) =>
-        Open(_windowLevelFailed, delay);
-
     public void OpenWarningWindow(float delay = 0f)
     {
         WarningWindow warningWindow = (WarningWindow)Open(_windowWarning, delay);

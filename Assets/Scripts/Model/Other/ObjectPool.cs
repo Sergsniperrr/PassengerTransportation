@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class ObjectPool<T> : Component where T : SpawnableObject<T>

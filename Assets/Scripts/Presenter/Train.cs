@@ -6,7 +6,7 @@ public class Train : MonoBehaviour
 {
     [SerializeField] private Door _door;
 
-    private readonly float _startPosition = 25f; //7f;
+    private readonly float _startPosition = 25f;
     private readonly float _stationPosition = -25.9f;
     private readonly float _finalPosition = -100f;
     private readonly float _duration = 1.3f;

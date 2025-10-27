@@ -9,8 +9,6 @@ public class BusPointsCalculator : MonoBehaviour
     private readonly float _pointerShiftOnZ = 2.82f;
     private readonly float _finishPositionX = -36.5f;
 
-    private Vector3 _position = Vector3.zero;
-
     public BusPoints CalculatePoints(int stopIndex, float positionY)
     {
         BusPoints points = new();

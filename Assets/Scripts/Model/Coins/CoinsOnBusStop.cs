@@ -24,7 +24,6 @@ public class CoinsOnBusStop : MonoBehaviour
         for (int i = 0; i < _positions.Length; i++)
         {
             coin = Instantiate(_prefab, _positions[i], Quaternion.identity, transform);
-            //coin.InitializePosition(_positions[i]);
 
             coin.Died += FinishCoinMoving;
 

@@ -5,9 +5,10 @@ using System.Collections;
 
 public class ElevatorMover : MonoBehaviour
 {
+    private readonly float _liftingDuration = 0.7f;
+
     private Platform _platform;
     private Vector3 _topPlatformPosition;
-    private float _liftingDuration = 0.7f;
 
     public event Action<Bus> BusLifted;
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -83,16 +82,6 @@ public class ButtonsActivateHandler : MonoBehaviour
 
         if (money > 0)
             result = money >= _buttonsPrices[button];
-
-        return result;
-    }
-
-    private bool CheckForEnoughMoneyForPassengerArrange()
-    {
-        bool result = false;
-
-        if (_wallet.Count > 0)
-            result = _wallet.Count >= _buttonsPrices[_buttonPassengerArrange];
 
         return result;
     }

@@ -13,6 +13,7 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private GameResetter _resetter;
     [SerializeField] private LevelMaker _levelMaker;
     [SerializeField] private PlayerSaver _saver;
+    [SerializeField] private int _minLevelForViewInterstitial = 6;
 
     private const string IsRestartPrefName = "IsRestart";
     private const string LeaderboardName = "BestCarriers";
@@ -101,8 +102,9 @@ public class LevelsHandler : MonoBehaviour
         _saver.Save();
         YG2.SaveProgress();
         YG2.SetLeaderboard(LeaderboardName, _level.Coins.Score.Count);
-
-        YG2.InterstitialAdvShow();
+        
+        if (_currentLevel >= _minLevelForViewInterstitial)
+            YG2.InterstitialAdvShow();
 
         StartLevel();
     }

@@ -25,7 +25,7 @@ AnimatorState:
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
-  m_CycleOffsetParameter: Offset
+  m_CycleOffsetParameter: _offset
   m_TimeParameter: 
 --- !u!1101 &-680550054599067019
 AnimatorStateTransition:
@@ -61,7 +61,7 @@ AnimatorController:
   m_Name: Passenger
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Offset
+  - m_Name: _offset
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -111,7 +111,7 @@ AnimatorState:
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
-  m_CycleOffsetParameter: Offset
+  m_CycleOffsetParameter: _offset
   m_TimeParameter: 
 --- !u!1107 &4781570803915263911
 AnimatorStateMachine:

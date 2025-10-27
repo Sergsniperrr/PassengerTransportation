@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PassengerAnimator : MonoBehaviour
 {
-    private readonly int Offset = Animator.StringToHash(nameof(Offset));
+    private readonly int _offset = Animator.StringToHash(nameof(_offset));
     private readonly int _isMoving = Animator.StringToHash(nameof(_isMoving));
 
     private Animator _animator;
@@ -11,7 +11,7 @@ public class PassengerAnimator : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _animator.SetFloat(Offset, Random.value);
+        _animator.SetFloat(_offset, Random.value);
     }
 
     public void Move() =>

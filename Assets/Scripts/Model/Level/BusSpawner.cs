@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,7 +20,6 @@ public class BusSpawner : MonoBehaviour
     [SerializeField] private BusColorsShuffler _busColorShuffler;
 
     private Dictionary<int, Bus> _prefabs = new();
-    private LevelsDataContainer _levels;
     private Colors _colors;
 
     public event Action<Bus> BusUndergroundSpawned;
@@ -135,8 +133,6 @@ public class BusSpawner : MonoBehaviour
 
         bus.Activate();
         bus.LeftParkingLot += SendBusForRemove;
-
-        //BusUndergroundSpawned?.Invoke(bus);
     }
 
     private void SendBusForRemove(Bus bus)
