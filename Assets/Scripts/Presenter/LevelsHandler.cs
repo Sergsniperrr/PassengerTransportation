@@ -13,7 +13,7 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private GameResetter _resetter;
     [SerializeField] private LevelMaker _levelMaker;
     [SerializeField] private PlayerSaver _saver;
-    [SerializeField] private int _minLevelForViewInterstitial = 6;
+    [SerializeField] private int _minLevelForViewInterstitial = 10;
 
     private const string IsRestartPrefName = "IsRestart";
     private const string LeaderboardName = "BestCarriers";

@@ -91,8 +91,12 @@ public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters, IP
         FillingCompleted?.Invoke(this);
     }
 
-    public void HandleParkingExit() =>
+    public void HandleParkingExit()
+    {
+        _router.BusStop.AddBusOnWayToStop(this, StopIndex);
+
         LeftParkingLot?.Invoke(this);
+    }
 
     private void Finish()
     {

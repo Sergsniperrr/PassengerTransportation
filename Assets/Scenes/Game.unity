@@ -42210,7 +42210,7 @@ MonoBehaviour:
   _resetter: {fileID: 1780207086}
   _levelMaker: {fileID: 980110512}
   _saver: {fileID: 1832192151}
-  _minLevelForViewInterstitial: 5
+  _minLevelForViewInterstitial: 10
 --- !u!114 &1780207085
 MonoBehaviour:
   m_ObjectHideFlags: 0

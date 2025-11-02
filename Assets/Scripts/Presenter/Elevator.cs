@@ -10,7 +10,6 @@ public class Elevator : MonoBehaviour
     private ElevatorMover _mover;
     private ElevatorView _view;
     private PositionCalculator _calculator;
-    private BusCounter _counter;
     private Bus _bus;
 
     private Vector3 _busPosition;
@@ -19,15 +18,17 @@ public class Elevator : MonoBehaviour
     public event Action<Elevator> Released;
     public event Action<Bus, Elevator> BusLifted;
 
+    public BusCounter Counter { get; private set; }
+
     private void Awake()
     {
         _mover = GetComponent<ElevatorMover>();
         _view = GetComponent<ElevatorView>();
         _calculator = GetComponent<PositionCalculator>();
-        _counter = GetComponentInChildren<BusCounter>();
+        Counter = GetComponentInChildren<BusCounter>();
 
-        if (_counter == null)
-            throw new NullReferenceException(nameof(_counter));
+        if (Counter == null)
+            throw new NullReferenceException(nameof(Counter));
     }
 
     public void SetPosition(Vector3 busPosition)
@@ -46,14 +47,14 @@ public class Elevator : MonoBehaviour
         if (busesCount < 0)
             throw new ArgumentOutOfRangeException(nameof(busesCount));
 
-        _counter.SetCount(busesCount);
+        Counter.SetCount(busesCount);
     }
 
     public BusData ReleaseBus(BusUnderground bus)
     {
         BusData data = new(bus.SeatsCount, _busPosition, _busRotation);
 
-        _counter.Decrement();
+        Counter.Decrement();
 
         return data;
     }
@@ -86,7 +87,7 @@ public class Elevator : MonoBehaviour
     {
         _bus.LeftParkingLot -= ReleaseBus;
 
-        if (_counter.Count > 0)
+        if (Counter.Count > 0)
             Released?.Invoke(this);
     }
 
@@ -94,7 +95,7 @@ public class Elevator : MonoBehaviour
     {
         _mover.BusLifted -= ActivateBus;
 
-        if (_counter.Count == 0)
+        if (Counter.Count == 0)
             _view.Hide();
 
         BusLifted?.Invoke(bus, this);

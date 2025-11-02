@@ -12,6 +12,8 @@ public class ElevatorsHandler : MonoBehaviour
 
     public event Action<Elevator> ElevatorReleased;
 
+    public Elevator[] Elevators => _elevators.ToArray();
+
     private void OnDisable()
     {
         foreach (Elevator elevator in _elevators)

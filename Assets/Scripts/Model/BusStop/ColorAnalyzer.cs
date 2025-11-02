@@ -5,30 +5,30 @@ public class ColorAnalyzer : MonoBehaviour
 {
     private const int FailedIndex = -1;
 
-    public int TrySendPassengerToPlatform(Material passengerColor, Bus[] stops)
+    public int TrySendPassengerToPlatform(Material passengerColor, Spot[] spots)
     {
-        int stopIndex = GetStopIndexWithBusOfDesiredColor(passengerColor, stops);
+        int stopIndex = GetStopIndexWithBusOfDesiredColor(passengerColor, spots);
 
-        if (stopIndex == FailedIndex || stops[stopIndex] == null)
+        if (stopIndex == FailedIndex || spots[stopIndex].BusAtBusStop == null)
             return FailedIndex;
 
-        if (stops[stopIndex].IsEmptySeat)
+        if (spots[stopIndex].BusAtBusStop.IsEmptySeat)
             return stopIndex;
 
         return FailedIndex;
     }
 
-    public bool CheckDesiredColor(Material passengerColor, Bus[] stops) =>
-        stops.Any(stop => stop.Material == passengerColor);
+    public bool CheckDesiredColor(Material passengerColor, Spot[] spots) =>
+        spots.Any(spot => spot.BusAtBusStop.Material == passengerColor);
 
-    private int GetStopIndexWithBusOfDesiredColor(Material passengerColor, Bus[] stops)
+    private int GetStopIndexWithBusOfDesiredColor(Material passengerColor, Spot[] spots)
     {
-        for (int i = 0; i < stops.Length; i++)
+        for (int i = 0; i < spots.Length; i++)
         {
-            if (stops[i] == null || passengerColor == null)
+            if (spots[i].BusAtBusStop == null || passengerColor == null)
                 continue;
 
-            if (stops[i].Material == passengerColor)
+            if (spots[i].BusAtBusStop.Material == passengerColor)
                 return i;
         }
 

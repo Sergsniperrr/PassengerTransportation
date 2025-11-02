@@ -15,13 +15,13 @@ public class BusRouter : MonoBehaviour
 
     private BusMover _mover;
     private TriggerHandler _trigger;
-    private IBusReceiver _busStop;
     private BusView _view;
     private PointsHandler _pointsHandler;
     private DirectionHandler _directionHandler;
 
     public event Action WayFinished;
 
+    public IBusReceiver BusStop { get; private set; }
     public int StopIndex { get; private set; } = FailedIndex;
     public bool IsActive { get; private set; } = true;
 
@@ -36,7 +36,7 @@ public class BusRouter : MonoBehaviour
 
     public void InitializeData(IBusReceiver busStop, BusPointsCalculator calculator, Effects effects)
     {
-        _busStop = busStop ?? throw new ArgumentNullException(nameof(busStop));
+        BusStop = busStop ?? throw new ArgumentNullException(nameof(busStop));
         _view.InitializeData(effects);
 
         _pointsHandler.InitializeData(calculator);
@@ -44,7 +44,7 @@ public class BusRouter : MonoBehaviour
 
     public void StartMove()
     {
-        StopIndex = _busStop.GetFreeStopIndex();
+        StopIndex = BusStop.GetFreeStopIndex();
 
         if (StopIndex == FailedIndex)
             return;
@@ -74,7 +74,7 @@ public class BusRouter : MonoBehaviour
 
         _view.DisableSmoke();
         _mover.GoBackwardsToPoint();
-        _busStop.ReleaseStop(StopIndex);
+        BusStop.ReleaseStop(StopIndex);
 
         _pointsHandler.ReturnedToInitialPlace += Activate;
     }
@@ -88,7 +88,7 @@ public class BusRouter : MonoBehaviour
     {
         yield return _waitForStopToLeave;
 
-        _busStop.ReleaseStop(StopIndex);
+        BusStop.ReleaseStop(StopIndex);
         _mover.MoveOutFromBusStop();
         _view.EnableSmoke();
 
@@ -111,7 +111,7 @@ public class BusRouter : MonoBehaviour
         _pointsHandler.ArrivedToBusStop -= WaitForFilling;
 
         if (TryGetComponent(out Bus bus))
-            _busStop.TakeBus(bus, StopIndex);
+            BusStop.TakeBus(bus, StopIndex);
     }
 
     private void Finish()

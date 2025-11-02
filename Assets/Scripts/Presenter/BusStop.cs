@@ -20,8 +20,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     private ILevelCompleteable _levelCompleter;
     private ColorAnalyzer _colorAnalyzer;
     private WaitForSeconds _delayBeforeLeave = new(0.3f);
-    private bool[] _reservations;
-    private Bus[] _stops;
+    private Spot[] _spots;
     private Bus _outGoingBus;
     private Queue<Bus> _outGoingBuses = new();
     private Coroutine _coroutine;
@@ -44,11 +43,10 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
         _colorAnalyzer = GetComponent<ColorAnalyzer>();
 
-        _reservations = new bool[_stopsCount];
-        _stops = new Bus[_stopsCount];
+        _spots = new Spot[_initialFreeStopsCount];
 
         for (int i = 0; i < _initialFreeStopsCount; i++)
-            _reservations[i] = true;
+            _spots[i] = new Spot(true);
     }
 
     private void Update()
@@ -70,15 +68,15 @@ public class BusStop : MonoBehaviour, IBusReceiver
         _levelCompleter = levelCompleter ?? throw new ArgumentNullException(nameof(levelCompleter));
 
     public Bus GetBusOnStopByIndex(int index) =>
-        _stops[index];
+        _spots[index].BusAtBusStop;
 
     public int GetFreeStopIndex()
     {
         for (int i = 0; i < _stopsCount; i++)
         {
-            if (_reservations[i])
+            if (_spots[i].IsFree)
             {
-                _reservations[i] = false;
+                _spots[i].Reserve();
                 IsAllPlacesReleased = false;
                 return i;
             }
@@ -89,13 +87,12 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
     public void ReleaseStop(int index)
     {
-        if (index < 0 || index >= _stops.Length)
+        if (index < 0 || index >= _spots.Length)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        _reservations[index] = true;
-        _stops[index] = null;
+        _spots[index].ReleaseStop();
 
-        int occupiedPlaceCount = _stops.Count(place => place != null);
+        int occupiedPlaceCount = _spots.Count(spot => spot.BusAtBusStop != null || spot.BusOnWayToStop != null);
 
         if (occupiedPlaceCount == 0)
         {
@@ -106,12 +103,23 @@ public class BusStop : MonoBehaviour, IBusReceiver
         }
     }
 
+    public void AddBusOnWayToStop(Bus bus, int spotIndex)
+    {
+        if (spotIndex < 0 || spotIndex >= _stopsCount)
+            throw new ArgumentOutOfRangeException(nameof(spotIndex));
+
+        if (bus == null)
+            throw new ArgumentNullException(nameof(bus));
+
+        _spots[spotIndex].SetBusOnWayToStop(bus);
+    }
+
     public void TakeBus(Bus bus, int platformIndex)
     {
-        if (platformIndex < 0 || platformIndex >= _stops.Length)
+        if (platformIndex < 0 || platformIndex >= _spots.Length)
             throw new ArgumentOutOfRangeException(nameof(platformIndex));
 
-        _stops[platformIndex] = bus;
+        _spots[platformIndex].PlaceBusInStop();
         IsAllPlacesReleased = false;
         BusReceived?.Invoke(bus);
 
@@ -124,11 +132,11 @@ public class BusStop : MonoBehaviour, IBusReceiver
     {
         if (_queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
         {
-            int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _stops);
+            int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _spots);
 
             if (stopIndex != FailedIndex)
             {
-                bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_stops[stopIndex]);
+                bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_spots[stopIndex].BusAtBusStop);
 
                 if (isEmptySeat)
                 {
@@ -149,6 +157,17 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
         if (_coroutine != null)
             StopCoroutine(_coroutine);
+    }
+
+    public bool GetReservation(int spotIndex) =>
+        _spots[spotIndex].IsFree;
+
+    public Bus GetBus(int spotIndex)
+    {
+        if (_spots[spotIndex].BusOnWayToStop != null)
+            return _spots[spotIndex].BusOnWayToStop;
+
+        return _spots[spotIndex].BusAtBusStop;
     }
 
     private void GetOnBus(Passenger passenger)
@@ -189,7 +208,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
         if (_isFreePlace == false)
             return;
 
-        if (_stops.Contains(null))
+        if (_spots.Any(spot => spot.BusAtBusStop == null))
             return;
 
         _isFreePlace = false;
@@ -201,8 +220,8 @@ public class BusStop : MonoBehaviour, IBusReceiver
     {
         yield return _waitForCheckGameOver;
 
-        if (_stops.Contains(null) == false &&
-            _colorAnalyzer.CheckDesiredColor(_queue.LastPassenger?.Material, _stops) == false)
+        if (_spots.Any(spot => spot.BusAtBusStop == null) == false &&
+            _colorAnalyzer.CheckDesiredColor(_queue.LastPassenger?.Material, _spots) == false)
         {
             AllPlacesOccupied?.Invoke();
         }

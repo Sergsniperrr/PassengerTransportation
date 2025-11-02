@@ -11,6 +11,7 @@ namespace YG
         [field: SerializeField] public int TotalBusesCount { get; private set; }
         [field: SerializeField] public int TotalAdsViewsCount { get; private set; }
         [field: SerializeField] public float PlayerSkill { get; private set; }
+        //[field: SerializeField] public Save LocalProgress { get; private set; }
 
         public void WriteLevel(int level) =>
             Level = level >= 0 ? level : throw new ArgumentOutOfRangeException(nameof(level));
@@ -29,5 +30,8 @@ namespace YG
 
         public void WritePlayerSkill(float playerSkill) =>
             PlayerSkill = playerSkill >= 0f ? playerSkill : throw new ArgumentOutOfRangeException(nameof(playerSkill));
+
+        //public void SaveLocalProgress(Save save) =>
+        //    LocalProgress = save;
     }
 }
