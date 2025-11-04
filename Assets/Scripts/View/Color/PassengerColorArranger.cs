@@ -7,12 +7,13 @@ public class PassengerColorArranger : MonoBehaviour
     [SerializeField] private PassengerQueue _queue;
     [SerializeField] private BusStop _busStop;
     [SerializeField] private ColorsHandler _colorHandler;
+    [SerializeField] private ColorAnalyzer _colors;
 
     public event Action PassengersArranged;
 
     public void ArrangeColors()
     {
-        Queue<Material> freePlacesColors = GetFreePlacesColorsOfBuses();
+        Queue<Material> freePlacesColors = _colors.GetAllFreeColors();
         List<Material> colors = _colorHandler.Colors;
         Passenger[] visibleQueue = _queue.Passengers;
         Material materialBuffer;
@@ -44,30 +45,8 @@ public class PassengerColorArranger : MonoBehaviour
 
         _colorHandler.SetColorsQueue(colors);
         _busStop.ResetFreePlaces();
+        _busStop.HandlePassengersBoarding();
 
         PassengersArranged?.Invoke();
-    }
-
-    private Queue<Material> GetFreePlacesColorsOfBuses()
-    {
-        Queue<Material> colors = new();
-        int stopsCount = _busStop.StopsCount;
-        Bus bus;
-        int freeSeatsCount;
-
-        for (int i = 0; i < stopsCount; i++)
-        {
-            bus = _busStop.GetBusOnStopByIndex(i);
-
-            if (bus == null || bus.FreeSeatsCount == 0)
-                continue;
-
-            freeSeatsCount = bus.FreeSeatsCount;
-
-            for (int counter = 0; counter < freeSeatsCount; counter++)
-                colors.Enqueue(bus.Material);
-        }
-
-        return colors;
     }
 }

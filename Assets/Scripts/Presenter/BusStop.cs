@@ -49,6 +49,16 @@ public class BusStop : MonoBehaviour, IBusReceiver
             _spots[i] = new Spot(true);
     }
 
+    private void OnEnable()
+    {
+        _queue.LastPassengerChanged += HandlePassengersBoarding;
+    }
+
+    private void OnDisable()
+    {
+        _queue.LastPassengerChanged -= HandlePassengersBoarding;
+    }
+
     private void Update()
     {
         if (_updateCounter > 0)
@@ -57,7 +67,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
         }
         else
         {
-            HandlePassengersBoarding();
+            //HandlePassengersBoarding();
             HandleBusesMoveOut();
 
             _updateCounter = _delayOfUpdateQueue;
@@ -119,8 +129,11 @@ public class BusStop : MonoBehaviour, IBusReceiver
         if (platformIndex < 0 || platformIndex >= _spots.Length)
             throw new ArgumentOutOfRangeException(nameof(platformIndex));
 
+        _colorAnalyzer.AdFreePlaces(bus.Material, platformIndex, bus.SeatsCount);
         _spots[platformIndex].PlaceBusInStop();
         IsAllPlacesReleased = false;
+        HandlePassengersBoarding();
+
         BusReceived?.Invoke(bus);
 
         PlacesVacateChanged?.Invoke(false);
@@ -128,21 +141,41 @@ public class BusStop : MonoBehaviour, IBusReceiver
         bus.FillingCompleted += AddToLeavingBusesQueue;
     }
 
+    //public void HandlePassengersBoarding()
+    //{
+    //    if (_queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
+    //    {
+    //        int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _spots);
+
+    //        if (stopIndex != FailedIndex)
+    //        {
+    //            bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_spots[stopIndex].BusAtBusStop);
+
+    //            if (isEmptySeat)
+    //            {
+    //                _queue.LastPassenger.GotOnBus += GetOnBus;
+    //                _queue.RemoveLastPassenger();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            HandleGameOver();
+    //        }
+    //    }
+    //}
+
     public void HandlePassengersBoarding()
     {
         if (_queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
         {
-            int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _spots);
+            int stopIndex = _colorAnalyzer.GetPlatformOfDesiredColor(_queue.LastPassenger.Material);
 
             if (stopIndex != FailedIndex)
             {
-                bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_spots[stopIndex].BusAtBusStop);
+                _queue.LastPassenger.GotOnBus += GetOnBus;
 
-                if (isEmptySeat)
-                {
-                    _queue.LastPassenger.GotOnBus += GetOnBus;
-                    _queue.RemoveLastPassenger();
-                }
+                _queue.LastPassenger.GetOnBus(_spots[stopIndex].BusAtBusStop);
+                _queue.RemoveLastPassenger();
             }
             else
             {

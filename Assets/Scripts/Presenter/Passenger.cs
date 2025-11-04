@@ -56,6 +56,15 @@ public class Passenger : MonoBehaviour, ISenderOfGettingOnBus
         GotOnBus?.Invoke(this);
     }
 
+    public void GetOnBus(Bus bus)
+    {
+        if (bus == null)
+            throw new ArgumentNullException(nameof(bus));
+
+        Bus = bus;
+        _router.GetOnBus(bus);
+    }
+
     public bool TryGetOnBus(Bus bus)
     {
         if (bus == null)

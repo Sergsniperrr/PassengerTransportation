@@ -5,6 +5,8 @@ public class Colors : MonoBehaviour
 {
     [SerializeField] private List<Material> _materals;
 
+    public int MaterialsCount => _materals.Count;
+
     public Material GetRandomColor() =>
         _materals[Random.Range(0, _materals.Count)];
 

@@ -18,6 +18,7 @@ public class PassengerQueue : MonoBehaviour
     private bool _isNeedUpdateLastPassenger;
 
     public event Action PassengersCreated;
+    public event Action LastPassengerChanged;
 
     public Passenger LastPassenger { get; private set; }
     public Passenger[] Passengers => _queue.ToArray();
@@ -39,6 +40,8 @@ public class PassengerQueue : MonoBehaviour
             LastPassenger.SpeedUp();
             _changeLastPassengerCounter = _changeLastPassengerDelay;
             _isNeedUpdateLastPassenger = false;
+
+            LastPassengerChanged.Invoke();
         }
 
         _changeLastPassengerCounter -= Time.deltaTime;

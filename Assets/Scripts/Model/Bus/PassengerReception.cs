@@ -16,15 +16,16 @@ public class PassengerReception : MonoBehaviour
     private Vector3[] _coordinates;
     private bool[] _reservations;
     private Passenger[] _places;
+    public int _passengersCounter = 0;
     private ISenderOfFillingCompletion _sender;
 
     public int EmptySeatCount => _reservations.Where(element => element == true).Count();
     public bool IsEmptySeat => EmptySeatCount > 0;
-    public Passenger[] Passengers => _places.ToArray();
 
     private void Awake()
     {
         _sender = GetComponent<Bus>();
+
         _reservations = new bool[Count];
         _places = new Passenger[Count];
         _coordinates = CalculatePlacesCoordinates();
@@ -43,19 +44,37 @@ public class PassengerReception : MonoBehaviour
         return freePlaceIndex;
     }
 
+    //public void TakePassenger(Passenger passenger)
+    //{
+    //    if (passenger == null)
+    //        throw new ArgumentNullException(nameof(passenger));
+
+    //    passenger.transform.SetParent(transform);
+    //    passenger.transform.localPosition = _coordinates[passenger.BusPlaceIndex];
+    //    passenger.transform.localRotation = Quaternion.Euler(Vector3.zero);
+    //    passenger.gameObject.transform.localScale = _passengerLocalScale;
+
+    //    _places[passenger.BusPlaceIndex] = passenger;
+
+    //    if (CheckFill())
+    //    {
+    //        _sender.CompleteFilling();
+    //    }
+    //}
+
     public void TakePassenger(Passenger passenger)
     {
         if (passenger == null)
             throw new ArgumentNullException(nameof(passenger));
 
         passenger.transform.SetParent(transform);
-        passenger.transform.localPosition = _coordinates[passenger.BusPlaceIndex];
+        passenger.transform.localPosition = _coordinates[_passengersCounter];
         passenger.transform.localRotation = Quaternion.Euler(Vector3.zero);
         passenger.gameObject.transform.localScale = _passengerLocalScale;
 
-        _places[passenger.BusPlaceIndex] = passenger;
+        _passengersCounter++;
 
-        if (CheckFill())
+        if (_passengersCounter == Count)
         {
             _sender.CompleteFilling();
         }

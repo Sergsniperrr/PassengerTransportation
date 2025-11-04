@@ -15065,6 +15065,7 @@ MonoBehaviour:
   <FirstPlaceCoordinate>k__BackingField: {x: -0.257, y: -0.27, z: 1.177}
   <SideInterval>k__BackingField: 0.51
   <BackInterval>k__BackingField: -0.617
+  _passengersCounter: 0
 --- !u!114 &613970559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21676,6 +21677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1a6bda6116ea7c41967cd7c1925fa60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _colors: {fileID: 1780207078}
 --- !u!1 &720464518
 GameObject:
   m_ObjectHideFlags: 0
@@ -22383,6 +22385,7 @@ MonoBehaviour:
   _queue: {fileID: 358280146}
   _busStop: {fileID: 710734712}
   _colorHandler: {fileID: 1780207079}
+  _colors: {fileID: 710734714}
 --- !u!95 &764639205
 Animator:
   serializedVersion: 5
@@ -31680,6 +31683,7 @@ MonoBehaviour:
   <FirstPlaceCoordinate>k__BackingField: {x: -0.257, y: -0.27, z: 1.177}
   <SideInterval>k__BackingField: 0.51
   <BackInterval>k__BackingField: -0.617
+  _passengersCounter: 0
 --- !u!114 &1241409862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52723,6 +52727,7 @@ MonoBehaviour:
   <FirstPlaceCoordinate>k__BackingField: {x: -0.257, y: -0.27, z: 1.177}
   <SideInterval>k__BackingField: 0.51
   <BackInterval>k__BackingField: -0.617
+  _passengersCounter: 0
 --- !u!114 &1840261544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58719,6 +58724,7 @@ MonoBehaviour:
   <FirstPlaceCoordinate>k__BackingField: {x: -0.257, y: -0.27, z: 1.177}
   <SideInterval>k__BackingField: 0.51
   <BackInterval>k__BackingField: -0.617
+  _passengersCounter: 0
 --- !u!114 &1934685591
 MonoBehaviour:
   m_ObjectHideFlags: 0
