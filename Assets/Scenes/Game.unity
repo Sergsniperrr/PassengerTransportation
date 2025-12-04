@@ -6578,7 +6578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &234565653
 Transform:
   m_ObjectHideFlags: 0
@@ -42207,6 +42207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: {fileID: 1780207077}
+  _tutorialFinger: {fileID: 234565655}
   _busSpawner: {fileID: 1780207082}
   _startMenu: {fileID: 2039270603}
   _music: {fileID: 1484695696}
@@ -42214,7 +42215,7 @@ MonoBehaviour:
   _resetter: {fileID: 1780207086}
   _levelMaker: {fileID: 980110512}
   _saver: {fileID: 1832192151}
-  _minLevelForViewInterstitial: 10
+  _minLevelForViewInterstitial: 5
 --- !u!114 &1780207085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59878,8 +59879,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: {fileID: 1780207077}
-  _minLevelForIntersDisplay: 40
-  _interval: 200
+  _minLevelForIntersDisplay: 1
+  _interval: 180
   _buttons:
   - {fileID: 1429991717}
   - {fileID: 764639201}

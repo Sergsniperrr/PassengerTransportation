@@ -22,28 +22,19 @@ public class TutorialFinger : MonoBehaviour
     private float _shift = 1f;
     private float _moveDuration = 0.25f;
 
-    private void OnEnable()
-    {
-        if (YG2.saves.Level == 1)
-        {
-            _pointsQueue = new Queue<Vector3>(_points);
-
-            _level.GameActivated += Activate;
-
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
-
-    }
-
     private void OnDisable()
     {
         if (_bus != null)
             _bus.LeftParkingLot -= PointNextPosition;
 
         _tweener.Kill();
+    }
+
+    public void Enable()
+    {
+        _pointsQueue = new Queue<Vector3>(_points);
+
+        _level.GameActivated += Activate;
     }
 
     private void Activate(Queue<Bus> buses)

@@ -6,6 +6,7 @@ using YG;
 public class LevelsHandler : MonoBehaviour
 {
     [SerializeField] private Level _level;
+    [SerializeField] private TutorialFinger _tutorialFinger;
     [SerializeField] private BusSpawner _busSpawner;
     [SerializeField] private StartMenu _startMenu;
     [SerializeField] private Music _music;
@@ -13,10 +14,11 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private GameResetter _resetter;
     [SerializeField] private LevelMaker _levelMaker;
     [SerializeField] private PlayerSaver _saver;
-    [SerializeField] private int _minLevelForViewInterstitial = 10;
+    [SerializeField] private int _minLevelForViewInterstitial = 5;
 
     private const string IsRestartPrefName = "IsRestart";
     private const string LeaderboardName = "BestCarriers";
+    private const int FirstLevel = 1;
 
     private LevelsDataContainer _levelsData;
     private int _currentLevel;
@@ -30,6 +32,12 @@ public class LevelsHandler : MonoBehaviour
     private void Start()
     {
         _currentLevel = YG2.saves.Level;
+
+        if (_currentLevel == FirstLevel)
+        {
+            _tutorialFinger.gameObject.SetActive(true);
+            _tutorialFinger.Enable();
+        }
 
         if (_levelMaker.gameObject.activeSelf == false)
             StartGame();
@@ -102,7 +110,7 @@ public class LevelsHandler : MonoBehaviour
         _saver.Save();
         YG2.SaveProgress();
         YG2.SetLeaderboard(LeaderboardName, _level.Coins.Score.Count);
-        
+
         if (_currentLevel >= _minLevelForViewInterstitial)
             YG2.InterstitialAdvShow();
 
