@@ -15,7 +15,7 @@ public class BusStop : MonoBehaviour, IBusReceiver
     [SerializeField] private PassengerQueue _queue;
 
     private readonly float _delayOfUpdateQueue = 0.06f;
-    private readonly WaitForSeconds _waitForCheckGameOver = new(1f);
+    private readonly WaitForSeconds _waitForCheckGameOver = new(1.2f);
 
     private ILevelCompleteable _levelCompleter;
     private ColorAnalyzer _colorAnalyzer;
@@ -67,7 +67,6 @@ public class BusStop : MonoBehaviour, IBusReceiver
         }
         else
         {
-            //HandlePassengersBoarding();
             HandleBusesMoveOut();
 
             _updateCounter = _delayOfUpdateQueue;
@@ -140,29 +139,6 @@ public class BusStop : MonoBehaviour, IBusReceiver
 
         bus.FillingCompleted += AddToLeavingBusesQueue;
     }
-
-    //public void HandlePassengersBoarding()
-    //{
-    //    if (_queue.LastPassenger != null && _queue.LastPassenger.IsFinishedMovement)
-    //    {
-    //        int stopIndex = _colorAnalyzer.TrySendPassengerToPlatform(_queue.LastPassenger.Material, _spots);
-
-    //        if (stopIndex != FailedIndex)
-    //        {
-    //            bool isEmptySeat = _queue.LastPassenger.TryGetOnBus(_spots[stopIndex].BusAtBusStop);
-
-    //            if (isEmptySeat)
-    //            {
-    //                _queue.LastPassenger.GotOnBus += GetOnBus;
-    //                _queue.RemoveLastPassenger();
-    //            }
-    //        }
-    //        else
-    //        {
-    //            HandleGameOver();
-    //        }
-    //    }
-    //}
 
     public void HandlePassengersBoarding()
     {

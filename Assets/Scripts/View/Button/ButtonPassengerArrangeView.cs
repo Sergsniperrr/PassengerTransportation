@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(ButtonPulsation))]
 public class ButtonPassengerArrangeView : MonoBehaviour
 {
+    private readonly float _duration = 5f;
+
     private Button _button;
     private Animator _animator;
     private ButtonPulsation _pulsation;
@@ -33,11 +36,22 @@ public class ButtonPassengerArrangeView : MonoBehaviour
     {
         _animator.enabled = false;
         _pulsation.enabled = true;
+
+        StartCoroutine(Pulsate());
     }
 
     private void DisablePulsation()
     {
         _animator.enabled = true;
         _pulsation.enabled = false;
+    }
+
+    private IEnumerator Pulsate()
+    {
+        WaitForSeconds wait = new(_duration);
+
+        yield return wait;
+
+        DisablePulsation();
     }
 }
