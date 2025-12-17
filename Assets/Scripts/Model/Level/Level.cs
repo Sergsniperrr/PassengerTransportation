@@ -27,7 +27,6 @@ public class Level : MonoBehaviour,ILevelCompleteable
     private List<Bus> _buses;
     private UndergroundBuses _undergroundBuses;
     private MouseInputHandler _input;
-    private Music _menuMusic;
     private Coroutine _coroutine;
     private bool _canBusMove;
 
@@ -62,11 +61,10 @@ public class Level : MonoBehaviour,ILevelCompleteable
         _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
     }
 
-    public void Begin(int levelNumber, Music music, List<Bus> buses, UndergroundBuses undergroundBuses)
+    public void Begin(int levelNumber, List<Bus> buses, UndergroundBuses undergroundBuses)
     {
         CurrentLevel = levelNumber;
         _textLevelNomber.text = $"{levelNumber}";
-        _menuMusic = music;
         _buses = buses ?? throw new ArgumentNullException(nameof(buses));
 
         _undergroundBuses = undergroundBuses != null ?
@@ -108,7 +106,6 @@ public class Level : MonoBehaviour,ILevelCompleteable
         _queue.InitializeColorsSpawner(_colorsHandler);
         _train.MoveToStation();
         _passengerCounter.SetValue(_colorsHandler.ColorsCount);
-        _menuMusic.Stop();
         _music.Play();
 
         Started?.Invoke();

@@ -9,7 +9,6 @@ public class LevelsHandler : MonoBehaviour
     [SerializeField] private TutorialFinger _tutorialFinger;
     [SerializeField] private BusSpawner _busSpawner;
     [SerializeField] private StartMenu _startMenu;
-    [SerializeField] private Music _music;
     [SerializeField] private TextAsset _jsonResource;
     [SerializeField] private GameResetter _resetter;
     [SerializeField] private LevelMaker _levelMaker;
@@ -26,7 +25,6 @@ public class LevelsHandler : MonoBehaviour
     private void Awake()
     {
         _levelsData = DataLoader.GetLevelData(_jsonResource);
-        _music.Stop();
     }
 
     private void Start()
@@ -82,8 +80,7 @@ public class LevelsHandler : MonoBehaviour
         BusData[] levelData = _levelsData.GetLevel(levelCalculator.GetSimpleLevel()).Buses;
         _busSpawner.InitializeUndergroundBuses(levelCalculator, levelData);
 
-        _music.Play();
-        _level.Begin(_currentLevel, _music, _busSpawner.SpawnLevel(levelData), _busSpawner.UndergroundBuses);
+        _level.Begin(_currentLevel, _busSpawner.SpawnLevel(levelData), _busSpawner.UndergroundBuses);
         _level.ChangeGameActivity(false);
 
         _busSpawner.BusLeftParkingLot += _level.RemoveBus;
