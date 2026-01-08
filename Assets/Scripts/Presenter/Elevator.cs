@@ -1,103 +1,106 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(ElevatorMover))]
-[RequireComponent(typeof(PositionCalculator))]
-public class Elevator : MonoBehaviour
+namespace Scripts.Presenter
 {
-    [field: SerializeField] public string Name { get; private set; }
-
-    private ElevatorMover _mover;
-    private ElevatorView _view;
-    private PositionCalculator _calculator;
-    private Bus _bus;
-
-    private Vector3 _busPosition;
-    private Quaternion _busRotation;
-
-    public event Action<Elevator> Released;
-    public event Action<Bus, Elevator> BusLifted;
-
-    public BusCounter Counter { get; private set; }
-
-    private void Awake()
+    [RequireComponent(typeof(ElevatorMover))]
+    [RequireComponent(typeof(PositionCalculator))]
+    public class Elevator : MonoBehaviour
     {
-        _mover = GetComponent<ElevatorMover>();
-        _view = GetComponent<ElevatorView>();
-        _calculator = GetComponent<PositionCalculator>();
-        Counter = GetComponentInChildren<BusCounter>();
+        [field: SerializeField] public string Name { get; private set; }
 
-        if (Counter == null)
-            throw new NullReferenceException(nameof(Counter));
-    }
+        private ElevatorMover _mover;
+        private ElevatorView _view;
+        private PositionCalculator _calculator;
+        private Bus _bus;
 
-    public void SetPosition(Vector3 busPosition)
-    {
-        _calculator.Calculate(busPosition);
-    }
+        private Vector3 _busPosition;
+        private Quaternion _busRotation;
 
-    public void InitializeData(Vector3 busPosition, Quaternion busRotation)
-    {
-        _busPosition = busPosition;
-        _busRotation = busRotation;
-    }
+        public event Action<Elevator> Released;
+        public event Action<Bus, Elevator> BusLifted;
 
-    public void SetBusesCounter(int busesCount)
-    {
-        if (busesCount < 0)
-            throw new ArgumentOutOfRangeException(nameof(busesCount));
+        public BusCounter Counter { get; private set; }
 
-        Counter.SetCount(busesCount);
-    }
+        private void Awake()
+        {
+            _mover = GetComponent<ElevatorMover>();
+            _view = GetComponent<ElevatorView>();
+            _calculator = GetComponent<PositionCalculator>();
+            Counter = GetComponentInChildren<BusCounter>();
 
-    public BusData ReleaseBus(BusUnderground bus)
-    {
-        BusData data = new(bus.SeatsCount, _busPosition, _busRotation);
+            if (Counter == null)
+                throw new NullReferenceException(nameof(Counter));
+        }
 
-        Counter.Decrement();
+        public void SetPosition(Vector3 busPosition)
+        {
+            _calculator.Calculate(busPosition);
+        }
 
-        return data;
-    }
+        public void InitializeData(Vector3 busPosition, Quaternion busRotation)
+        {
+            _busPosition = busPosition;
+            _busRotation = busRotation;
+        }
 
-    public void LiftBus(Bus bus, float delay = 0f)
-    {
-        _bus = bus != null ? bus : throw new ArgumentNullException(nameof(bus));
+        public void SetBusesCounter(int busesCount)
+        {
+            if (busesCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(busesCount));
 
-        _mover.LiftBus(bus, delay);
+            Counter.SetCount(busesCount);
+        }
 
-        _mover.BusLifted += ActivateBus;
-        _bus.LeftParkingLot += ReleaseBus;
-    }
+        public BusData ReleaseBus(BusUnderground bus)
+        {
+            BusData data = new(bus.SeatsCount, _busPosition, _busRotation);
 
-    public void DetectFirstBus()
-    {
-        Platform platform = GetComponentInChildren<Platform>();
-        float delay = 0.5f;
+            Counter.Decrement();
 
-        if (platform == null)
-            throw new NullReferenceException(nameof(platform));
+            return data;
+        }
 
-        Bus bus = platform.InitializeFirstBus();
+        public void LiftBus(Bus bus, float delay = 0f)
+        {
+            _bus = bus != null ? bus : throw new ArgumentNullException(nameof(bus));
 
-        if (bus != null)
-            LiftBus(bus, delay);
-    }
+            _mover.LiftBus(bus, delay);
 
-    private void ReleaseBus(Bus _)
-    {
-        _bus.LeftParkingLot -= ReleaseBus;
+            _mover.BusLifted += ActivateBus;
+            _bus.LeftParkingLot += ReleaseBus;
+        }
 
-        if (Counter.Count > 0)
-            Released?.Invoke(this);
-    }
+        public void DetectFirstBus()
+        {
+            Platform platform = GetComponentInChildren<Platform>();
+            float delay = 0.5f;
 
-    private void ActivateBus(Bus bus)
-    {
-        _mover.BusLifted -= ActivateBus;
+            if (platform == null)
+                throw new NullReferenceException(nameof(platform));
 
-        if (Counter.Count == 0)
-            _view.Hide();
+            Bus bus = platform.InitializeFirstBus();
 
-        BusLifted?.Invoke(bus, this);
+            if (bus != null)
+                LiftBus(bus, delay);
+        }
+
+        private void ReleaseBus(Bus _)
+        {
+            _bus.LeftParkingLot -= ReleaseBus;
+
+            if (Counter.Count > 0)
+                Released?.Invoke(this);
+        }
+
+        private void ActivateBus(Bus bus)
+        {
+            _mover.BusLifted -= ActivateBus;
+
+            if (Counter.Count == 0)
+                _view.Hide();
+
+            BusLifted?.Invoke(bus, this);
+        }
     }
 }

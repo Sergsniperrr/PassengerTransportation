@@ -1,78 +1,81 @@
 using System;
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
-public class Train : MonoBehaviour
+namespace Scripts.Presenter
 {
-    [SerializeField] private Door _door;
-
-    private readonly float _startPosition = 25f;
-    private readonly float _stationPosition = -25.9f;
-    private readonly float _finalPosition = -100f;
-    private readonly float _duration = 1.3f;
-
-    private Renderer[] _renderers;
-
-    public event Action ArrivedAtStation;
-    public event Action LeftStation;
-
-    private void Awake()
+    public class Train : MonoBehaviour
     {
-        _renderers = GetComponentsInChildren<Renderer>();
-    }
+        [SerializeField] private Door _door;
 
-    private void OnEnable()
-    {
-        _door.Opened += FinishMoveToStation;
-        _door.Closed += MoveOutFromStation;
-    }
+        private readonly float _startPosition = 25f;
+        private readonly float _stationPosition = -25.9f;
+        private readonly float _finalPosition = -100f;
+        private readonly float _duration = 1.3f;
 
-    private void OnDisable()
-    {
-        _door.Opened -= FinishMoveToStation;
-        _door.Closed -= MoveOutFromStation;
-    }
+        private Renderer[] _renderers;
 
-    public void MoveToStation()
-    {
-        ReturnToStartPosition();
-        ChangeVisible(true);
-        transform.DOMoveX(_stationPosition, _duration)
-            .SetEase(Ease.OutSine)
-            .OnComplete(() =>
+        public event Action ArrivedAtStation;
+        public event Action LeftStation;
+
+        private void Awake()
         {
-            _door.Open();
-        });
-    }
+            _renderers = GetComponentsInChildren<Renderer>();
+        }
 
-    public void LeaveStation() =>
-        _door.Close();
+        private void OnEnable()
+        {
+            _door.Opened += FinishMoveToStation;
+            _door.Closed += MoveOutFromStation;
+        }
 
-    public void MoveOutFromStation()
-    {
-        transform.DOMoveX(_finalPosition, _duration)
-            .SetEase(Ease.InSine)
-            .OnComplete(() =>
-            {
-                ChangeVisible(false);
+        private void OnDisable()
+        {
+            _door.Opened -= FinishMoveToStation;
+            _door.Closed -= MoveOutFromStation;
+        }
 
-                LeftStation?.Invoke();
-            });
-    }
+        public void MoveToStation()
+        {
+            ReturnToStartPosition();
+            ChangeVisible(true);
+            transform.DOMoveX(_stationPosition, _duration)
+                .SetEase(Ease.OutSine)
+                .OnComplete(() =>
+                {
+                    _door.Open();
+                });
+        }
 
-    public void ReturnToStartPosition()
-    {
-        Vector3 position = transform.position;
-        position.x = _startPosition;
-        transform.position = position;
-    }
+        public void LeaveStation() =>
+            _door.Close();
 
-    private void FinishMoveToStation() =>
-        ArrivedAtStation?.Invoke();
+        public void MoveOutFromStation()
+        {
+            transform.DOMoveX(_finalPosition, _duration)
+                .SetEase(Ease.InSine)
+                .OnComplete(() =>
+                {
+                    ChangeVisible(false);
 
-    private void ChangeVisible(bool status)
-    {
-        foreach (Renderer renderer in _renderers)
-            renderer.enabled = status;
+                    LeftStation?.Invoke();
+                });
+        }
+
+        public void ReturnToStartPosition()
+        {
+            Vector3 position = transform.position;
+            position.x = _startPosition;
+            transform.position = position;
+        }
+
+        private void FinishMoveToStation() =>
+            ArrivedAtStation?.Invoke();
+
+        private void ChangeVisible(bool status)
+        {
+            foreach (Renderer renderer in _renderers)
+                renderer.enabled = status;
+        }
     }
 }

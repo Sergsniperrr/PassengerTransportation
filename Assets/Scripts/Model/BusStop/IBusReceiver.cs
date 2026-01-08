@@ -1,3 +1,5 @@
+using Scripts.Presenter;
+
 public interface IBusReceiver
 {
     int GetFreeStopIndex();

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Scripts.Presenter;
 
 [RequireComponent(typeof(QueueMover))]
 [RequireComponent(typeof(PassengerSpawner))]

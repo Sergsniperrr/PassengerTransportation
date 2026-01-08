@@ -4,6 +4,7 @@ using DG.Tweening;
 using System;
 using YG;
 using System.Collections;
+using Scripts.Presenter;
 
 public class TutorialFinger : MonoBehaviour
 {
