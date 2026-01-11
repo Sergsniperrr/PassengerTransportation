@@ -2,13 +2,16 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-[Serializable]
-public class LevelData
+namespace Scripts.Model.Level
 {
-    [field: SerializeField] public BusData[] Buses { get; private set; }
-
-    public void AddBusesData(BusData[] buses)
+    [Serializable]
+    public class LevelData
     {
-        Buses = buses.ToArray() ?? throw new ArgumentNullException(nameof(buses));
+        [field: SerializeField] public BusData[] Buses { get; private set; }
+
+        public void AddBusesData(BusData[] buses)
+        {
+            Buses = buses.ToArray() ?? throw new ArgumentNullException(nameof(buses));
+        }
     }
 }

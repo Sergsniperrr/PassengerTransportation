@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Scripts.Presenter;
+using Scripts.Model.Level;
+using Scripts.Presenters;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;

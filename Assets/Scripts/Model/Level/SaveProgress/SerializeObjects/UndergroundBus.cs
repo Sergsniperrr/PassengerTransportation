@@ -1,17 +1,20 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public struct UndergroundBus
+namespace Scripts.Model.Level.SaveProgress.SerializeObjects
 {
-    [field: SerializeField] public int SeatsCount { get; private set; }
-    [field: SerializeField] public int MaterialIndex { get; private set; }
-
-    public UndergroundBus(int seatsCount, int materialIndex)
+    [Serializable]
+    public struct UndergroundBus
     {
-        int minSeatsCount = 4;
+        [field: SerializeField] public int SeatsCount { get; private set; }
+        [field: SerializeField] public int MaterialIndex { get; private set; }
 
-        SeatsCount = seatsCount >= minSeatsCount ? seatsCount : throw new ArgumentOutOfRangeException(nameof(seatsCount));
-        MaterialIndex = materialIndex;
+        public UndergroundBus(int seatsCount, int materialIndex)
+        {
+            int minSeatsCount = 4;
+
+            SeatsCount = seatsCount >= minSeatsCount ? seatsCount : throw new ArgumentOutOfRangeException(nameof(seatsCount));
+            MaterialIndex = materialIndex;
+        }
     }
 }

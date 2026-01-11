@@ -1,3 +1,4 @@
+using Scripts.Model.Level;
 using UnityEngine;
 
 public static class DataLoader

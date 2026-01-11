@@ -1,3 +1,4 @@
+using Scripts.Model.BusStops;
 using UnityEngine;
 
 [RequireComponent(typeof(PassengerAnimator))]

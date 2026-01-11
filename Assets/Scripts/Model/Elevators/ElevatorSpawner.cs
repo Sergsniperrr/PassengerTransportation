@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Scripts.Presenter;
+using Scripts.Model.Level;
+using Scripts.Presenters;
 using UnityEngine;
 
 public class ElevatorSpawner : MonoBehaviour

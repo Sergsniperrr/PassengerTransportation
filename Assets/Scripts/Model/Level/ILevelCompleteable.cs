@@ -1,4 +1,7 @@
-public interface ILevelCompleteable
+namespace Scripts.Model.Level
 {
-    void TryCompleteLevel();
+    public interface ILevelCompleteable
+    {
+        void TryCompleteLevel();
+    }
 }

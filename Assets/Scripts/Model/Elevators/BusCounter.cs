@@ -1,30 +1,33 @@
 using System;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
-public class BusCounter : MonoBehaviour
+namespace Scripts.Model.Elevators
 {
-    private TextMeshProUGUI _busCounterText;
-    public int Count { get; private set; }
-
-    private void Awake()
+    public class BusCounter : MonoBehaviour
     {
-        _busCounterText = GetComponentInChildren<TextMeshProUGUI>();
+        private TextMeshProUGUI _busCounterText;
+        public int Count { get; private set; }
 
-        if (_busCounterText == null)
-            throw new NullReferenceException(nameof(_busCounterText));
-    }
+        private void Awake()
+        {
+            _busCounterText = GetComponentInChildren<TextMeshProUGUI>();
 
-    public void SetCount(int count)
-    {
-        Count = count > 0 ? count : throw new ArgumentOutOfRangeException(nameof(count));
+            if (_busCounterText == null)
+                throw new NullReferenceException(nameof(_busCounterText));
+        }
 
-        _busCounterText.text = $"{count}";
-    }
+        public void SetCount(int count)
+        {
+            Count = count > 0 ? count : throw new ArgumentOutOfRangeException(nameof(count));
 
-    public void Decrement()
-    {
-        if (Count > 0)
-            _busCounterText.text = $"{--Count}";
+            _busCounterText.text = $"{count}";
+        }
+
+        public void Decrement()
+        {
+            if (Count > 0)
+                _busCounterText.text = $"{--Count}";
+        }
     }
 }

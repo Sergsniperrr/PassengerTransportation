@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Scripts.Presenter;
+using Scripts.Model.Level;
+using Scripts.Presenters;
 using UnityEngine;
 
 public class ElevatorsHandler : MonoBehaviour

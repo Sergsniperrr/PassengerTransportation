@@ -1,145 +1,146 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Scripts.Presenter;
+using Scripts.Model.BusStops;
+using Scripts.Presenters;
+using Scripts.Sounds;
+using Scripts.View.Buses;
 using UnityEngine;
 
-[RequireComponent(typeof(Colors))]
-public class BusSpawner : MonoBehaviour
+namespace Scripts.Model.Level
 {
-    [SerializeField] private Bus _smallBusPrefab;
-    [SerializeField] private Bus _middleBusPrefab;
-    [SerializeField] private Bus _bigBusPrefab;
-    [SerializeField] private ElevatorsHandler _elevators;
-    [SerializeField] private UndergroundBuses _undergroundBuses;
-    [SerializeField] private BusStop _busStop;
-    [SerializeField] private Effects _effects;
-    [SerializeField] private BusPointsCalculator _busNavigator;
-    [SerializeField] private int _smallBusSeatsCount = 4;
-    [SerializeField] private int _middleBusSeatsCount = 6;
-    [SerializeField] private int _bigBusSeatsCount = 10;
-    [SerializeField] private BusColorsShuffler _busColorShuffler;
-
-    private Dictionary<int, Bus> _prefabs = new();
-    private Colors _colors;
-
-    public event Action<Bus> BusUndergroundSpawned;
-    public event Action<Bus> BusLeftParkingLot;
-
-    public UndergroundBuses UndergroundBuses => _undergroundBuses;
-
-    private void Awake()
+    [RequireComponent(typeof(Colors))]
+    public class BusSpawner : MonoBehaviour
     {
-        _prefabs.Add(_smallBusSeatsCount, _smallBusPrefab);
-        _prefabs.Add(_middleBusSeatsCount, _middleBusPrefab);
-        _prefabs.Add(_bigBusSeatsCount, _bigBusPrefab);
+        private readonly Dictionary<int, Bus> _prefabs = new();
 
-        _colors = GetComponent<Colors>();
-    }
+        [SerializeField] private Bus _smallBusPrefab;
+        [SerializeField] private Bus _middleBusPrefab;
+        [SerializeField] private Bus _bigBusPrefab;
+        [SerializeField] private ElevatorsHandler _elevators;
+        [SerializeField] private UndergroundBuses _undergroundBuses;
+        [SerializeField] private BusStop _busStop;
+        [SerializeField] private Effects _effects;
+        [SerializeField] private BusPointsCalculator _busNavigator;
+        [SerializeField] private int _smallBusSeatsCount = 4;
+        [SerializeField] private int _middleBusSeatsCount = 6;
+        [SerializeField] private int _bigBusSeatsCount = 10;
+        [SerializeField] private BusColorsShuffler _busColorShuffler;
 
-    private void OnEnable()
-    {
-        _elevators.ElevatorReleased += SpawnFromUnderground;
-    }
+        private Colors _colors;
 
-    private void OnDisable()
-    {
-        _elevators.ElevatorReleased -= SpawnFromUnderground;
-    }
+        public event Action<Bus> BusUndergroundSpawned;
+        public event Action<Bus> BusLeftParkingLot;
 
-    public List<Bus> SpawnLevel(BusData[] levelData)
-    {
-        List<Bus> buses = new();
-        Bus bus;
+        public UndergroundBuses UndergroundBuses => _undergroundBuses;
 
-        foreach (BusData busData in levelData)
+        private void Awake()
         {
-            bus = Spawn(busData);
-            buses.Add(bus);
+            _prefabs.Add(_smallBusSeatsCount, _smallBusPrefab);
+            _prefabs.Add(_middleBusSeatsCount, _middleBusPrefab);
+            _prefabs.Add(_bigBusSeatsCount, _bigBusPrefab);
 
+            _colors = GetComponent<Colors>();
+        }
+
+        private void OnEnable()
+        {
+            _elevators.ElevatorReleased += SpawnFromUnderground;
+        }
+
+        private void OnDisable()
+        {
+            _elevators.ElevatorReleased -= SpawnFromUnderground;
+        }
+
+        public List<Bus> SpawnLevel(BusData[] levelData)
+        {
+            List<Bus> buses = new();
+            Bus bus;
+
+            foreach (BusData busData in levelData)
+            {
+                bus = Spawn(busData);
+                buses.Add(bus);
+
+                bus.LeftParkingLot += SendBusForRemove;
+            }
+
+            return buses;
+        }
+
+        public void InitializeUndergroundBuses(LevelBusCalculator calculator, BusData[] levelData)
+        {
+            BusData[] bigBuses = levelData.Where(bus => bus.SeatsCount == _bigBusSeatsCount).ToArray();
+
+            _elevators.InitializeData(bigBuses, calculator.GetElevatorsCount(), calculator.UndergroundBusesCount);
+            _undergroundBuses.Generate(calculator.UndergroundBusesCount);
+            _busColorShuffler.InitializeUndergroundBuses(_undergroundBuses);
+        }
+
+        public void SpawnCreatedLevel(BusData[] levelData)
+        {
+            Bus[] buses = GetBuses();
+
+            if (buses.Length <= 0)
+            {
+                return;
+            }
+
+            foreach (Bus bus in buses)
+            {
+                Destroy(bus.gameObject);
+            }
+        }
+
+        public Bus[] GetBuses()
+        {
+            return GetComponentsInChildren<Bus>();
+        }
+
+        public void StartElevators()
+        {
+            _elevators.DetectInitialBuses();
+        }
+
+        private Bus Spawn(BusData busData)
+        {
+            Bus bus = Instantiate(_prefabs[busData.SeatsCount], busData.Position, busData.Rotation);
+            bus.transform.SetParent(transform);
+            bus.InitializeData(_busStop, _busNavigator, _effects);
+            bus.SetColor(_colors.GetRandomColor());
+
+            return bus;
+        }
+
+        private void SpawnFromUnderground(Elevator elevator)
+        {
+            BusUnderground busData = _undergroundBuses.Dequeue();
+            Bus bus = Spawn(elevator.ReleaseBus(busData));
+
+            BusUndergroundSpawned?.Invoke(bus);
+
+            bus.gameObject.SetActive(false);
+            bus.SetColor(busData.Material);
+            bus.Disable();
+            elevator.LiftBus(bus);
+
+            elevator.BusLifted += ActivateBus;
+        }
+
+        private void ActivateBus(Bus bus, Elevator elevator)
+        {
+            elevator.BusLifted -= ActivateBus;
+
+            bus.Activate();
             bus.LeftParkingLot += SendBusForRemove;
         }
 
-        return buses;
-    }
-
-    public void InitializeUndergroundBuses(LevelBusCalculator calculator, BusData[] levelData)
-    {
-        BusData[] bigBuses = levelData.Where(bus => bus.SeatsCount == _bigBusSeatsCount).ToArray();
-
-        _elevators.InitializeData(bigBuses, calculator.GetElevatorsCount(), calculator.UndergroundBusesCount);
-        _undergroundBuses.Generate(calculator.UndergroundBusesCount);
-        _busColorShuffler.InitializeUndergroundBuses(_undergroundBuses);
-    }
-
-    public void SpawnFromUnderground(Elevator elevator)
-    {
-        BusUnderground busData = _undergroundBuses.Dequeue();
-        Bus bus = Spawn(elevator.ReleaseBus(busData));
-
-        BusUndergroundSpawned?.Invoke(bus);
-
-        bus.gameObject.SetActive(false);
-        bus.SetColor(busData.Material);
-        bus.Disable();
-        elevator.LiftBus(bus);
-
-        elevator.BusLifted += ActivateBus;
-    }
-
-    public void SpawnCreatedLevel(BusData[] levelData) // Only for making levels!!!
-    {
-        Bus[] buses = GetBuses();
-
-        if (buses.Length > 0)
+        private void SendBusForRemove(Bus bus)
         {
-            foreach (Bus bus in buses)
-            {
-                Debug.Log($"{bus.gameObject.name} has been destroyed!");
-                Destroy(bus.gameObject);
-            }
+            bus.LeftParkingLot -= SendBusForRemove;
 
-            Debug.Log($"{buses.Length} buses were destroyed.");
-            Debug.Log("---------------------------------------\n");
+            BusLeftParkingLot?.Invoke(bus);
         }
-
-        foreach (BusData busData in levelData)
-        {
-            //Spawn(busData);
-            Debug.Log($"{Spawn(busData).name} has been spawned.");
-        }
-
-        Debug.Log($"{levelData.Length} buses were spawned.");
-    }
-
-    public Bus[] GetBuses() =>
-        GetComponentsInChildren<Bus>();
-
-    public void StartElevators() =>
-        _elevators.DetectInitialBuses();
-
-    private Bus Spawn(BusData busData)
-    {
-        Bus bus = Instantiate(_prefabs[busData.SeatsCount], busData.Position, busData.Rotation);
-        bus.transform.SetParent(transform);
-        bus.InitializeData(_busStop, _busNavigator, _effects);
-        bus.SetColor(_colors.GetRandomColor());
-
-        return bus;
-    }
-
-    private void ActivateBus(Bus bus, Elevator elevator)
-    {
-        elevator.BusLifted -= ActivateBus;
-
-        bus.Activate();
-        bus.LeftParkingLot += SendBusForRemove;
-    }
-
-    private void SendBusForRemove(Bus bus)
-    {
-        bus.LeftParkingLot -= SendBusForRemove;
-
-        BusLeftParkingLot?.Invoke(bus);
     }
 }

@@ -1,3 +1,4 @@
+using Scripts.Sounds;
 using UnityEngine;
 
 public class FailWindows : SimpleWindow

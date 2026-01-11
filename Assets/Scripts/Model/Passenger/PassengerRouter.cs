@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Scripts.Presenter;
+using Scripts.Model.BusStops;
+using Scripts.Presenters;
 using UnityEngine;
 
 [RequireComponent(typeof(PassengerMover))]

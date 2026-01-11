@@ -1,4 +1,5 @@
 using System;
+using Scripts.Sounds;
 using UnityEngine;
 
 public class CoinsOnBusStop : MonoBehaviour

@@ -1,54 +1,55 @@
 using System;
-using UnityEngine;
-using YG;
 
-public class LevelBusCalculator
+namespace Scripts.Model.Level
 {
-    private const int HalfDevider = 2;
-
-    private readonly int _minLevel = 20;
-    private readonly int _levelPeriod = 10;
-    private readonly int _incrementPerLevel = 1;
-    private readonly int _incrementPerLevelPeriod = 20;
-    private readonly int _maxBusesInElevator = 20;
-    private readonly int _level;
-
-    public LevelBusCalculator(int level)
+    public class LevelBusCalculator
     {
-        _level = level > 0 ? level : throw new ArgumentOutOfRangeException(nameof(level));
-        Calculate(_level);
-    }
+        private const int HalfDevider = 2;
+        private const int MinLevel = 20;
+        private const int LevelPeriod = 10;
+        private const int IncrementPerLevel = 1;
+        private const int IncrementPerLevelPeriod = 20;
+        private const int MaxBusesInElevator = 20;
+        private const int MaxSimpleLevel = 19;
+    
+        private readonly int _level;
 
-    public int UndergroundBusesCount { get; private set; }
+        public LevelBusCalculator(int level)
+        {
+            _level = level > 0 ? level : throw new ArgumentOutOfRangeException(nameof(level));
+            Calculate(_level);
+        }
 
-    public void Calculate(int level)
-    {
-        if (level < _minLevel)
-            return;
+        public int UndergroundBusesCount { get; private set; }
 
-        int levelPeriodCount = level / _levelPeriod - 1;
-        int levelInPeriod = level % _levelPeriod;
-        int busInPeriod = levelPeriodCount * _incrementPerLevelPeriod - (_incrementPerLevelPeriod / HalfDevider);
-        int busInLevel = levelInPeriod * _incrementPerLevel;
-        UndergroundBusesCount = busInPeriod + busInLevel;
-    }
+        public void Calculate(int level)
+        {
+            if (level < MinLevel)
+                return;
 
-    public int GetElevatorsCount()
-    {
-        if (UndergroundBusesCount == 0)
-            return 0;
+            int levelPeriodCount = level / LevelPeriod - 1;
+            int levelInPeriod = level % LevelPeriod;
+            int busInPeriod = levelPeriodCount * IncrementPerLevelPeriod - (IncrementPerLevelPeriod / HalfDevider);
+            int busInLevel = levelInPeriod * IncrementPerLevel;
+            UndergroundBusesCount = busInPeriod + busInLevel;
+        }
 
-        return UndergroundBusesCount / _maxBusesInElevator + 1;
-    }
+        public int GetElevatorsCount()
+        {
+            if (UndergroundBusesCount == 0)
+                return 0;
 
-    public int GetSimpleLevel()
-    {
-        int simpleLevel = _level;
-        int maxSimpleLevel = 19;
+            return UndergroundBusesCount / MaxBusesInElevator + 1;
+        }
 
-        if (simpleLevel > maxSimpleLevel)
-            simpleLevel = simpleLevel % _levelPeriod + _levelPeriod;
+        public int GetSimpleLevel()
+        {
+            int simpleLevel = _level;
 
-        return simpleLevel;
+            if (simpleLevel > MaxSimpleLevel)
+                simpleLevel = simpleLevel % LevelPeriod + LevelPeriod;
+
+            return simpleLevel;
+        }
     }
 }

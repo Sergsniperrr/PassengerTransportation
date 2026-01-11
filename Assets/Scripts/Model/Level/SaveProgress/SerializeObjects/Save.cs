@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace YG
+namespace Scripts.Model.Level.SaveProgress.SerializeObjects
 {
     [Serializable]
     public struct Save

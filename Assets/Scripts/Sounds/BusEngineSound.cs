@@ -1,58 +1,66 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class BusEngineSound : MonoBehaviour
+namespace Scripts.Sounds
 {
-    private readonly float _muteSoundsValue = 0f;
-    private readonly float _playSoundsValue = 1f;
-    private readonly float _randomShiftSize = 0.1f;
-    private readonly float _fadeOutSpeed = 4f;
-
-    private AudioSource _sound; 
-    private float _initialPich;
-
-    private void Awake()
+    [RequireComponent(typeof(AudioSource))]
+    public class BusEngineSound : MonoBehaviour
     {
-        _sound = GetComponent<AudioSource>();
-        _initialPich = _sound.pitch;
-    }
+        private const float MuteSoundsValue = 0f;
+        private const float PlaySoundsValue = 1f;
+        private const float RandomShiftSize = 0.1f;
+        private const float FadeOutSpeed = 4f;
 
-    public void PlaySound()
-    {
-        _sound.pitch = Random.Range(_initialPich - _randomShiftSize, _initialPich + _randomShiftSize);
-        _sound.Play();
-        _sound.volume = _playSoundsValue;
-    }
+        private AudioSource _sound;
+        private float _initialPich;
 
-    public void StopSound()
-    {
-        StartCoroutine(SmoothFading());
-    }
-
-    public void MoveOut(int busStopIndex) =>
-        StartCoroutine(MoveOutAfterDelay(busStopIndex));
-
-    private IEnumerator SmoothFading()
-    {
-        while (_sound.volume > _muteSoundsValue)
+        private void Awake()
         {
-            _sound.volume = Mathf.MoveTowards(_sound.volume, _muteSoundsValue, _fadeOutSpeed * Time.deltaTime);
-
-            yield return null;
+            _sound = GetComponent<AudioSource>();
+            _initialPich = _sound.pitch;
         }
-    }
 
-    private IEnumerator MoveOutAfterDelay(int busStopIndex)
-    {
-        float minDuration = 0.2f;
-        float distanceMultiplier = 0.05f;
-        WaitForSeconds wait = new(busStopIndex * distanceMultiplier + minDuration);
+        public void PlaySound()
+        {
+            _sound.pitch = Random.Range(_initialPich - RandomShiftSize, _initialPich + RandomShiftSize);
+            _sound.Play();
+            _sound.volume = PlaySoundsValue;
+        }
 
-        PlaySound();
+        public void StopSound()
+        {
+            StartCoroutine(SmoothFading());
+        }
 
-        yield return wait;
+        public void MoveOut(int busStopIndex)
+        {
+            StartCoroutine(MoveOutAfterDelay(busStopIndex));
+        }
 
-        StartCoroutine(SmoothFading());
+        private IEnumerator SmoothFading()
+        {
+            while (_sound.volume > MuteSoundsValue)
+            {
+                _sound.volume = Mathf.MoveTowards(
+                    _sound.volume,
+                    MuteSoundsValue,
+                    FadeOutSpeed * Time.deltaTime);
+
+                yield return null;
+            }
+        }
+
+        private IEnumerator MoveOutAfterDelay(int busStopIndex)
+        {
+            const float minDuration = 0.2f;
+            const float distanceMultiplier = 0.05f;
+            WaitForSeconds wait = new(busStopIndex * distanceMultiplier + minDuration);
+
+            PlaySound();
+
+            yield return wait;
+
+            StartCoroutine(SmoothFading());
+        }
     }
 }

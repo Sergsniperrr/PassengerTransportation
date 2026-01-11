@@ -2,48 +2,48 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Image))]
-public class Background : MonoBehaviour
+namespace Scripts.View.Menu
 {
-    [SerializeField] private float _maxDarkness = 0.6f;
-
-    private Image _image;
-    private Tween _fadeTween;
-    private BoxCollider _collider;
-
-    private void Awake()
+    [RequireComponent(typeof(Image))]
+    public class Background : MonoBehaviour
     {
-        _image = GetComponent<Image>();
-        _collider = GetComponentInChildren<BoxCollider>();
+        [SerializeField] private float _maxDarkness = 0.6f;
 
-        if (_collider != null)
-            _collider.enabled = false;
-    }
+        private Image _image;
+        private Tween _fadeTween;
+        private BoxCollider _collider;
 
-    public void Show(float duration = 0.5f)
-    {
-        Fade(_maxDarkness, duration, (() =>
+        private void Awake()
         {
-            if (_collider != null)
-                _collider.enabled = true;
-        }));
-    }
+            _image = GetComponent<Image>();
+            _collider = GetComponentInChildren<BoxCollider>();
 
-    public void Hide(float duration = 0.5f)
-    {
-        Fade(0, duration, (() =>
+            DisableCollider();
+        }
+
+        public void Show(float duration = 0.5f)
+        {
+            Fade(_maxDarkness, duration, DisableCollider);
+        }
+
+        public void Hide(float duration = 0.5f)
+        {
+            Fade(0, duration, DisableCollider);
+        }
+
+        private void DisableCollider()
         {
             if (_collider != null)
                 _collider.enabled = false;
-        }));
-    }
+        }
+        
+        private void Fade(float endValue, float duration, TweenCallback onEnd)
+        {
+            if (_fadeTween != null)
+                _fadeTween.Kill(false);
 
-    private void Fade(float endValue, float duration, TweenCallback onEnd)
-    {
-        if (_fadeTween != null)
-            _fadeTween.Kill(false);
-
-        _fadeTween = _image.DOFade(endValue, duration);
-        _fadeTween.onComplete += onEnd;
+            _fadeTween = _image.DOFade(endValue, duration);
+            _fadeTween.onComplete += onEnd;
+        }
     }
 }

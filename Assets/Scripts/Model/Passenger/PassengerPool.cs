@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Scripts.Presenter;
+using Scripts.Presenters;
 using UnityEngine;
 
 public class PassengerPool : MonoBehaviour

@@ -1,215 +1,220 @@
 using System;
-using TMPro;
-using System.Collections.Generic;
-using UnityEngine;
 using System.Collections;
-using Scripts.Presenter;
+using System.Collections.Generic;
+using Scripts.Input;
+using Scripts.Presenters;
+using Scripts.Sounds;
+using TMPro;
+using UnityEngine;
 
-[RequireComponent(typeof(MouseInputHandler))]
-[RequireComponent(typeof(ColorsHandler))]
-public class Level : MonoBehaviour,ILevelCompleteable
+namespace Scripts.Model.Level
 {
-    [SerializeField] private BusStop _busStop;
-    [SerializeField] private PassengerQueue _queue;
-    [SerializeField] private Train _train;
-    [SerializeField] private Effects _effects;
-    [SerializeField] private PassengerCounter _passengerCounter;
-    [SerializeField] private GameButtons _gameButtons;
-    [SerializeField] private WindowsHandler _windows;
-    [SerializeField] private LevelStatisticsView _statisticsView;
-    [SerializeField] private Music _music;
-    [SerializeField] private TextMeshProUGUI _textLevelNomber;
-    [SerializeField] private GameResetter _resetter;
-    [SerializeField] private Prices _prices;
-
-    [field: SerializeField] public CoinsHandler Coins { get; private set; }
-
-    private ColorsHandler _colorsHandler;
-    private List<Bus> _buses;
-    private UndergroundBuses _undergroundBuses;
-    private MouseInputHandler _input;
-    private Coroutine _coroutine;
-    private bool _canBusMove;
-
-    public event Action Started;
-    public event Action<Queue<Bus>> GameActivated;
-    public event Action Completed;
-    public event Action<int> BussesCountInitialized;
-    public event Action AllBussesLeft;
-
-    public int CurrentLevel { get; private set; }
-    public List<Bus> Buses => new(_buses);
-
-    private void Awake()
+    [RequireComponent(typeof(MouseInputHandler))]
+    [RequireComponent(typeof(ColorsHandler))]
+    public class Level : MonoBehaviour,ILevelCompleteable
     {
-        _input = GetComponent<MouseInputHandler>();
-        Coins.HideCounters();
-        _colorsHandler = GetComponent<ColorsHandler>();
-        _busStop.InitializeLevelCompleter(this);
-    }
+        [SerializeField] private BusStop _busStop;
+        [SerializeField] private PassengerQueue _queue;
+        [SerializeField] private Train _train;
+        [SerializeField] private Effects _effects;
+        [SerializeField] private PassengerCounter _passengerCounter;
+        [SerializeField] private GameButtons _gameButtons;
+        [SerializeField] private WindowsHandler _windows;
+        [SerializeField] private LevelStatisticsView _statisticsView;
+        [SerializeField] private Music _music;
+        [SerializeField] private TextMeshProUGUI _textLevelNomber;
+        [SerializeField] private GameResetter _resetter;
+        [SerializeField] private Prices _prices;
 
-    private void OnEnable()
-    {
-        _input.BusSelected += RunBus;
-        _train.ArrivedAtStation += ActivatePassengers;
-        _busStop.PassengerLeft += _passengerCounter.DecrementValue;
-    }
+        [field: SerializeField] public CoinsHandler Coins { get; private set; }
 
-    private void OnDisable()
-    {
-        _input.BusSelected -= RunBus;
-        _train.ArrivedAtStation -= ActivatePassengers;
-        _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
-    }
+        private ColorsHandler _colorsHandler;
+        private List<Presenters.Bus> _buses;
+        private UndergroundBuses _undergroundBuses;
+        private MouseInputHandler _input;
+        private Coroutine _coroutine;
+        private bool _canBusMove;
 
-    public void Begin(int levelNumber, List<Bus> buses, UndergroundBuses undergroundBuses)
-    {
-        CurrentLevel = levelNumber;
-        _textLevelNomber.text = $"{levelNumber}";
-        _buses = buses ?? throw new ArgumentNullException(nameof(buses));
+        public event Action Started;
+        public event Action<Queue<Presenters.Bus>> GameActivated;
+        public event Action Completed;
+        public event Action<int> BussesCountInitialized;
+        public event Action AllBussesLeft;
 
-        _undergroundBuses = undergroundBuses != null ?
-            undergroundBuses : throw new ArgumentNullException(nameof(undergroundBuses));
+        public int CurrentLevel { get; private set; }
+        public List<Presenters.Bus> Buses => new(_buses);
 
-        _statisticsView.InitializeData(levelNumber, _buses.Count + undergroundBuses.Count);
-        Coins.InitializeNewLevel(levelNumber, _buses.Count + undergroundBuses.Count);
-
-        BussesCountInitialized?.Invoke(_buses.Count + undergroundBuses.Count);
-
-        _windows.OpenBeginLevel().Closed += PlayGame;
-    }
-
-    public void ChangeGameActivity(bool isActive)
-    {
-        _canBusMove = isActive;
-        _gameButtons.gameObject.SetActive(isActive);
-    }
-
-    public void AddUndergroundBus(Bus bus)
-    {
-        if (bus == null)
-            throw new ArgumentNullException(nameof(bus));
-
-        _buses.Add(bus);
-    }
-
-    private void RunBus(Bus bus)
-    {
-        if (_canBusMove)
-            bus.Run();
-    }
-
-    private void PlayGame(SimpleWindow window)
-    {
-        window.Closed -= PlayGame;
-
-        _colorsHandler.InitializePassengerColors(_buses.ToArray(), _undergroundBuses.Buses);
-        _queue.InitializeColorsSpawner(_colorsHandler);
-        _train.MoveToStation();
-        _passengerCounter.SetValue(_colorsHandler.ColorsCount);
-        _music.Play();
-
-        Started?.Invoke();
-        _queue.PassengersCreated += ActivatePlayerInput;
-        _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
-    }
-
-    public void RemoveBus(Bus bus)
-    {
-        if (bus != null)
-            _buses.Remove(bus);
-
-        TryCompleteLevel();
-    }
-
-    public void TryCompleteLevel()
-    {
-        if (_coroutine == null && _busStop.IsAllPlacesReleased &&
-            _undergroundBuses.Count == 0 && _buses.Count == 0)
+        private void Awake()
         {
-            _coroutine = StartCoroutine(CheckBusCountForZero());
+            _input = GetComponent<MouseInputHandler>();
+            Coins.HideCounters();
+            _colorsHandler = GetComponent<ColorsHandler>();
+            _busStop.InitializeLevelCompleter(this);
         }
-    }
 
-    private void Complete()
-    {
-        float delay = -1f;
+        private void OnEnable()
+        {
+            _input.BusSelected += RunBus;
+            _train.ArrivedAtStation += ActivatePassengers;
+            _busStop.PassengerLeft += _passengerCounter.DecrementValue;
+        }
 
-        AllBussesLeft?.Invoke();
+        private void OnDisable()
+        {
+            _input.BusSelected -= RunBus;
+            _train.ArrivedAtStation -= ActivatePassengers;
+            _busStop.PassengerLeft -= _passengerCounter.DecrementValue;
+        }
 
-        _coroutine = null;
-        Coins.CompleteLevel();
-        _train.LeaveStation();
-        _music.Stop();
-        _effects.PlayLevelComplete();
+        public void Begin(int levelNumber, List<Presenters.Bus> buses, UndergroundBuses undergroundBuses)
+        {
+            CurrentLevel = levelNumber;
+            _textLevelNomber.text = $"{levelNumber}";
+            _buses = buses ?? throw new ArgumentNullException(nameof(buses));
 
-        LevelCompleteWindow window = (LevelCompleteWindow)_windows.OpenLevelComplete(delay);
-        window.InitializeCoins(Coins.TemporaryMoney, Coins.TemporaryScore);
-        window.Closed += Complete;
+            _undergroundBuses = undergroundBuses != null ?
+                undergroundBuses : throw new ArgumentNullException(nameof(undergroundBuses));
 
-        _gameButtons.gameObject.SetActive(false);
-    }
+            _statisticsView.InitializeData(levelNumber, _buses.Count + undergroundBuses.Count);
+            Coins.InitializeNewLevel(levelNumber, _buses.Count + undergroundBuses.Count);
 
-    private void ActivatePassengers()
-    {
-        _queue.Spawn();
-    }
+            BussesCountInitialized?.Invoke(_buses.Count + undergroundBuses.Count);
 
-    private void ActivatePlayerInput()
-    {
-        _queue.PassengersCreated -= ActivatePlayerInput;
+            _windows.OpenBeginLevel().Closed += PlayGame;
+        }
 
-        ChangeGameActivity(true);
-        Coins.ShowCounters();
+        public void ChangeGameActivity(bool isActive)
+        {
+            _canBusMove = isActive;
+            _gameButtons.gameObject.SetActive(isActive);
+        }
 
-        GameActivated?.Invoke(new Queue<Bus>(_buses));
-    }
+        public void AddUndergroundBus(Presenters.Bus bus)
+        {
+            if (bus == null)
+                throw new ArgumentNullException(nameof(bus));
 
-    private void Complete(SimpleWindow window)
-    {
-        Coins.HideCounters();
-        window.Closed -= Complete;
-        _busStop.AllPlacesOccupied -= HandleOccupiedSeatsEvent;
-        Completed?.Invoke();
-    }
+            _buses.Add(bus);
+        }
 
-    private void HandleOccupiedSeatsEvent()
-    {
-        if (Coins.Money.Count < _prices.ArrangingPassengers)
-            OpenDialog();
-        else
-            _gameButtons.PlayButtonPassengerArrangePulsation();
-    }
+        private void RunBus(Presenters.Bus bus)
+        {
+            if (_canBusMove)
+                bus.Run();
+        }
 
-    private void OpenDialog()
-    {
-        if (_buses.Count == 0)
-            return;
+        private void PlayGame(SimpleWindow window)
+        {
+            window.Closed -= PlayGame;
 
-        _windows.OpenWarningWindow();
+            _colorsHandler.InitializePassengerColors(_buses.ToArray(), _undergroundBuses.Buses);
+            _queue.InitializeColorsSpawner(_colorsHandler);
+            _train.MoveToStation();
+            _passengerCounter.SetValue(_colorsHandler.ColorsCount);
+            _music.Play();
 
-        _windows.ResultResieved += HandleDialog;
-    }
+            Started?.Invoke();
+            _queue.PassengersCreated += ActivatePlayerInput;
+            _busStop.AllPlacesOccupied += HandleOccupiedSeatsEvent;
+        }
 
-    private void HandleDialog(bool result)
-    {
-        _windows.ResultResieved -= HandleDialog;
+        public void RemoveBus(Presenters.Bus bus)
+        {
+            if (bus != null)
+                _buses.Remove(bus);
 
-        if (result == false)
-            _resetter.BackInMainMenu(CurrentLevel);
+            TryCompleteLevel();
+        }
 
-        _gameButtons.gameObject.SetActive(true);
-    }
+        public void TryCompleteLevel()
+        {
+            if (_coroutine == null && _busStop.IsAllPlacesReleased &&
+                _undergroundBuses.Count == 0 && _buses.Count == 0)
+            {
+                _coroutine = StartCoroutine(CheckBusCountForZero());
+            }
+        }
 
-    private IEnumerator CheckBusCountForZero()
-    {
-        WaitForSeconds wait = new(0.2f);
+        private void Complete()
+        {
+            float delay = -1f;
 
-        yield return wait;
+            AllBussesLeft?.Invoke();
 
-        if (_undergroundBuses.Count == 0 && _buses.Count == 0 && _busStop.IsAllPlacesReleased)
-            Complete();
+            _coroutine = null;
+            Coins.CompleteLevel();
+            _train.LeaveStation();
+            _music.Stop();
+            _effects.PlayLevelComplete();
 
-        _coroutine = null;
+            LevelCompleteWindow window = (LevelCompleteWindow)_windows.OpenLevelComplete(delay);
+            window.InitializeCoins(Coins.TemporaryMoney, Coins.TemporaryScore);
+            window.Closed += Complete;
+
+            _gameButtons.gameObject.SetActive(false);
+        }
+
+        private void ActivatePassengers()
+        {
+            _queue.Spawn();
+        }
+
+        private void ActivatePlayerInput()
+        {
+            _queue.PassengersCreated -= ActivatePlayerInput;
+
+            ChangeGameActivity(true);
+            Coins.ShowCounters();
+
+            GameActivated?.Invoke(new Queue<Presenters.Bus>(_buses));
+        }
+
+        private void Complete(SimpleWindow window)
+        {
+            Coins.HideCounters();
+            window.Closed -= Complete;
+            _busStop.AllPlacesOccupied -= HandleOccupiedSeatsEvent;
+            Completed?.Invoke();
+        }
+
+        private void HandleOccupiedSeatsEvent()
+        {
+            if (Coins.Money.Count < _prices.ArrangingPassengers)
+                OpenDialog();
+            else
+                _gameButtons.PlayButtonPassengerArrangePulsation();
+        }
+
+        private void OpenDialog()
+        {
+            if (_buses.Count == 0)
+                return;
+
+            _windows.OpenWarningWindow();
+
+            _windows.ResultResieved += HandleDialog;
+        }
+
+        private void HandleDialog(bool result)
+        {
+            _windows.ResultResieved -= HandleDialog;
+
+            if (result == false)
+                _resetter.BackInMainMenu(CurrentLevel);
+
+            _gameButtons.gameObject.SetActive(true);
+        }
+
+        private IEnumerator CheckBusCountForZero()
+        {
+            WaitForSeconds wait = new(0.2f);
+
+            yield return wait;
+
+            if (_undergroundBuses.Count == 0 && _buses.Count == 0 && _busStop.IsAllPlacesReleased)
+                Complete();
+
+            _coroutine = null;
+        }
     }
 }

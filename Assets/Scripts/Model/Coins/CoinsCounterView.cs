@@ -3,6 +3,7 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine;
 using System.Collections;
+using Scripts.Sounds;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class CoinsCounterView : MonoBehaviour

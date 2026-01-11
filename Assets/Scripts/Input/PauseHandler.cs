@@ -1,45 +1,48 @@
 using UnityEngine;
 
-public class PauseHandler : MonoBehaviour
+namespace Scripts.Input
 {
-    private const float PausedTime = 0f;
-    private const float NormalTime = 1f;
-
-    private bool _isWindowActive = true;
-
-    private void Start()
+    public class PauseHandler : MonoBehaviour
     {
-        Application.focusChanged += OnWindowFocusChanged;
-    }
+        private const float PausedTime = 0f;
+        private const float NormalTime = 1f;
 
-    private void OnDestroy()
-    {
-        Application.focusChanged -= OnWindowFocusChanged;
-    }
+        private bool _isWindowActive = true;
 
-    private void OnWindowFocusChanged(bool isFocused)
-    {
-        _isWindowActive = isFocused;
-
-        if (!_isWindowActive)
+        private void Start()
         {
-            PauseGame();
+            Application.focusChanged += OnWindowFocusChanged;
         }
-        else
+
+        private void OnDestroy()
         {
-            ResumeGame();
+            Application.focusChanged -= OnWindowFocusChanged;
         }
-    }
 
-    private void PauseGame()
-    {
-        Time.timeScale = PausedTime;
-        AudioListener.pause = true;
-    }
+        private void OnWindowFocusChanged(bool isFocused)
+        {
+            _isWindowActive = isFocused;
 
-    private void ResumeGame()
-    {
-        Time.timeScale = NormalTime;
-        AudioListener.pause = false;
+            if (!_isWindowActive)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ResumeGame();
+            }
+        }
+
+        private void PauseGame()
+        {
+            Time.timeScale = PausedTime;
+            AudioListener.pause = true;
+        }
+
+        private void ResumeGame()
+        {
+            Time.timeScale = NormalTime;
+            AudioListener.pause = false;
+        }
     }
 }

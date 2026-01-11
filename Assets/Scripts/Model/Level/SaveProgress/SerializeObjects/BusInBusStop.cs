@@ -1,15 +1,18 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public struct BusInBusStop
+namespace Scripts.Model.Level.SaveProgress.SerializeObjects
 {
-    [field: SerializeField] public VisibleBus VisibleBus { get; }
-    [field: SerializeField] public int PassengersCount { get; }
-
-    public BusInBusStop (VisibleBus bus, int passengersCount)
+    [Serializable]
+    public struct BusInBusStop
     {
-        VisibleBus = bus;
-        PassengersCount = passengersCount;
+        [field: SerializeField] public VisibleBus VisibleBus { get; }
+        [field: SerializeField] public int PassengersCount { get; }
+
+        public BusInBusStop (VisibleBus bus, int passengersCount)
+        {
+            VisibleBus = bus;
+            PassengersCount = passengersCount;
+        }
     }
 }

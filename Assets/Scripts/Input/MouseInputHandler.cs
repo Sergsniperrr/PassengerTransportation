@@ -1,55 +1,58 @@
 using System;
-using Scripts.Presenter;
+using Scripts.Presenters;
 using UnityEngine;
 
-public class MouseInputHandler : MonoBehaviour
+namespace Scripts.Input
 {
-    [SerializeField] private Camera _mainCamera;
-
-    private const int LeftMouseButton = 0;
-
-    private readonly float _updateDelay = 0.3f;
-
-    private Ray _ray;
-    private RaycastHit _hitInfo;
-    private Collider _target;
-    private float _updateCounter;
-
-    public event Action<Bus> BusSelected;
-
-    private void Update()
+    public class MouseInputHandler : MonoBehaviour
     {
-        if (_updateCounter > 0)
+        [SerializeField] private Camera _mainCamera;
+
+        private const int LeftMouseButton = 0;
+
+        private readonly float _updateDelay = 0.3f;
+
+        private Ray _ray;
+        private RaycastHit _hitInfo;
+        private Collider _target;
+        private float _updateCounter;
+
+        public event Action<Bus> BusSelected;
+
+        private void Update()
         {
-            _updateCounter -= Time.deltaTime;
-            return;
-        }
-
-        _target = OnMouseClick();
-
-        if (_target == null)
-            return;
-
-        if (_target.TryGetComponent(out Bus bus))
-        {
-            if (bus.IsActive)
+            if (_updateCounter > 0)
             {
-                BusSelected?.Invoke(bus);
-                _updateCounter = _updateDelay;
+                _updateCounter -= Time.deltaTime;
+                return;
+            }
+
+            _target = OnMouseClick();
+
+            if (_target == null)
+                return;
+
+            if (_target.TryGetComponent(out Bus bus))
+            {
+                if (bus.IsActive)
+                {
+                    BusSelected?.Invoke(bus);
+                    _updateCounter = _updateDelay;
+                }
             }
         }
-    }
 
-    private Collider OnMouseClick()
-    {
-        if (Input.GetMouseButtonDown(LeftMouseButton))
+        private Collider OnMouseClick()
         {
-            _ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (UnityEngine.Input.GetMouseButtonDown(LeftMouseButton))
+            {
+                _ray = _mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
 
-            if (Physics.Raycast(_ray, out _hitInfo))
-                return _hitInfo.collider;
+                if (Physics.Raycast(_ray, out _hitInfo))
+                    return _hitInfo.collider;
+            }
+
+            return null;
         }
-
-        return null;
     }
 }

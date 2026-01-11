@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using Scripts.View.Menu;
 
 public class Window : MonoBehaviour
 {

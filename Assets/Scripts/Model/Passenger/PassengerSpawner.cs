@@ -1,5 +1,5 @@
 using System;
-using Scripts.Presenter;
+using Scripts.Presenters;
 using UnityEngine;
 
 [RequireComponent(typeof(PassengerPool))]

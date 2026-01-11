@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ElevatorsData : MonoBehaviour
+namespace Scripts.Model.Level.SaveProgress.SerializeObjects
 {
+    public class ElevatorsData : MonoBehaviour
+    {
 
+    }
 }
