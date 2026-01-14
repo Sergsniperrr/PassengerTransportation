@@ -23,7 +23,7 @@ namespace Scripts.Input
         {
             _isWindowActive = isFocused;
 
-            if (!_isWindowActive)
+            if (_isWindowActive == false)
             {
                 PauseGame();
             }

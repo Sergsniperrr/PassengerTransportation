@@ -1,5 +1,7 @@
 using System;
 using Scripts.Model.Money;
+using Scripts.Model.Player;
+using Scripts.Model.Score;
 using Scripts.View.Windows;
 using UnityEngine;
 using YG;

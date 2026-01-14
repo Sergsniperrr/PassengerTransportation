@@ -7,6 +7,7 @@ namespace Scripts.Model.Elevators
     public class BusCounter : MonoBehaviour
     {
         private TextMeshProUGUI _busCounterText;
+
         public int Count { get; private set; }
 
         private void Awake()

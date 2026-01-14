@@ -9,7 +9,9 @@ namespace Scripts.Model.Passengers
         public void IncrementPositions(List<Passenger> queue)
         {
             foreach (Passenger passenger in queue)
+            {
                 passenger.IncrementCurrentIndex();
+            }
         }
 
         public void StartMovePassengers(List<Passenger> passengers)

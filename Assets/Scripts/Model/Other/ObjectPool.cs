@@ -12,7 +12,7 @@ namespace Scripts.Model.Other
         private readonly Vector3 _initialPosition;
         private readonly Queue<T> _pool = new ();
 
-        private T _coin;
+        private T _object;
 
         public ObjectPool(T prefab, Transform parent, Vector3 initialPosition)
         {
@@ -25,17 +25,17 @@ namespace Scripts.Model.Other
         {
             if (_pool.Count == 0)
             {
-                _coin = Instantiate(_prefab, _parent, true);
+                _object = Instantiate(_prefab, _parent, true);
             }
             else
             {
-                _coin = _pool.Dequeue();
-                _coin.gameObject.SetActive(true);
+                _object = _pool.Dequeue();
+                _object.gameObject.SetActive(true);
             }
 
-            _coin.transform.SetLocalPositionAndRotation(_initialPosition, Quaternion.identity);
+            _object.transform.SetLocalPositionAndRotation(_initialPosition, Quaternion.identity);
 
-            return _coin;
+            return _object;
         }
 
         public void PutObject(T coin)

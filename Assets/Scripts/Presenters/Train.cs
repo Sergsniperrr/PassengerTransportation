@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using Scripts.Model.TrainDoor;
 using UnityEngine;
 
 namespace Scripts.Presenters

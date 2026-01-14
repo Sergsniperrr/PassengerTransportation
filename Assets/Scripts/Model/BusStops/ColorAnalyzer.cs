@@ -6,11 +6,12 @@ namespace Scripts.Model.BusStops
 {
     public class ColorAnalyzer : MonoBehaviour
     {
-        [SerializeField] private Colors _colors;
-
         private const int FailedIndex = -1;
 
-        private Dictionary<Material, Queue<int>> _allPlaces = new();
+        private readonly Dictionary<Material, Queue<int>> _allPlaces = new ();
+
+        [SerializeField] private Colors _colors;
+
         private Queue<int> _freeSpotsIndexes;
 
         private void Awake()

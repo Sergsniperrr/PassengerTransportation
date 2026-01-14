@@ -64,7 +64,9 @@ namespace Scripts.Model.Passengers
         private void Move()
         {
             if (_currentPosition == FailedIndex)
+            {
                 return;
+            }
 
             if (_positions.Length > 0 && transform.position != _positions[_currentPosition])
             {

@@ -48,7 +48,9 @@ namespace Scripts.Input
                 _ray = _mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
 
                 if (Physics.Raycast(_ray, out _hitInfo))
+                {
                     return _hitInfo.collider;
+                }
             }
 
             return null;

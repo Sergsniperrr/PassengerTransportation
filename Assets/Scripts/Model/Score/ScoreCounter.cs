@@ -1,9 +1,12 @@
 using YG;
 
-public class ScoreCounter : CoinsCounter
+namespace Scripts.Model.Score
 {
-    private void Start()
+    public class ScoreCounter : CoinsCounter
     {
-        SetValue(YG2.saves.Score);
+        private void Start()
+        {
+            SetValue(YG2.saves.Score);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Scripts.Model.Coins;
+using Scripts.Model.Score;
 using UnityEngine;
 
 namespace Scripts.View.Windows

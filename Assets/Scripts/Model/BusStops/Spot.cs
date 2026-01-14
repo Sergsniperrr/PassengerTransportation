@@ -7,10 +7,6 @@ namespace Scripts.Model.BusStops
     {
         private Bus _bus;
 
-        public bool IsFree { get; private set; }
-        public Bus BusOnWayToStop { get; private set; }
-        public Bus BusAtBusStop { get; private set; }
-
         public Spot(bool isFree = true)
         {
             IsFree = isFree;
@@ -19,11 +15,12 @@ namespace Scripts.Model.BusStops
             BusAtBusStop = null;
         }
 
+        public bool IsFree { get; private set; }
+        public Bus BusOnWayToStop { get; private set; }
+        public Bus BusAtBusStop { get; private set; }
+
         public void Reserve() =>
             IsFree = false;
-
-        public void CancelReservation() =>
-            IsFree = true;
 
         public void SetBusOnWayToStop(Bus bus)
         {
@@ -43,5 +40,8 @@ namespace Scripts.Model.BusStops
             BusAtBusStop = null;
             _bus = null;
         }
+
+        private void CancelReservation() =>
+            IsFree = true;
     }
 }

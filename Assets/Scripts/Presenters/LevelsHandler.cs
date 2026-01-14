@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Scripts.Model.Levels;
 using Scripts.Model.Other;
+using Scripts.Model.Player;
 using Scripts.View;
 using Scripts.View.Menu;
 using Scripts.View.Tutorial;
