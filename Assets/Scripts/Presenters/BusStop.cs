@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Model.BusStops;
-using Scripts.Model.Level;
+using Scripts.Model.Levels;
+using Scripts.Model.Passengers;
 using UnityEngine;
 
 namespace Scripts.Presenters

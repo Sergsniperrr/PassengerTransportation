@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class LeaderboardButton : MonoBehaviour
+namespace Scripts.View.LeaderBoard
 {
-
+    public class LeaderboardButton : MonoBehaviour
+    {
+    }
 }

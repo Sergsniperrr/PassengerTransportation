@@ -2,33 +2,35 @@ using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class ViewAds : MonoBehaviour
+namespace Scripts.Model.Other
 {
-    [SerializeField] private Button _button;
-    [SerializeField] private Prices _prices;
-    [SerializeField] private MoneyCounter _money;
-
-    private const string RewardId = "Money";
-
-    private readonly float _transferDuration = 1.5f;
-
-    private void OnEnable()
+    public class ViewAds : MonoBehaviour
     {
-        _button.onClick.AddListener(ViewAd);
-    }
+        private const float TransferDuration = 1.5f;
+        private const string RewardId = "Money";
 
-    private void OnDisable()
-    {
-        _button.onClick.RemoveListener(ViewAd);
-    }
+        [SerializeField] private Button _button;
+        [SerializeField] private Prices _prices;
+        [SerializeField] private MoneyCounter _money;
 
-    private void ViewAd()
-    {
-        YG2.RewardedAdvShow(RewardId, TakeReward);
-    }
+        private void OnEnable()
+        {
+            _button.onClick.AddListener(ViewAd);
+        }
 
-    private void TakeReward()
-    {
-        _money.Add(_prices.ViewingAd, _transferDuration);
+        private void OnDisable()
+        {
+            _button.onClick.RemoveListener(ViewAd);
+        }
+
+        private void ViewAd()
+        {
+            YG2.RewardedAdvShow(RewardId, TakeReward);
+        }
+
+        private void TakeReward()
+        {
+            _money.Add(_prices.ViewingAd, TransferDuration);
+        }
     }
 }

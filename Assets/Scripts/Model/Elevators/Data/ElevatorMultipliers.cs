@@ -1,3 +1,4 @@
+using Scripts.Model.Elevators.Data;
 using UnityEngine;
 
 [System.Serializable]

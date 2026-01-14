@@ -1,72 +1,77 @@
-using DG.Tweening;
-using System.Collections;
 using System;
+using System.Collections;
+using DG.Tweening;
+using Scripts.Model.Coins;
 using UnityEngine;
 
-public class LevelCompleteWindow : SimpleWindow
+namespace Scripts.View.Windows
 {
-    [SerializeField] private CanvasGroup _victoryImage;
-    [SerializeField] private CanvasGroup _statisticsPanel;
-    [SerializeField] private CoinsRecipient _coinsRecipient;
-    [SerializeField] private TemporaryCounter _moneyCounter;
-    [SerializeField] private TemporaryCounter _scoreCounter;
-
-    private float _viewBusDuration = 2f;
-    private float _viewStatisticDuration = 1f;
-    private int _money;
-    private int _score;
-
-    public override void Open(float delay = 0)
+    public class LevelCompleteWindow : SimpleWindow
     {
-        DisableOkButton();
-        _statisticsPanel.alpha = MinTransparent;
-        base.Open(delay);
-        StartCoroutine(ShowVictoryImage());
-    }
+        private const float ViewBusDuration = 2f;
+        private const float ViewStatisticDuration = 1f;
 
-    public void InitializeCoins(int money, int score)
-    {
-        _money = money >= 0 ? money : throw new ArgumentOutOfRangeException(nameof(money));
-        _score = score >= 0 ? score : throw new ArgumentOutOfRangeException(nameof(score));
+        [SerializeField] private CanvasGroup _victoryImage;
+        [SerializeField] private CanvasGroup _statisticsPanel;
+        [SerializeField] private CoinsRecipient _coinsRecipient;
+        [SerializeField] private TemporaryCounter _moneyCounter;
+        [SerializeField] private TemporaryCounter _scoreCounter;
 
-        _moneyCounter.SetValue(_money);
-        _scoreCounter.SetValue(_score);
-    }
+        private int _money;
+        private int _score;
 
-    private void FadeCanvasGroup(CanvasGroup canvasGroup, float targetFade)
-    {
-        canvasGroup.DOFade(targetFade, FadeDuration);
-    }
+        public override void Open(float delay = 0)
+        {
+            DisableOkButton();
+            _statisticsPanel.alpha = MinTransparent;
+            base.Open(delay);
+            StartCoroutine(ShowVictoryImage());
+        }
 
-    private IEnumerator ShowVictoryImage()
-    {
-        WaitForSeconds wait = new(_viewBusDuration);
+        public void InitializeCoins(int money, int score)
+        {
+            _money = money >= 0 ? money : throw new ArgumentOutOfRangeException(nameof(money));
+            _score = score >= 0 ? score : throw new ArgumentOutOfRangeException(nameof(score));
 
-        _victoryImage.alpha = MaxTransparent;
+            _moneyCounter.SetValue(_money);
+            _scoreCounter.SetValue(_score);
+        }
 
-        yield return wait;
+        private void FadeCanvasGroup(CanvasGroup canvasGroup, float targetFade)
+        {
+            canvasGroup.DOFade(targetFade, FadeDuration);
+        }
 
-        FadeCanvasGroup(_victoryImage, MinTransparent);
-        FadeCanvasGroup(_statisticsPanel, MaxTransparent);
+        private IEnumerator ShowVictoryImage()
+        {
+            WaitForSeconds wait = new (ViewBusDuration);
 
-        StartCoroutine(ShowStatisticAfterDelay());
-    }
+            _victoryImage.alpha = MaxTransparent;
 
-    private IEnumerator ShowStatisticAfterDelay()
-    {
-        WaitForSeconds wait = new(_viewStatisticDuration);
+            yield return wait;
 
-        yield return wait;
+            FadeCanvasGroup(_victoryImage, MinTransparent);
+            FadeCanvasGroup(_statisticsPanel, MaxTransparent);
 
-        _coinsRecipient.Transfer();
+            StartCoroutine(ShowStatisticAfterDelay());
+        }
 
-        _coinsRecipient.TransferCompleted += ShowOkButton;
-    }
+        private IEnumerator ShowStatisticAfterDelay()
+        {
+            WaitForSeconds wait = new (ViewStatisticDuration);
 
-    private void ShowOkButton()
-    {
-        _coinsRecipient.TransferCompleted -= ShowOkButton;
+            yield return wait;
 
-        EnableOkButton();
+            _coinsRecipient.Transfer();
+
+            _coinsRecipient.TransferCompleted += ShowOkButton;
+        }
+
+        private void ShowOkButton()
+        {
+            _coinsRecipient.TransferCompleted -= ShowOkButton;
+
+            EnableOkButton();
+        }
     }
 }

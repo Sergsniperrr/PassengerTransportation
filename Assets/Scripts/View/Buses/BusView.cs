@@ -10,13 +10,13 @@ namespace Scripts.View.Buses
     [RequireComponent(typeof(PassengerReception))]
     public class BusView : MonoBehaviour
     {
-        private const int HalfDevider = 2;
+        private const int HalfDivider = 2;
+        private const float SwingAmplitude = 12f;
+        private const float SwingDuration = 0.15f;
+        private const float PulsationDuration = 0.07f;
 
-        private readonly float _swingAmplitude = 12f;
-        private readonly float _swingDuration = 0.15f;
-        private readonly float _pulsationDuration = 0.07f;
-        private readonly Vector3 _pulsationScale = new(1.2f, 0.5f, 0.9f);
-        private readonly Vector3 _sizeAtStop = new(1.05f, 0.85f, 0.9f);
+        private readonly Vector3 _pulsationScale = new (1.2f, 0.5f, 0.9f);
+        private readonly Vector3 _sizeAtStop = new (1.05f, 0.85f, 0.9f);
 
         private Roof _roof;
         private ParticleSystem _smoke;
@@ -48,7 +48,7 @@ namespace Scripts.View.Buses
         public void GrowToHalfSizeAtStop()
         {
             Vector3 scale = transform.localScale;
-            transform.localScale = (_sizeAtStop - scale) / HalfDevider + scale;
+            transform.localScale = (_sizeAtStop - scale) / HalfDivider + scale;
         }
 
         public void GrowToFullSizeAtStop() =>
@@ -69,7 +69,7 @@ namespace Scripts.View.Buses
             transform.localScale = _pulsationScale;
 
             _tween.Kill();
-            _tween = transform.DOScale(_sizeAtStop, _pulsationDuration);
+            _tween = transform.DOScale(_sizeAtStop, PulsationDuration);
         }
 
         public void EnableSmoke() =>
@@ -86,13 +86,13 @@ namespace Scripts.View.Buses
             Vector3 forwardSwing = _initialRotation;
             Vector3 backwardSwing = _initialRotation;
 
-            forwardSwing.z = _swingAmplitude;
-            backwardSwing.z = _swingAmplitude * -1;
+            forwardSwing.z = SwingAmplitude;
+            backwardSwing.z = SwingAmplitude * -1;
 
             DOTween.Sequence()
-                .Append(transform.DOLocalRotate(forwardSwing, _swingDuration / HalfDevider))
-                .Append(transform.DOLocalRotate(backwardSwing, _swingDuration))
-                .Append(transform.DOLocalRotate(_initialRotation, _swingDuration));
+                .Append(transform.DOLocalRotate(forwardSwing, SwingDuration / HalfDivider))
+                .Append(transform.DOLocalRotate(backwardSwing, SwingDuration))
+                .Append(transform.DOLocalRotate(_initialRotation, SwingDuration));
         }
 
         public void PlayCrashEffect() =>
@@ -100,14 +100,16 @@ namespace Scripts.View.Buses
 
         private Vector3 CalculateSparksPosition()
         {
-            Vector3 sparksShift = new(0f, 0.39f, 0f);
-            int trippleDevider = 3;
-            float minDistanceToSparks = 0.85f;
-            float stepSize = 0.175f;
-            int stepsCount = _passengerReception.Count / trippleDevider - 1;
-            float distanseToSparks = minDistanceToSparks + (stepSize * stepsCount);
+            const int TripleDivider = 3;
+            const float MinDistanceToSparks = 0.85f;
+            const float StepSize = 0.175f;
 
-            sparksShift.z = distanseToSparks;
+            Vector3 sparksShift = new (0f, 0.39f, 0f);
+
+            int stepsCount = _passengerReception.Count / TripleDivider - 1;
+            float distanceToSparks = MinDistanceToSparks + (StepSize * stepsCount);
+
+            sparksShift.z = distanceToSparks;
 
             return sparksShift;
         }

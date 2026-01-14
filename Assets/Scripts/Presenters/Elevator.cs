@@ -1,16 +1,17 @@
 using System;
 using Scripts.Model.Elevators;
-using Scripts.Model.Level;
+using Scripts.Model.Elevators.Data;
+using Scripts.Model.Levels;
+using Scripts.View.Elevator;
 using UnityEngine;
 
 namespace Scripts.Presenters
 {
     [RequireComponent(typeof(ElevatorMover))]
     [RequireComponent(typeof(PositionCalculator))]
+    [RequireComponent(typeof(ElevatorView))]
     public class Elevator : MonoBehaviour
     {
-        [field: SerializeField] public string Name { get; private set; }
-
         private ElevatorMover _mover;
         private ElevatorView _view;
         private PositionCalculator _calculator;
@@ -22,6 +23,7 @@ namespace Scripts.Presenters
         public event Action<Elevator> Released;
         public event Action<Bus, Elevator> BusLifted;
 
+        [field: SerializeField] public string Name { get; private set; }
         public BusCounter Counter { get; private set; }
 
         private void Awake()
@@ -56,7 +58,7 @@ namespace Scripts.Presenters
 
         public BusData ReleaseBus(BusUnderground bus)
         {
-            BusData data = new(bus.SeatsCount, _busPosition, _busRotation);
+            BusData data = new (bus.SeatsCount, _busPosition, _busRotation);
 
             Counter.Decrement();
 
@@ -75,8 +77,9 @@ namespace Scripts.Presenters
 
         public void DetectFirstBus()
         {
+            const float Delay = 0.5f;
+
             Platform platform = GetComponentInChildren<Platform>();
-            float delay = 0.5f;
 
             if (platform == null)
                 throw new NullReferenceException(nameof(platform));
@@ -84,7 +87,7 @@ namespace Scripts.Presenters
             Bus bus = platform.InitializeFirstBus();
 
             if (bus != null)
-                LiftBus(bus, delay);
+                LiftBus(bus, Delay);
         }
 
         private void ReleaseBus(Bus _)

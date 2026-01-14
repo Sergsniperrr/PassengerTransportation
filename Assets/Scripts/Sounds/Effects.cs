@@ -4,6 +4,9 @@ namespace Scripts.Sounds
 {
     public class Effects : MonoBehaviour
     {
+        private const float MinRandomPitch = 0.85f;
+        private const float MaxRandomPitch = 1.15f;
+
         [SerializeField] private ParticleSystem _fireWork;
         [SerializeField] private ParticleSystem _crashParticle;
         [SerializeField] private AudioSource _crashAudio;
@@ -12,9 +15,6 @@ namespace Scripts.Sounds
         [SerializeField] private AudioSource _busFillingCompleteAudio;
         [SerializeField] private AudioSource _coinsAudio;
         [SerializeField] private CoinsOnBusStop _coins;
-
-        private readonly float _minRandomPitch = 0.85f;
-        private readonly float _maxRandomPitch = 1.15f;
 
         public void PlayCrash(Vector3 position, Transform busTransform)
         {
@@ -30,7 +30,7 @@ namespace Scripts.Sounds
 
         public void PlayBoardingBus()
         {
-            _boardingBusAudio.pitch = Random.Range(_minRandomPitch, _maxRandomPitch);
+            _boardingBusAudio.pitch = Random.Range(MinRandomPitch, MaxRandomPitch);
             _boardingBusAudio.PlayOneShot(_boardingBusAudio.clip);
         }
 

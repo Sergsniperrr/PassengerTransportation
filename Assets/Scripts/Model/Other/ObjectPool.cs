@@ -2,42 +2,46 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> : Component where T : SpawnableObject<T>
+namespace Scripts.Model.Other
 {
-    private T _prefab;
-    private Transform _parent;
-    private Vector3 _initialPosition;
-    private Queue<T> _pool = new();
-    private T _coin;
-
-    public ObjectPool(T prefab, Transform parent, Vector3 initialPosition)
+    public class ObjectPool<T> : Component
+        where T : SpawnableObject<T>
     {
-        _prefab = prefab ?? throw new ArgumentNullException(nameof(prefab));
-        _parent = parent != null ? parent : throw new ArgumentNullException(nameof(_parent));
-        _initialPosition = initialPosition;
-    }
+        private readonly T _prefab;
+        private readonly Transform _parent;
+        private readonly Vector3 _initialPosition;
+        private readonly Queue<T> _pool = new ();
 
-    public T GetObject()
-    {
-        if (_pool.Count == 0)
+        private T _coin;
+
+        public ObjectPool(T prefab, Transform parent, Vector3 initialPosition)
         {
-            _coin = Instantiate(_prefab);
-            _coin.transform.SetParent(_parent);
-        }
-        else
-        {
-            _coin = _pool.Dequeue();
-            _coin.gameObject.SetActive(true);
+            _prefab = prefab ?? throw new ArgumentNullException(nameof(prefab));
+            _parent = parent != null ? parent : throw new ArgumentNullException(nameof(parent));
+            _initialPosition = initialPosition;
         }
 
-        _coin.transform.SetLocalPositionAndRotation(_initialPosition, Quaternion.identity);
+        public T GetObject()
+        {
+            if (_pool.Count == 0)
+            {
+                _coin = Instantiate(_prefab, _parent, true);
+            }
+            else
+            {
+                _coin = _pool.Dequeue();
+                _coin.gameObject.SetActive(true);
+            }
 
-        return _coin;
-    }
+            _coin.transform.SetLocalPositionAndRotation(_initialPosition, Quaternion.identity);
 
-    public void PutObject(T coin)
-    {
-        _pool.Enqueue(coin);
-        coin.gameObject.SetActive(false);
+            return _coin;
+        }
+
+        public void PutObject(T coin)
+        {
+            _pool.Enqueue(coin);
+            coin.gameObject.SetActive(false);
+        }
     }
 }

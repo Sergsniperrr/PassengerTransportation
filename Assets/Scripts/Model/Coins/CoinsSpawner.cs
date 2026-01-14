@@ -1,47 +1,51 @@
 using System.Collections;
+using Scripts.Model.Other;
 using UnityEngine;
 
-public class CoinsSpawner : Spawner<Coin>
+namespace Scripts.Model.Coins
 {
-    [SerializeField] private Transform _target;
-    [SerializeField] private float _spawnInterval = 0.08f;
-
-    private Coroutine _coroutine;
-    private Coin _coin;
-    private WaitForSeconds _waitForSpawn;
-
-    public float MoveDuration { get; private set; } = 0.7f;
-
-    protected override void Awake()
+    public class CoinsSpawner : Spawner<Coin>
     {
-        InitialPosition = transform.position;
-        _waitForSpawn = new(_spawnInterval);
-        base.Awake();
-    }
+        [SerializeField] private Transform _target;
+        [SerializeField] private float _spawnInterval = 0.08f;
 
-    public void StartSpawn() =>
-        _coroutine = StartCoroutine(SpawnEveryTime());
+        private Coroutine _coroutine;
+        private Coin _coin;
+        private WaitForSeconds _waitForSpawn;
 
-    public void StopSpawn()
-    {
-        if (_coroutine != null)
-            StopCoroutine(_coroutine);
-    }
+        public float MoveDuration { get; private set; } = 0.7f;
 
-    private IEnumerator SpawnEveryTime()
-    {
-        while (enabled)
+        protected override void Awake()
         {
-            Spawn();
-
-            yield return _waitForSpawn;
+            InitialPosition = transform.position;
+            _waitForSpawn = new WaitForSeconds(_spawnInterval);
+            base.Awake();
         }
-    }
 
-    private void Spawn()
-    {
-        _coin = GetObject();
-        _coin.Show(_target.position, false, false);
-        MoveDuration = _coin.MoveDuration;
+        public void StartSpawn() =>
+            _coroutine = StartCoroutine(SpawnEveryTime());
+
+        public void StopSpawn()
+        {
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+        }
+
+        private IEnumerator SpawnEveryTime()
+        {
+            while (enabled)
+            {
+                Spawn();
+
+                yield return _waitForSpawn;
+            }
+        }
+
+        private void Spawn()
+        {
+            _coin = GetObject();
+            _coin.Show(_target.position, false, false);
+            MoveDuration = _coin.MoveDuration;
+        }
     }
 }

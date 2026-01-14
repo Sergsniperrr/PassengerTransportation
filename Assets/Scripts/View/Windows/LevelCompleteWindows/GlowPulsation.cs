@@ -1,33 +1,37 @@
 using DG.Tweening;
 using UnityEngine;
 
-public class GlowPulsation : MonoBehaviour
+namespace Scripts.View.Windows.LevelCompleteWindows
 {
-    private Vector3 _pulsationScale = new(0.2f, 0.2f, 0f);
-    private float _duration = 0.3f;
-    private Tween _tween;
-    private Vector3 _initialScale;
-
-    private void Awake()
+    public class GlowPulsation : MonoBehaviour
     {
-        _initialScale = transform.localScale;
-        _pulsationScale += _initialScale;
-    }
+        private const float Duration = 0.3f;
 
-    private void OnEnable()
-    {
-        transform.localScale = _initialScale;
-        Pulsate();
-    }
+        private Vector3 _pulsationScale = new (0.2f, 0.2f, 0f);
+        private Tween _tween;
+        private Vector3 _initialScale;
 
-    private void OnDisable()
-    {
-        _tween.Kill();
-    }
+        private void Awake()
+        {
+            _initialScale = transform.localScale;
+            _pulsationScale += _initialScale;
+        }
 
-    private void Pulsate()
-    {
-        _tween = transform.DOScale(_pulsationScale, _duration).SetEase(Ease.InOutSine)
-            .SetLoops(-1, LoopType.Yoyo);
+        private void OnEnable()
+        {
+            transform.localScale = _initialScale;
+            Pulsate();
+        }
+
+        private void OnDisable()
+        {
+            _tween.Kill();
+        }
+
+        private void Pulsate()
+        {
+            _tween = transform.DOScale(_pulsationScale, Duration).SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
     }
 }

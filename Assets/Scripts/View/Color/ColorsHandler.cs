@@ -1,53 +1,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Model.Buses;
-using Scripts.Model.Level;
+using Scripts.Model.Levels;
 using Scripts.Presenters;
 using UnityEngine;
 
-public class ColorsHandler : MonoBehaviour, IColorGetter
+namespace Scripts.View.Color
 {
-    private Queue<Material> _colors;
-
-    public int ColorsCount => _colors.Count;
-    public List<Material> Colors => _colors.ToList();
-
-    public void InitializePassengerColors(Bus[] visibleBases, BusUnderground[] undergroundBuses ) =>
-        _colors = CreateRandomColors(ReadColors(visibleBases, undergroundBuses));
-
-    public Material DequeuePassengerColor() =>
-        _colors.Dequeue();
-
-    public void SetColorsQueue(List<Material> colors)
+    public class ColorsHandler : MonoBehaviour, IColorGetter
     {
-        _colors.Clear();
-        _colors = new Queue<Material>(colors);
-    }
+        private Queue<Material> _colors;
 
-    private List<Material> ReadColors(IBusParameters[] visibleBases, BusUnderground[] undergroundBuses)
-    {
-        List<Material> materials = new();
-        IBusParameters[] buses = visibleBases.Concat(undergroundBuses.Cast<IBusParameters>()).ToArray();
+        public int ColorsCount => _colors.Count;
+        public List<Material> Colors => _colors.ToList();
 
-        foreach (IBusParameters bus in buses)
-            for (int i = 0; i < bus.SeatsCount; i++)
-                materials.Add(bus.Material);
+        public void InitializePassengerColors(Bus[] visibleBases, BusUnderground[] undergroundBuses) =>
+            _colors = CreateRandomColors(ReadColors(visibleBases, undergroundBuses));
 
-        return materials;
-    }
+        public Material DequeuePassengerColor() =>
+            _colors.Dequeue();
 
-    private Queue<Material> CreateRandomColors(List<Material> materials)
-    {
-        Queue<Material> randomMaterials = new();
-        int randomIndex;
-
-        while (materials.Count > 0)
+        public void SetColorsQueue(List<Material> colors)
         {
-            randomIndex = UnityEngine.Random.Range(0, materials.Count);
-            randomMaterials.Enqueue(materials[randomIndex]);
-            materials.RemoveAt(randomIndex);
+            _colors.Clear();
+            _colors = new Queue<Material>(colors);
         }
 
-        return randomMaterials;
+        private List<Material> ReadColors(IBusParameters[] visibleBases, BusUnderground[] undergroundBuses)
+        {
+            List<Material> materials = new ();
+            IBusParameters[] buses = visibleBases.Concat(undergroundBuses).ToArray();
+
+            foreach (IBusParameters bus in buses)
+            {
+                for (int i = 0; i < bus.SeatsCount; i++)
+                {
+                    materials.Add(bus.Material);
+                }
+            }
+
+            return materials;
+        }
+
+        private Queue<Material> CreateRandomColors(List<Material> materials)
+        {
+            Queue<Material> randomMaterials = new ();
+            int randomIndex;
+
+            while (materials.Count > 0)
+            {
+                randomIndex = Random.Range(0, materials.Count);
+                randomMaterials.Enqueue(materials[randomIndex]);
+                materials.RemoveAt(randomIndex);
+            }
+
+            return randomMaterials;
+        }
     }
 }

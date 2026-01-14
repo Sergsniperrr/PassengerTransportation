@@ -6,12 +6,12 @@ namespace Scripts.Presenters
 {
     public class Train : MonoBehaviour
     {
-        [SerializeField] private Door _door;
+        private const float StartPosition = 25f;
+        private const float StationPosition = -25.9f;
+        private const float FinalPosition = -100f;
+        private const float Duration = 1.3f;
 
-        private readonly float _startPosition = 25f;
-        private readonly float _stationPosition = -25.9f;
-        private readonly float _finalPosition = -100f;
-        private readonly float _duration = 1.3f;
+        [SerializeField] private Door _door;
 
         private Renderer[] _renderers;
 
@@ -39,20 +39,17 @@ namespace Scripts.Presenters
         {
             ReturnToStartPosition();
             ChangeVisible(true);
-            transform.DOMoveX(_stationPosition, _duration)
+            transform.DOMoveX(StationPosition, Duration)
                 .SetEase(Ease.OutSine)
-                .OnComplete(() =>
-                {
-                    _door.Open();
-                });
+                .OnComplete(() => { _door.Open(); });
         }
 
         public void LeaveStation() =>
             _door.Close();
 
-        public void MoveOutFromStation()
+        private void MoveOutFromStation()
         {
-            transform.DOMoveX(_finalPosition, _duration)
+            transform.DOMoveX(FinalPosition, Duration)
                 .SetEase(Ease.InSine)
                 .OnComplete(() =>
                 {
@@ -62,10 +59,10 @@ namespace Scripts.Presenters
                 });
         }
 
-        public void ReturnToStartPosition()
+        private void ReturnToStartPosition()
         {
             Vector3 position = transform.position;
-            position.x = _startPosition;
+            position.x = StartPosition;
             transform.position = position;
         }
 
@@ -74,8 +71,8 @@ namespace Scripts.Presenters
 
         private void ChangeVisible(bool status)
         {
-            foreach (Renderer renderer in _renderers)
-                renderer.enabled = status;
+            foreach (var renderer1 in _renderers)
+                renderer1.enabled = status;
         }
     }
 }

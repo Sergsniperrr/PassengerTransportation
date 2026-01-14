@@ -1,87 +1,90 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Scripts.Model.Level;
+using System.Linq;
+using Scripts.Model.Levels;
 using Scripts.Presenters;
 using UnityEngine;
 
-public class ElevatorsHandler : MonoBehaviour
+namespace Scripts.Model.Elevators
 {
-    [SerializeField] private ElevatorSpawner _spawner;
-    [SerializeField] private Bus[] _buses;
-
-    private List<Elevator> _elevators = new();
-
-    public event Action<Elevator> ElevatorReleased;
-
-    public Elevator[] Elevators => _elevators.ToArray();
-
-    private void OnDisable()
+    public class ElevatorsHandler : MonoBehaviour
     {
-        foreach (Elevator elevator in _elevators)
-            elevator.Released -= ReleaseElevator;
-    }
+        private readonly List<Elevator> _elevators = new ();
 
-    public void InitializeData(BusData[] bigBuses, int elevatorsCount, int busesCount)
-    {
-        if (_elevators.Count > 0)
+        [SerializeField] private ElevatorSpawner _spawner;
+        [SerializeField] private Bus[] _buses;
+
+        public event Action<Elevator> ElevatorReleased;
+
+        public Elevator[] Elevators => _elevators.ToArray();
+
+        private void OnDisable()
         {
             foreach (Elevator elevator in _elevators)
-                Destroy(elevator.gameObject);
-
-            _elevators.Clear();
+                elevator.Released -= ReleaseElevator;
         }
 
-        elevatorsCount = Mathf.Min(elevatorsCount, bigBuses.Length);
-        int[] elevatorsCounters = CalculateBusesInElevators(busesCount, elevatorsCount);
+        public void InitializeData(BusData[] bigBuses, int elevatorsCount, int busesCount)
+        {
+            if (_elevators.Count > 0)
+            {
+                foreach (Elevator elevator in _elevators)
+                    Destroy(elevator.gameObject);
 
-        if (elevatorsCounters == null)
-            return;
+                _elevators.Clear();
+            }
 
-        var busesAtElevators = bigBuses
-            .OrderBy(Bus => UnityEngine.Random.value)
-            .Take(elevatorsCount)
-            .ToArray();
+            elevatorsCount = Mathf.Min(elevatorsCount, bigBuses.Length);
+            int[] elevatorsCounters = CalculateBusesInElevators(busesCount, elevatorsCount);
 
-        for (int i = 0; i < elevatorsCount; i++)
-            SpawnElevator(busesAtElevators[i], elevatorsCounters[i]);
-    }
+            if (elevatorsCounters == null)
+                return;
 
-    public void DetectInitialBuses()
-    {
-        foreach (Elevator elevator in _elevators)
-            elevator.DetectFirstBus();
-    }
+            var busesAtElevators = bigBuses
+                .OrderBy(Bus => UnityEngine.Random.value)
+                .Take(elevatorsCount)
+                .ToArray();
 
-    private int[] CalculateBusesInElevators(int busesCount, int elevatorsCount)
-    {
-        if (elevatorsCount == 0)
-            return null;
+            for (int i = 0; i < elevatorsCount; i++)
+                SpawnElevator(busesAtElevators[i], elevatorsCounters[i]);
+        }
 
-        int remnant = busesCount % elevatorsCount;
-        int baseCountInElevator = busesCount / elevatorsCount;
-        int[] result = new int[elevatorsCount];
+        public void DetectInitialBuses()
+        {
+            foreach (Elevator elevator in _elevators)
+                elevator.DetectFirstBus();
+        }
 
-        for (int i = 0; i < elevatorsCount; i++)
-            result[i] = baseCountInElevator;
+        private int[] CalculateBusesInElevators(int busesCount, int elevatorsCount)
+        {
+            if (elevatorsCount == 0)
+                return null;
 
-        for (int i = 0; i < remnant; i++)
-            result[i] += 1;
+            int remnant = busesCount % elevatorsCount;
+            int baseCountInElevator = busesCount / elevatorsCount;
+            int[] result = new int[elevatorsCount];
 
-        return result;
-    }
+            for (int i = 0; i < elevatorsCount; i++)
+                result[i] = baseCountInElevator;
 
-    private void SpawnElevator(BusData initialBus, int busCount)
-    {
-        Elevator elevator = _spawner.Spawn(initialBus);
-        elevator.SetBusesCounter(busCount);
-        _elevators.Add(elevator);
+            for (int i = 0; i < remnant; i++)
+                result[i] += 1;
 
-        elevator.Released += ReleaseElevator;
-    }
+            return result;
+        }
 
-    private void ReleaseElevator(Elevator elevator)
-    {
-        ElevatorReleased?.Invoke(elevator);
+        private void SpawnElevator(BusData initialBus, int busCount)
+        {
+            Elevator elevator = _spawner.Spawn(initialBus);
+            elevator.SetBusesCounter(busCount);
+            _elevators.Add(elevator);
+
+            elevator.Released += ReleaseElevator;
+        }
+
+        private void ReleaseElevator(Elevator elevator)
+        {
+            ElevatorReleased?.Invoke(elevator);
+        }
     }
 }

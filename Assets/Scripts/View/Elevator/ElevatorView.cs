@@ -1,39 +1,42 @@
-using UnityEngine;
-using DG.Tweening;
 using System.Collections.Generic;
+using DG.Tweening;
+using UnityEngine;
 
-public class ElevatorView : MonoBehaviour
+namespace Scripts.View.Elevator
 {
-    private List<Transform> _elevatorParts = new();
-    private float _duration = 0.2f;
-    private float _increaseSize = 1.05f;
-
-    private void Awake()
+    public class ElevatorView : MonoBehaviour
     {
-        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
-        Canvas counterCanvas = GetComponentInChildren<Canvas>();
+        private const float Duration = 0.2f;
+        private const float IncreaseSize = 1.05f;
 
-        _elevatorParts.Add(counterCanvas.transform);
+        private readonly List<Transform> _elevatorParts = new ();
 
-        foreach (SpriteRenderer renderer in renderers)
-            _elevatorParts.Add(renderer.transform);
-    }
-
-    private void OnDisable()
-    {
-        foreach (Transform part in _elevatorParts)
-            part.DOKill();
-    }
-
-    public void Hide()
-    {
-        foreach (Transform part in _elevatorParts)
+        private void Awake()
         {
-            part.DOScale(part.localScale * _increaseSize, _duration).SetEase(Ease.OutSine).OnComplete(() => 
-            {
-                part.DOScale(0, _duration).SetEase(Ease.InSine);
-            });
+            var renderers = GetComponentsInChildren<SpriteRenderer>();
+            var counterCanvas = GetComponentInChildren<Canvas>();
 
+            _elevatorParts.Add(counterCanvas.transform);
+
+            foreach (var spriteRenderer in renderers)
+                _elevatorParts.Add(spriteRenderer.transform);
+        }
+
+        private void OnDisable()
+        {
+            foreach (Transform part in _elevatorParts)
+                part.DOKill();
+        }
+
+        public void Hide()
+        {
+            foreach (Transform part in _elevatorParts)
+            {
+                part.DOScale(part.localScale * IncreaseSize, Duration).SetEase(Ease.OutSine).OnComplete(() =>
+                {
+                    part.DOScale(0, Duration).SetEase(Ease.InSine);
+                });
+            }
         }
     }
 }

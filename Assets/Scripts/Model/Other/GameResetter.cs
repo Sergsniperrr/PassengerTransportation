@@ -1,27 +1,30 @@
-using DG.Tweening;
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameResetter : MonoBehaviour
+namespace Scripts.Model.Other
 {
-    private const string IsRestartPrefName = "IsRestart";
-    private const string LevelPrefName = "CurrentLevel";
-
-    private void OnDestroy()
+    public class GameResetter : MonoBehaviour
     {
-        DOTween.Clear(true);
-    }
+        private const string IsRestartPrefName = "IsRestart";
+        private const string LevelPrefName = "CurrentLevel";
 
-    public void RestartLevel()
-    {
-        PlayerPrefs.SetInt(IsRestartPrefName, Convert.ToInt32(true));
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+        private void OnDestroy()
+        {
+            DOTween.Clear(true);
+        }
 
-    public void BackInMainMenu(int currentLevel)
-    {
-        PlayerPrefs.SetInt(LevelPrefName, currentLevel);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        public void RestartLevel()
+        {
+            PlayerPrefs.SetInt(IsRestartPrefName, Convert.ToInt32(true));
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        public void BackInMainMenu(int currentLevel)
+        {
+            PlayerPrefs.SetInt(LevelPrefName, currentLevel);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }

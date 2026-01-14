@@ -1,32 +1,36 @@
 using UnityEngine;
 
-public abstract class Spawner<T> : MonoBehaviour where T : SpawnableObject<T>
+namespace Scripts.Model.Other
 {
-    [SerializeField] private T _prefab;
-
-    protected ObjectPool<T> Pool;
-    protected Vector3 InitialPosition;
-
-    private T _spawnableObject;
-
-    protected virtual void Awake()
+    public abstract class Spawner<T> : MonoBehaviour
+        where T : SpawnableObject<T>
     {
-        Pool = new(_prefab, transform, InitialPosition);
-    }
+        [SerializeField] private T _prefab;
 
-    protected T GetObject()
-    {
-        _spawnableObject = Pool.GetObject();
+        protected Vector3 InitialPosition;
 
-        _spawnableObject.Died += PutObject;
+        private ObjectPool<T> _pool;
+        private T _spawnableObject;
 
-        return _spawnableObject;
-    }
+        protected virtual void Awake()
+        {
+            _pool = new ObjectPool<T>(_prefab, transform, InitialPosition);
+        }
 
-    private void PutObject(T spawnableObject)
-    {
-        spawnableObject.Died -= PutObject;
+        protected T GetObject()
+        {
+            _spawnableObject = _pool.GetObject();
 
-        Pool.PutObject(spawnableObject);
+            _spawnableObject.Died += PutObject;
+
+            return _spawnableObject;
+        }
+
+        private void PutObject(T spawnableObject)
+        {
+            spawnableObject.Died -= PutObject;
+
+            _pool.PutObject(spawnableObject);
+        }
     }
 }

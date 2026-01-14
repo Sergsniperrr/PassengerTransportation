@@ -7,11 +7,11 @@
         false,
         false
     ],
-    "idSave": 29,
-    "<Level>k__BackingField": 16,
-    "<Money>k__BackingField": 32,
-    "<Score>k__BackingField": 649,
-    "<TotalBusesCount>k__BackingField": 323,
+    "idSave": 30,
+    "<Level>k__BackingField": 17,
+    "<Money>k__BackingField": 21,
+    "<Score>k__BackingField": 685,
+    "<TotalBusesCount>k__BackingField": 349,
     "<TotalAdsViewsCount>k__BackingField": 11,
-    "<PlayerSkill>k__BackingField": 0.5987368226051331
+    "<PlayerSkill>k__BackingField": 0.5687999725341797
 }

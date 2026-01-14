@@ -1,4 +1,5 @@
 using System;
+using Scripts.Model.Coins;
 using Scripts.Sounds;
 using UnityEngine;
 

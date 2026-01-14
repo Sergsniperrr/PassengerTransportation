@@ -1,14 +1,17 @@
-using DG.Tweening;
 using System;
+using DG.Tweening;
 using UnityEngine;
 
-public class SpawnableObject<T> : MonoBehaviour
+namespace Scripts.Model.Other
 {
-    public event Action<T> Died;
-
-    protected void Die(T self)
+    public class SpawnableObject<T> : MonoBehaviour
     {
-        Died?.Invoke(self);
-        transform.DOKill();
+        public event Action<T> Died;
+
+        protected void Die(T self)
+        {
+            Died?.Invoke(self);
+            transform.DOKill();
+        }
     }
 }

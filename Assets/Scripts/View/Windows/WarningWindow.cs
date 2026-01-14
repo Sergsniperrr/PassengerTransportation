@@ -1,41 +1,45 @@
 using System;
+using Scripts.View.Color;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class WarningWindow : SimpleWindow
+namespace Scripts.View.Windows
 {
-    [SerializeField] private Button _passengersArrangingButton;
-    [SerializeField] private PassengerColorArranger _colorArranger;
-
-    private const string RewardId = "PassengerArrange";
-
-    public event Action AdViewed;
-
-    public bool IsGameContinues { get; private set; }
-
-    public override void Open(float delay = 0)
+    public class WarningWindow : SimpleWindow
     {
-        base.Open(delay);
+        private const string RewardId = "PassengerArrange";
 
-        IsGameContinues = false;
-        _passengersArrangingButton.onClick.AddListener(ViewAd);
-    }
+        [SerializeField] private Button _passengersArrangingButton;
+        [SerializeField] private PassengerColorArranger _colorArranger;
 
-    private void ViewAd()
-    {
-        YG2.RewardedAdvShow(RewardId, TakeReward);
-    }
+        public event Action AdViewed;
 
-    private void TakeReward()
-    {
-        _passengersArrangingButton.onClick.RemoveListener(ViewAd);
+        public bool IsGameContinues { get; private set; }
 
-        _colorArranger.ArrangeColors();
-        IsGameContinues = true;
+        public override void Open(float delay = 0)
+        {
+            base.Open(delay);
 
-        AdViewed?.Invoke();
+            IsGameContinues = false;
+            _passengersArrangingButton.onClick.AddListener(ViewAd);
+        }
 
-        Close();
+        private void ViewAd()
+        {
+            YG2.RewardedAdvShow(RewardId, TakeReward);
+        }
+
+        private void TakeReward()
+        {
+            _passengersArrangingButton.onClick.RemoveListener(ViewAd);
+
+            _colorArranger.ArrangeColors();
+            IsGameContinues = true;
+
+            AdViewed?.Invoke();
+
+            Close();
+        }
     }
 }

@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class ElevatorBackground : MonoBehaviour
+namespace Scripts.Model.Elevators
 {
-
+    public class ElevatorBackground : MonoBehaviour
+    {
+    }
 }

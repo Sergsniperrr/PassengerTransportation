@@ -1,5 +1,6 @@
 using System;
 using Scripts.Model.BusStops;
+using Scripts.Model.Passengers;
 using UnityEngine;
 
 namespace Scripts.Presenters

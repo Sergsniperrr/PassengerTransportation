@@ -1,4 +1,6 @@
 using Scripts.View.Buses;
+using Scripts.View.Color;
+using Scripts.View.Windows;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,27 +1,30 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class LoadingScreen : MonoBehaviour
+namespace Scripts.View.Windows.Loading
 {
-    [SerializeField] private string _sceneForLoading;
-    [SerializeField] private Slider _bar;
-
-    private void Start()
+    public class LoadingScreen : MonoBehaviour
     {
-        StartCoroutine(LoadAsync());
-    }
+        [SerializeField] private string _sceneForLoading;
+        [SerializeField] private Slider _bar;
 
-    private IEnumerator LoadAsync()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneForLoading);
-
-        while (asyncLoad.isDone == false)
+        private void Start()
         {
-            _bar.value = asyncLoad.progress;
+            StartCoroutine(LoadAsync());
+        }
 
-            yield return null;
+        private IEnumerator LoadAsync()
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneForLoading);
+
+            while (asyncLoad is { isDone: false })
+            {
+                _bar.value = asyncLoad.progress;
+
+                yield return null;
+            }
         }
     }
 }

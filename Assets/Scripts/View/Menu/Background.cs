@@ -7,6 +7,8 @@ namespace Scripts.View.Menu
     [RequireComponent(typeof(Image))]
     public class Background : MonoBehaviour
     {
+        private const float DefaultFadeDuration = 0.5f;
+        
         [SerializeField] private float _maxDarkness = 0.6f;
 
         private Image _image;
@@ -21,12 +23,12 @@ namespace Scripts.View.Menu
             DisableCollider();
         }
 
-        public void Show(float duration = 0.5f)
+        public void Show(float duration = DefaultFadeDuration)
         {
             Fade(_maxDarkness, duration, DisableCollider);
         }
 
-        public void Hide(float duration = 0.5f)
+        public void Hide(float duration = DefaultFadeDuration)
         {
             Fade(0, duration, DisableCollider);
         }

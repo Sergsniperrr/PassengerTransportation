@@ -52,9 +52,10 @@ namespace Scripts.Sounds
 
         private IEnumerator MoveOutAfterDelay(int busStopIndex)
         {
-            const float minDuration = 0.2f;
-            const float distanceMultiplier = 0.05f;
-            WaitForSeconds wait = new(busStopIndex * distanceMultiplier + minDuration);
+            const float MinDuration = 0.2f;
+            const float DistanceMultiplier = 0.05f;
+
+            WaitForSeconds wait = new (busStopIndex * DistanceMultiplier + MinDuration);
 
             PlaySound();
 

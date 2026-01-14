@@ -1,64 +1,67 @@
 using System;
-using DG.Tweening;
-using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 using Scripts.Presenters;
+using UnityEngine;
 
-public class ElevatorMover : MonoBehaviour
+namespace Scripts.Model.Elevators
 {
-    private readonly float _liftingDuration = 0.7f;
-
-    private Platform _platform;
-    private Vector3 _topPlatformPosition;
-
-    public event Action<Bus> BusLifted;
-
-    private void Awake()
+    public class ElevatorMover : MonoBehaviour
     {
-        _platform = GetComponentInChildren<Platform>();
+        private const float LiftingDuration = 0.7f;
 
-        if (_platform == null)
-            throw new ArgumentNullException(nameof(_platform));
+        private Platform _platform;
+        private Vector3 _topPlatformPosition;
 
-        _topPlatformPosition = _platform.transform.localPosition;
-    }
+        public event Action<Bus> BusLifted;
 
-    public void LiftBus(Bus bus, float delay = 0f) =>
-        StartCoroutine(LiftBusAfterDelay(bus, delay));
-
-    public void LiftBusWithoutDelay(Bus bus)
-    {
-        if (bus == null)
-            throw new ArgumentNullException(nameof(bus));
-
-        Transform busParent = bus.transform.parent;
-
-        bus.transform.SetParent(transform);
-        bus.transform.localPosition = _platform.BottomPosition;
-        bus.DisableSwingEffect();
-        _platform.transform.localPosition = _topPlatformPosition;
-
-        _platform.transform.DOLocalMove(_platform.BottomPosition, _liftingDuration).OnComplete(() =>
+        private void Awake()
         {
-            _platform.transform.DOLocalMove(_topPlatformPosition, _liftingDuration);
+            _platform = GetComponentInChildren<Platform>();
 
-            bus.gameObject.SetActive(true);
-            bus.transform.DOMove(_platform.InitialBusPosition, _liftingDuration).OnComplete(() =>
+            if (_platform == null)
+                throw new ArgumentNullException(nameof(_platform));
+
+            _topPlatformPosition = _platform.transform.localPosition;
+        }
+
+        public void LiftBus(Bus bus, float delay = 0f) =>
+            StartCoroutine(LiftBusAfterDelay(bus, delay));
+
+        private void LiftBusWithoutDelay(Bus bus)
+        {
+            if (bus == null)
+                throw new ArgumentNullException(nameof(bus));
+
+            Transform busParent = bus.transform.parent;
+
+            bus.transform.SetParent(transform);
+            bus.transform.localPosition = _platform.BottomPosition;
+            bus.DisableSwingEffect();
+            _platform.transform.localPosition = _topPlatformPosition;
+
+            _platform.transform.DOLocalMove(_platform.BottomPosition, LiftingDuration).OnComplete(() =>
             {
-                bus.transform.SetParent(busParent);
-                bus.EnableSwingEffect();
+                _platform.transform.DOLocalMove(_topPlatformPosition, LiftingDuration);
 
-                BusLifted?.Invoke(bus);
+                bus.gameObject.SetActive(true);
+                bus.transform.DOMove(_platform.InitialBusPosition, LiftingDuration).OnComplete(() =>
+                {
+                    bus.transform.SetParent(busParent);
+                    bus.EnableSwingEffect();
+
+                    BusLifted?.Invoke(bus);
+                });
             });
-        });
-    }
+        }
 
-    private IEnumerator LiftBusAfterDelay(Bus bus, float delay)
-    {
-        WaitForSeconds wait = new(delay);
+        private IEnumerator LiftBusAfterDelay(Bus bus, float delay)
+        {
+            WaitForSeconds wait = new (delay);
 
-        yield return wait;
+            yield return wait;
 
-        LiftBusWithoutDelay(bus);
+            LiftBusWithoutDelay(bus);
+        }
     }
 }

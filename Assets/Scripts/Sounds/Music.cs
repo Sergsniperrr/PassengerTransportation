@@ -4,10 +4,10 @@ namespace Scripts.Sounds
 {
     public class Music : MonoBehaviour
     {
-        [SerializeField] private AudioSource _music;
-
         private const int MinVolume = 0;
         private const int MaxVolume = 1;
+
+        [SerializeField] private AudioSource _music;
 
         private float _duration;
 

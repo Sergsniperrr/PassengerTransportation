@@ -1,3 +1,4 @@
+using Scripts.Model.Other;
 using UnityEngine;
 
 public class MoneySpentViewSpawner : Spawner<MoneySpendView>

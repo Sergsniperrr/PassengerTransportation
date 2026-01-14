@@ -1,4 +1,6 @@
 using System;
+using Scripts.Model.Other;
+using Scripts.View.Windows;
 using UnityEngine;
 using UnityEngine.UI;
 

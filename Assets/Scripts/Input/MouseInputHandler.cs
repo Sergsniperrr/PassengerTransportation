@@ -6,11 +6,10 @@ namespace Scripts.Input
 {
     public class MouseInputHandler : MonoBehaviour
     {
-        [SerializeField] private Camera _mainCamera;
-
         private const int LeftMouseButton = 0;
+        private const float UpdateDelay = 0.3f;
 
-        private readonly float _updateDelay = 0.3f;
+        [SerializeField] private Camera _mainCamera;
 
         private Ray _ray;
         private RaycastHit _hitInfo;
@@ -32,14 +31,14 @@ namespace Scripts.Input
             if (_target == null)
                 return;
 
-            if (_target.TryGetComponent(out Bus bus))
-            {
-                if (bus.IsActive)
-                {
-                    BusSelected?.Invoke(bus);
-                    _updateCounter = _updateDelay;
-                }
-            }
+            if (_target.TryGetComponent(out Bus bus) == false)
+                return;
+
+            if (bus.IsActive == false)
+                return;
+
+            BusSelected?.Invoke(bus);
+            _updateCounter = UpdateDelay;
         }
 
         private Collider OnMouseClick()

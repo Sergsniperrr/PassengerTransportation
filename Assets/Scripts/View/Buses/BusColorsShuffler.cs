@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scripts.Model.Buses;
-using Scripts.Model.Level;
+using Scripts.Model.Levels;
 using UnityEngine;
 using UnityEngine.UI;
 

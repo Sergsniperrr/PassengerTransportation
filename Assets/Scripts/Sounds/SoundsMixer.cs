@@ -6,16 +6,16 @@ namespace Scripts.Sounds
 {
     public class SoundsMixer : MonoBehaviour
     {
+        private const float MinVolume = 0.001f;
+        private const float MaxVolume = 1f;
+        private const int VolumeMultiplier = 20;
+
         [SerializeField] private Slider _sliderMusic;
         [SerializeField] private Slider _sliderEffects;
         [SerializeField] private AudioMixerGroup _mixerMusicGroup;
         [SerializeField] private AudioMixerGroup _mixerEffectsGroup;
         [SerializeField] private string _musicVariableName;
         [SerializeField] private string _effectsVariableName;
-
-        private const float MinVolume = 0.001f;
-        private const float MaxVolume = 1f;
-        private const int VolumeMultiplier = 20;
 
         private void OnEnable()
         {

@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
-using Scripts.Model.Level;
+using Scripts.Model.Levels;
+using Scripts.Model.Other;
+using Scripts.View;
+using Scripts.View.Menu;
+using Scripts.View.Tutorial;
 using UnityEngine;
 using YG;
 
@@ -8,6 +12,10 @@ namespace Scripts.Presenters
 {
     public class LevelsHandler : MonoBehaviour
     {
+        private const string IsRestartPrefName = "IsRestart";
+        private const string LeaderboardName = "BestCarriers";
+        private const int FirstLevel = 1;
+
         [SerializeField] private Level _level;
         [SerializeField] private TutorialFinger _tutorialFinger;
         [SerializeField] private BusSpawner _busSpawner;
@@ -17,10 +25,6 @@ namespace Scripts.Presenters
         [SerializeField] private LevelMaker _levelMaker;
         [SerializeField] private PlayerSaver _saver;
         [SerializeField] private int _minLevelForViewInterstitial = 5;
-
-        private const string IsRestartPrefName = "IsRestart";
-        private const string LeaderboardName = "BestCarriers";
-        private const int FirstLevel = 1;
 
         private LevelsDataContainer _levelsData;
         private int _currentLevel;
@@ -67,7 +71,7 @@ namespace Scripts.Presenters
 
         private IEnumerator StartLevelAfterDelay()
         {
-            WaitForSeconds wait = new(0.2f);
+            WaitForSeconds wait = new (0.2f);
 
             yield return wait;
 
@@ -79,7 +83,7 @@ namespace Scripts.Presenters
         {
             _startMenu.GameStarted -= StartLevel;
 
-            LevelBusCalculator levelCalculator = new(_currentLevel);
+            LevelBusCalculator levelCalculator = new (_currentLevel);
             BusData[] levelData = _levelsData.GetLevel(levelCalculator.GetSimpleLevel()).Buses;
             _busSpawner.InitializeUndergroundBuses(levelCalculator, levelData);
 

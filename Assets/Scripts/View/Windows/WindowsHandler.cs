@@ -1,58 +1,61 @@
 using System;
 using UnityEngine;
 
-public class WindowsHandler : MonoBehaviour
+namespace Scripts.View.Windows
 {
-    [SerializeField] private SimpleWindow _windowBeginLevel;
-    [SerializeField] private LevelCompleteWindow _windowLevelComplete;
-    [SerializeField] private FailWindows _windowLevelFailed;
-    [SerializeField] private WarningWindow _windowWarning;
-
-    public event Action<bool> ResultResieved;
-
-    public SimpleWindow OpenBeginLevel(float delay = 0f) =>
-        Open(_windowBeginLevel, delay);
-
-    public SimpleWindow OpenLevelComplete(float delay = 0f) =>
-        Open(_windowLevelComplete, delay);
-
-    public void OpenWarningWindow(float delay = 0f)
+    public class WindowsHandler : MonoBehaviour
     {
-        WarningWindow warningWindow = (WarningWindow)Open(_windowWarning, delay);
+        [SerializeField] private SimpleWindow _windowBeginLevel;
+        [SerializeField] private LevelCompleteWindow _windowLevelComplete;
+        [SerializeField] private FailWindows _windowLevelFailed;
+        [SerializeField] private WarningWindow _windowWarning;
 
-        warningWindow.Closed += TakeResult;
-    }
+        public event Action<bool> ResultResieved;
 
-    private SimpleWindow Open(SimpleWindow window, float delay)
-    {
-        window.gameObject.SetActive(true);
-        window.Open(delay);
+        public SimpleWindow OpenBeginLevel(float delay = 0f) =>
+            Open(_windowBeginLevel, delay);
 
-        return window;
-    }
+        public SimpleWindow OpenLevelComplete(float delay = 0f) =>
+            Open(_windowLevelComplete, delay);
 
-    private void TakeResult(SimpleWindow window)
-    {
-        window.Closed -= TakeResult;
-
-        WarningWindow warningWindow = (WarningWindow)window;
-
-        if (warningWindow.IsGameContinues == false)
+        public void OpenWarningWindow(float delay = 0f)
         {
-            _windowLevelFailed.gameObject.SetActive(true);
-            _windowLevelFailed.Open();
-            _windowLevelFailed.Closed += SendFailResult;
+            WarningWindow warningWindow = (WarningWindow)Open(_windowWarning, delay);
 
-            return;
+            warningWindow.Closed += TakeResult;
         }
 
-        ResultResieved?.Invoke(true);
-    }
+        private SimpleWindow Open(SimpleWindow window, float delay)
+        {
+            window.gameObject.SetActive(true);
+            window.Open(delay);
 
-    private void SendFailResult(SimpleWindow _)
-    {
-        _windowLevelFailed.Closed -= SendFailResult;
+            return window;
+        }
 
-        ResultResieved?.Invoke(false);
+        private void TakeResult(SimpleWindow window)
+        {
+            window.Closed -= TakeResult;
+
+            WarningWindow warningWindow = (WarningWindow)window;
+
+            if (warningWindow.IsGameContinues == false)
+            {
+                _windowLevelFailed.gameObject.SetActive(true);
+                _windowLevelFailed.Open();
+                _windowLevelFailed.Closed += SendFailResult;
+
+                return;
+            }
+
+            ResultResieved?.Invoke(true);
+        }
+
+        private void SendFailResult(SimpleWindow _)
+        {
+            _windowLevelFailed.Closed -= SendFailResult;
+
+            ResultResieved?.Invoke(false);
+        }
     }
 }
