@@ -1,27 +1,29 @@
-using Scripts.Model.Elevators.Data;
 using UnityEngine;
 
-[System.Serializable]
-public class ElevatorMultipliers
+namespace Scripts.Model.Elevators.Data
 {
-    [field : SerializeField] public ShiftData Position { get; private set; }
-    [field: SerializeField] public ShiftData Rotation { get; private set; }
-    [field: SerializeField] public ShiftData BackgroundPosition { get; private set; }
-    [field: SerializeField] public ShiftData BottomPlatformPosition { get; private set; }
-    [field: SerializeField] public ShiftData CounterPosition { get; private set; }
+    [System.Serializable]
+    public class ElevatorMultipliers
+    {
+        [field: SerializeField] public ShiftData Position { get; private set; }
+        [field: SerializeField] public ShiftData Rotation { get; private set; }
+        [field: SerializeField] public ShiftData BackgroundPosition { get; private set; }
+        [field: SerializeField] public ShiftData BottomPlatformPosition { get; private set; }
+        [field: SerializeField] public ShiftData CounterPosition { get; private set; }
 
-    public void SetPosition(ShiftData value) =>
-        Position = value;
+        public void SetPosition(ShiftData value) =>
+            Position = value;
 
-    public void SetRotation(ShiftData value) =>
-        Rotation = value;
+        public void SetRotation(ShiftData value) =>
+            Rotation = value;
 
-    public void SetBackgroundPosition(ShiftData value) =>
-        BackgroundPosition = value;
+        public void SetBackgroundPosition(ShiftData value) =>
+            BackgroundPosition = value;
 
-    public void SetBottomPlatformPosition(ShiftData value) =>
-        BottomPlatformPosition = value;
+        public void SetBottomPlatformPosition(ShiftData value) =>
+            BottomPlatformPosition = value;
 
-    public void SetCounterPosition(ShiftData value) =>
-        CounterPosition = value;
+        public void SetCounterPosition(ShiftData value) =>
+            CounterPosition = value;
+    }
 }

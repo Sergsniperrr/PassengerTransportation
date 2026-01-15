@@ -7,14 +7,14 @@ namespace Scripts.Model.Buses.Move
     [RequireComponent(typeof(Collider))]
     public class DirectionHandler : MonoBehaviour
     {
-        private readonly float _busStopPositionZ = 9.96f;
-        private readonly float _minPositionX = -31.9f;
-        private readonly float _maxPositionX = -19.34f;
-        private readonly float _maxPositionZ = 23.47f;
-        private readonly float _verticalCentralAxis = -25.59f;
-        private readonly float _upDirectionY = 180f;
-        private readonly float _rightDirectionY = -90f;
-        private readonly float _leftDirectionY = 90f;
+        private const float BusStopPositionZ = 9.96f;
+        private const float MinPositionX = -31.9f;
+        private const float MaxPositionX = -19.34f;
+        private const float MaxPositionZ = 23.47f;
+        private const float VerticalCentralAxis = -25.59f;
+        private const float UpDirectionY = 180f;
+        private const float RightDirectionY = -90f;
+        private const float LeftDirectionY = 90f;
 
         private Collider _collider;
         private IParkingExitHandler _bus;
@@ -37,9 +37,9 @@ namespace Scripts.Model.Buses.Move
         {
             _position = transform.position;
 
-            if (_position.z < _busStopPositionZ)
+            if (_position.z < BusStopPositionZ)
             {
-                _position.z = _busStopPositionZ;
+                _position.z = BusStopPositionZ;
                 transform.position = _position;
 
                 HandleParkingExit();
@@ -48,15 +48,15 @@ namespace Scripts.Model.Buses.Move
 
                 enabled = false;
             }
-            else if (_position.x < _minPositionX)
+            else if (_position.x < MinPositionX)
             {
-                SetUpDirection(_minPositionX);
+                SetUpDirection(MinPositionX);
             }
-            else if (_position.x > _maxPositionX)
+            else if (_position.x > MaxPositionX)
             {
-                SetUpDirection(_maxPositionX);
+                SetUpDirection(MaxPositionX);
             }
-            else if (_position.z > _maxPositionZ)
+            else if (_position.z > MaxPositionZ)
             {
                 SetHorizontalDirection();
             }
@@ -64,12 +64,10 @@ namespace Scripts.Model.Buses.Move
 
         private void SetHorizontalDirection()
         {
-            _position.z = _maxPositionZ;
+            _position.z = MaxPositionZ;
+            float direction = _position.x < VerticalCentralAxis ? RightDirectionY : LeftDirectionY;
 
-            if (_position.x < _verticalCentralAxis)
-                transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, _rightDirectionY, 0f));
-            else
-                transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, _leftDirectionY, 0f));
+            transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, direction, 0f));
 
             HandleParkingExit();
         }
@@ -77,14 +75,14 @@ namespace Scripts.Model.Buses.Move
         private void SetUpDirection(float positionX)
         {
             _position.x = positionX;
-            transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, _upDirectionY, 0f));
+            transform.SetPositionAndRotation(_position, Quaternion.Euler(0f, UpDirectionY, 0f));
 
             HandleParkingExit();
         }
 
         private void HandleParkingExit()
         {
-            if (_collider.enabled == true)
+            if (_collider.enabled)
                 _collider.enabled = false;
 
             _bus.HandleParkingExit();

@@ -23,7 +23,7 @@ namespace Scripts.Model.Buses.TriggerPoints
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Bus bus))
+            if (other.TryGetComponent(out Bus _))
             {
                 if (_mover.CanMove == false)
                 {

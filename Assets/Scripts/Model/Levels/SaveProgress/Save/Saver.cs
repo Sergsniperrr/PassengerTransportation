@@ -18,40 +18,27 @@ namespace Scripts.Model.Levels.SaveProgress.Save
         [SerializeField] private ColorsHandler _colorsHandler;
         [SerializeField] private ElevatorsHandler _elevators;
         [SerializeField] private BusStop _busStop;
-        [SerializeField] private Levels.Level _level;
+        [SerializeField] private Level _level;
         [SerializeField] private UndergroundBuses _undergroundBuses;
         [SerializeField] private PassengerQueue _queue;
 
         private SerializeObjects.Save _saveData;
 
-        private Presenters.Bus _bus;
+        private Bus _bus;
 
         public void Save()
         {
-
             _saveData = InitialSave();
-            //_saveData.SetVisualBuses(CreateVisibleBuses());
             _saveData.SetElevators(CreateElevators());
             _saveData.SetUndergroundBuses(CreateUndergroundBuses());
             _saveData.SetBusStopSpots(CreateBusStopSpots());
 
-            //YG2.saves.SaveLocalProgress(_saveData);
-
             YG2.SaveProgress();
-        }
-
-        public void ResetLocalSave()
-        {
-            //Save save = YG2.saves.LocalProgress;
-
-            //save.Reset();
-
-            //YG2.saves.SaveLocalProgress(save);
         }
 
         private SerializeObjects.Save InitialSave()
         {
-            List<int> colors = new();
+            List<int> colors = new ();
 
             foreach (Passenger passenger in _queue.Passengers)
                 colors.Add(_colors.GetIndexOfMaterial(passenger.Material));
@@ -65,10 +52,10 @@ namespace Scripts.Model.Levels.SaveProgress.Save
 
         private VisibleBus[] CreateVisibleBuses()
         {
-            List<VisibleBus> buses = new();
+            List<VisibleBus> buses = new ();
             BusData busData;
 
-            foreach (Presenters.Bus bus in _level.Buses)
+            foreach (Bus bus in _level.Buses)
             {
                 busData = new BusData(bus.SeatsCount, bus.transform.position, bus.transform.rotation);
                 buses.Add(new VisibleBus(busData, _colors.GetIndexOfMaterial(bus.Material)));
@@ -79,7 +66,7 @@ namespace Scripts.Model.Levels.SaveProgress.Save
 
         private ElevatorData[] CreateElevators()
         {
-            List<ElevatorData> elevators = new();
+            List<ElevatorData> elevators = new ();
             ElevatorData elevatorData;
 
             foreach (Elevator elevator in _elevators.Elevators)
@@ -93,7 +80,7 @@ namespace Scripts.Model.Levels.SaveProgress.Save
 
         private UndergroundBus[] CreateUndergroundBuses()
         {
-            List<UndergroundBus> buses = new();
+            List<UndergroundBus> buses = new ();
             UndergroundBus undergroundBus;
 
             foreach (BusUnderground bus in _undergroundBuses.Buses)
@@ -129,21 +116,21 @@ namespace Scripts.Model.Levels.SaveProgress.Save
         private BusStopSpot GetDefaultBusStopSpot()
         {
             int seatsCount = 4;
-            BusData busData = new(seatsCount, Vector3.zero, Quaternion.identity);
-            VisibleBus visibleBus = new(busData, 0);
-            BusInBusStop busInBusStop = new(visibleBus, 0);
+            BusData busData = new (seatsCount, Vector3.zero, Quaternion.identity);
+            VisibleBus visibleBus = new (busData, 0);
+            BusInBusStop busInBusStop = new (visibleBus, 0);
 
             return new BusStopSpot(true, busInBusStop);
         }
 
-        private BusStopSpot BuildBusStopSpot(Presenters.Bus bus)
+        private BusStopSpot BuildBusStopSpot(Bus bus)
         {
             if (bus == null)
                 throw new ArgumentNullException(nameof(bus));
 
-            BusData busData = new(bus.SeatsCount, bus.transform.position, bus.transform.rotation);
-            VisibleBus visibleBus = new(busData, _colors.GetIndexOfMaterial(bus.Material));
-            BusInBusStop busInBusStop = new(visibleBus, bus.SeatsCount - bus.FreeSeatsCount);
+            BusData busData = new (bus.SeatsCount, bus.transform.position, bus.transform.rotation);
+            VisibleBus visibleBus = new (busData, _colors.GetIndexOfMaterial(bus.Material));
+            BusInBusStop busInBusStop = new (visibleBus, bus.SeatsCount - bus.FreeSeatsCount);
 
             return new BusStopSpot(false, busInBusStop);
         }

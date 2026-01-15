@@ -41,7 +41,7 @@ namespace Scripts.Model.Elevators
                 return;
 
             var busesAtElevators = bigBuses
-                .OrderBy(Bus => UnityEngine.Random.value)
+                .OrderBy(_ => UnityEngine.Random.value)
                 .Take(elevatorsCount)
                 .ToArray();
 

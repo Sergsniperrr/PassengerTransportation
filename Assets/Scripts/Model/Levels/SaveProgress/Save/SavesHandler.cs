@@ -7,7 +7,7 @@ namespace Scripts.Model.Levels.SaveProgress.Save
     public class SavesHandler : MonoBehaviour
     {
         [SerializeField] private Saver _saver;
-        [SerializeField] private Levels.Level _level;
+        [SerializeField] private Level _level;
         [SerializeField] private float _period = 2f;
 
         private WaitForSeconds _wait;
@@ -34,7 +34,6 @@ namespace Scripts.Model.Levels.SaveProgress.Save
         {
             StopTimer();
             _coroutine = StartCoroutine(SaveAfterDelay());
-
         }
 
         private void StopTimer()

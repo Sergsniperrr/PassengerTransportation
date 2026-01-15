@@ -1,7 +1,7 @@
 using System;
+using Scripts.View.Buses;
 using Scripts.Model.Buses.Move;
 using Scripts.Model.BusStops;
-using Scripts.View.Buses;
 using UnityEngine;
 
 namespace Scripts.Model.Buses.Points

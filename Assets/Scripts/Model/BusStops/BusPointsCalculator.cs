@@ -9,12 +9,12 @@ namespace Scripts.Model.BusStops
         private const float PointerShiftOnX = 1.65f;
         private const float PointerShiftOnZ = 2.82f;
         private const float FinishPositionX = -36.5f;
-    
+
         [SerializeField] private Transform[] _points;
 
         public BusPoints CalculatePoints(int stopIndex, float positionY)
         {
-            BusPoints points = new();
+            BusPoints points = new ();
 
             points.SetStopPointer(CalculatePointerCoordinate(stopIndex, positionY));
             points.SetStop(CalculateStopCoordinate(stopIndex, positionY));

@@ -13,7 +13,7 @@ namespace Scripts.Model.Levels
     [RequireComponent(typeof(Colors))]
     public class BusSpawner : MonoBehaviour
     {
-        private readonly Dictionary<int, Bus> _prefabs = new();
+        private readonly Dictionary<int, Bus> _prefabs = new ();
 
         [SerializeField] private Bus _smallBusPrefab;
         [SerializeField] private Bus _middleBusPrefab;
@@ -56,7 +56,7 @@ namespace Scripts.Model.Levels
 
         public List<Bus> SpawnLevel(BusData[] levelData)
         {
-            List<Bus> buses = new();
+            List<Bus> buses = new ();
             Bus bus;
 
             foreach (BusData busData in levelData)

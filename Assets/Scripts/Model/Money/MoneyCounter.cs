@@ -1,3 +1,4 @@
+using Scripts.Model.Coins;
 using UnityEngine;
 
 public class MoneyCounter : CoinsCounter

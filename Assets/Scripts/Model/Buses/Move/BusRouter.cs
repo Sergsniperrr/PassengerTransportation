@@ -19,7 +19,7 @@ namespace Scripts.Model.Buses.Move
     {
         private const int FailedIndex = -1;
 
-        private readonly WaitForSeconds _waitForStopToLeave = new(0.3f);
+        private readonly WaitForSeconds _waitForStopToLeave = new (0.3f);
 
         private BusMover _mover;
         private TriggerHandler _trigger;

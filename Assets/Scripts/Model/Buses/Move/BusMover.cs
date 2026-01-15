@@ -8,7 +8,7 @@ namespace Scripts.Model.Buses.Move
     [RequireComponent(typeof(BusEngineSound))]
     public class BusMover : MonoBehaviour, IMoveCorrector, IStopOrMove
     {
-        private const float _directionForward = 1f;
+        private const float Direction = 1f;
 
         [SerializeField] private float _speed;
 
@@ -19,7 +19,6 @@ namespace Scripts.Model.Buses.Move
         private Vector3 _target = Vector3.zero;
         private Vector3 _initialPlace;
         private int _stopIndex;
-        private float _direction = 1f;
         private bool _isMoveForward = true;
 
         public bool CanMove { get; private set; }
@@ -72,14 +71,6 @@ namespace Scripts.Model.Buses.Move
         public void ResetTarget() =>
             _target = Vector3.zero;
 
-        public void ChangeDirection(Vector3 target)
-        {
-            target.y = transform.position.y;
-            transform.LookAt(target);
-            _direction = _directionForward;
-            CanMove = true;
-        }
-
         public void GoBackwardsToPoint()
         {
             _isMoveForward = false;
@@ -109,7 +100,7 @@ namespace Scripts.Model.Buses.Move
 
             if (_isMoveForward)
             {
-                transform.Translate(_direction * Time.deltaTime * _velocity);
+                transform.Translate(Direction * Time.deltaTime * _velocity);
                 return;
             }
 

@@ -8,6 +8,11 @@ namespace Scripts.Model.Elevators
 {
     public class ElevatorSpawner : MonoBehaviour
     {
+        private const float MaxAngle = 180f;
+        private const float DiagonalRightAngle = 45f;
+        private const float HorizontalAngle = 90f;
+        private const float DiagonalLeftAngle = 135f;
+
         [SerializeField] private Bus _busTest1;
         [SerializeField] private Bus _busTest2;
         [SerializeField] private Bus _busTest3;
@@ -15,11 +20,6 @@ namespace Scripts.Model.Elevators
         [SerializeField] private Elevator _verticalPrefab;
         [SerializeField] private Elevator _diagonalLeftPrefab;
         [SerializeField] private Elevator _diagonalRightPrefab;
-
-        private const float MaxAngle = 180f;
-        private const float DiagonalRightAngle = 45f;
-        private const float HorizontalAngle = 90f;
-        private const float DiagonalLeftAngle = 135f;
 
         private Dictionary<float, Elevator> _prefabs;
 
@@ -40,6 +40,7 @@ namespace Scripts.Model.Elevators
 
             angle = angle == 0 || Mathf.Approximately(angle, MaxAngle) ? MaxAngle :
                 angle < MaxAngle ? angle : angle - MaxAngle;
+
             angle = (float)Math.Round(angle);
 
             if (_prefabs.TryGetValue(angle, out var prefab) == false)

@@ -36,8 +36,8 @@ namespace Scripts.Model.Coins
                     0,
                     duration)
                 .SetEase(Ease.Linear)
-                .OnUpdate(() => { _text.text = value.ToString(); })
-                .OnComplete(() => { ResetCompleted?.Invoke(); });
+                .OnUpdate(() => _text.text = value.ToString())
+                .OnComplete(() => ResetCompleted?.Invoke());
         }
     }
 }

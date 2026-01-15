@@ -36,6 +36,7 @@ namespace Scripts.Model.Levels
         private UndergroundBuses _undergroundBuses;
         private MouseInputHandler _input;
         private Coroutine _coroutine;
+        private int _currentLevel;
         private bool _canBusMove;
 
         public event Action Started;
@@ -45,7 +46,6 @@ namespace Scripts.Model.Levels
         public event Action AllBussesLeft;
 
         [field: SerializeField] public CoinsHandler Coins { get; private set; }
-        public int CurrentLevel { get; private set; }
         public List<Bus> Buses => new (_buses);
 
         private void Awake()
@@ -72,7 +72,7 @@ namespace Scripts.Model.Levels
 
         public void Begin(int levelNumber, List<Bus> buses, UndergroundBuses undergroundBuses)
         {
-            CurrentLevel = levelNumber;
+            _currentLevel = levelNumber;
             _textLevelNomber.text = $"{levelNumber}";
             _buses = buses ?? throw new ArgumentNullException(nameof(buses));
 
@@ -205,7 +205,7 @@ namespace Scripts.Model.Levels
             _windows.ResultResieved -= HandleDialog;
 
             if (result == false)
-                _resetter.BackInMainMenu(CurrentLevel);
+                _resetter.BackInMainMenu(_currentLevel);
 
             _gameButtons.gameObject.SetActive(true);
         }

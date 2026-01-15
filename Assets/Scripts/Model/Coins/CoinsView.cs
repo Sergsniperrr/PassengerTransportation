@@ -1,21 +1,24 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CanvasGroup))]
-public class CoinsView : MonoBehaviour
+namespace Scripts.Model.Coins
 {
-    private const float MaxAlfa = 1f;
-    private const float MinAlfa = 0f;
-
-    private CanvasGroup _canvasGroup;
-
-    private void Awake()
+    [RequireComponent(typeof(CanvasGroup))]
+    public class CoinsView : MonoBehaviour
     {
-        _canvasGroup = GetComponent<CanvasGroup>();
+        private const float MaxAlfa = 1f;
+        private const float MinAlfa = 0f;
+
+        private CanvasGroup _canvasGroup;
+
+        private void Awake()
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public void Show() =>
+            _canvasGroup.alpha = MaxAlfa;
+
+        public void Hide() =>
+            _canvasGroup.alpha = MinAlfa;
     }
-
-    public void Show() =>
-        _canvasGroup.alpha = MaxAlfa;
-
-    public void Hide() =>
-        _canvasGroup.alpha = MinAlfa;
 }

@@ -9,7 +9,7 @@ namespace Scripts.Model.Levels.SaveProgress.SerializeObjects
         [field: SerializeField] public VisibleBus VisibleBus { get; }
         [field: SerializeField] public int PassengersCount { get; }
 
-        public BusInBusStop (VisibleBus bus, int passengersCount)
+        public BusInBusStop(VisibleBus bus, int passengersCount)
         {
             VisibleBus = bus;
             PassengersCount = passengersCount;

@@ -6,14 +6,6 @@ namespace Scripts.Model.Levels.SaveProgress.SerializeObjects
     [Serializable]
     public struct Save
     {
-        [field: SerializeField] public bool IsNewSave { get; private set; }
-        [field: SerializeField] public int MoneyBuffer { get; private set; }
-        [field: SerializeField] public int[] Colors { get; private set; }
-        [field: SerializeField] public VisibleBus[] VisualBuses { get; private set; }
-        [field: SerializeField] public BusStopSpot[] BusStopSpots { get; private set; }
-        [field: SerializeField] public ElevatorData[] Elevators { get; private set; }
-        [field: SerializeField] public UndergroundBus[] UndergroundBuses { get; private set; }
-
         public Save(int moneyBuffer, int[] colors, VisibleBus[] visualBuses)
         {
             IsNewSave = true;
@@ -25,6 +17,14 @@ namespace Scripts.Model.Levels.SaveProgress.SerializeObjects
             Elevators = null;
             UndergroundBuses = null;
         }
+
+        [field: SerializeField] public bool IsNewSave { get; private set; }
+        [field: SerializeField] public int MoneyBuffer { get; private set; }
+        [field: SerializeField] public int[] Colors { get; private set; }
+        [field: SerializeField] public VisibleBus[] VisualBuses { get; private set; }
+        [field: SerializeField] public BusStopSpot[] BusStopSpots { get; private set; }
+        [field: SerializeField] public ElevatorData[] Elevators { get; private set; }
+        [field: SerializeField] public UndergroundBus[] UndergroundBuses { get; private set; }
 
         public void SetVisualBuses(VisibleBus[] buses) =>
             VisualBuses = buses;

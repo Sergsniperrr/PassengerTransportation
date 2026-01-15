@@ -12,7 +12,7 @@ namespace Scripts.Model.Levels
             Position = position;
             Rotation = rotation;
         }
-        
+
         [field: SerializeField] public int SeatsCount { get; private set; }
         [field: SerializeField] public Vector3 Position { get; private set; }
         [field: SerializeField] public Quaternion Rotation { get; private set; }

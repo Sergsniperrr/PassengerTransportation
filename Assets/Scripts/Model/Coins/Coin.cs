@@ -75,7 +75,7 @@ namespace Scripts.Model.Coins
 
         private IEnumerator FadeFast()
         {
-            WaitForSeconds wait = new(FadeDuration);
+            WaitForSeconds wait = new (FadeDuration);
             Color maxAlfaColor = _minAlfaColor;
             maxAlfaColor.a = MaxAlfa;
 

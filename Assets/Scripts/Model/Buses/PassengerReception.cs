@@ -22,7 +22,7 @@ namespace Scripts.Model.Buses
         private int _passengersCounter;
         private ISenderOfFillingCompletion _sender;
 
-        public int EmptySeatCount => _reservations.Count(element => element == true);
+        public int EmptySeatCount => _reservations.Count(element => element);
         public bool IsEmptySeat => EmptySeatCount > 0;
 
         private void Awake()
@@ -59,9 +59,7 @@ namespace Scripts.Model.Buses
             _passengersCounter++;
 
             if (_passengersCounter == Count)
-            {
                 _sender.CompleteFilling();
-            }
         }
 
         private int GetFreePlace()

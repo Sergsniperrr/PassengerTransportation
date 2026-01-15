@@ -1,36 +1,39 @@
 using UnityEngine;
 
-public static class CoinsCalculator
+namespace Scripts.Model.Coins
 {
-    public static int CalculateMoney(int level, int busCount, float playerSkillRatio)
+    public static class CoinsCalculator
     {
-        float rewardRatioIncrement = 0.1f;
-        int maxNonRewardLevel = 14;
-        float rewardRatio = Mathf.Max(0, level - maxNonRewardLevel) * rewardRatioIncrement;
-
-        return Mathf.RoundToInt(busCount * rewardRatio * playerSkillRatio);
-    }
-
-    public static int CalculateScore(int busCount, int moneySpent, float playerSkillRatio)
-    {
-        float maxSkillRatio = 1f;
-        float minSkillRatio = 0.6f;
-        float coefficient = 0.5f;
-        float multiplier = 2f;
-        float score = busCount / (coefficient * moneySpent + busCount) * busCount * multiplier;
-        float skillRatioModified;
-
-        if (playerSkillRatio >= maxSkillRatio)
+        public static int CalculateMoney(int level, int busCount, float playerSkillRatio)
         {
-            skillRatioModified = maxSkillRatio;
-        }
-        else
-        {
-            float skillRatioMultiplier = maxSkillRatio - minSkillRatio;
+            const float RewardRatioIncrement = 0.1f;
+            const int MaxNonRewardLevel = 14;
+            float rewardRatio = Mathf.Max(0, level - MaxNonRewardLevel) * RewardRatioIncrement;
 
-            skillRatioModified = playerSkillRatio * skillRatioMultiplier + minSkillRatio;
+            return Mathf.RoundToInt(busCount * rewardRatio * playerSkillRatio);
         }
 
-        return Mathf.RoundToInt(score / skillRatioModified);
+        public static int CalculateScore(int busCount, int moneySpent, float playerSkillRatio)
+        {
+            const float MaxSkillRatio = 1f;
+            const float MinSkillRatio = 0.6f;
+            const float Coefficient = 0.5f;
+            const float Multiplier = 2f;
+            float score = busCount / (Coefficient * moneySpent + busCount) * busCount * Multiplier;
+            float skillRatioModified;
+
+            if (playerSkillRatio >= MaxSkillRatio)
+            {
+                skillRatioModified = MaxSkillRatio;
+            }
+            else
+            {
+                const float SkillRatioMultiplier = MaxSkillRatio - MinSkillRatio;
+
+                skillRatioModified = playerSkillRatio * SkillRatioMultiplier + MinSkillRatio;
+            }
+
+            return Mathf.RoundToInt(score / skillRatioModified);
+        }
     }
 }

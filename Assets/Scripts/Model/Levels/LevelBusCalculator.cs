@@ -4,14 +4,14 @@ namespace Scripts.Model.Levels
 {
     public class LevelBusCalculator
     {
-        private const int HalfDevider = 2;
+        private const int HalfDivider = 2;
         private const int MinLevel = 20;
         private const int LevelPeriod = 10;
         private const int IncrementPerLevel = 1;
         private const int IncrementPerLevelPeriod = 20;
         private const int MaxBusesInElevator = 20;
         private const int MaxSimpleLevel = 19;
-    
+
         private readonly int _level;
 
         public LevelBusCalculator(int level)
@@ -22,14 +22,14 @@ namespace Scripts.Model.Levels
 
         public int UndergroundBusesCount { get; private set; }
 
-        public void Calculate(int level)
+        private void Calculate(int level)
         {
             if (level < MinLevel)
                 return;
 
             int levelPeriodCount = level / LevelPeriod - 1;
             int levelInPeriod = level % LevelPeriod;
-            int busInPeriod = levelPeriodCount * IncrementPerLevelPeriod - (IncrementPerLevelPeriod / HalfDevider);
+            int busInPeriod = levelPeriodCount * IncrementPerLevelPeriod - (IncrementPerLevelPeriod / HalfDivider);
             int busInLevel = levelInPeriod * IncrementPerLevel;
             UndergroundBusesCount = busInPeriod + busInLevel;
         }

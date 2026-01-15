@@ -8,15 +8,12 @@ namespace Scripts.Model.Levels
         public static void Save(LevelsDataContainer currentLevelsData)
         {
             const string LocalSavePath = "F:/GitProjects/PassengerTransportation/Assets/Resources";
+            const string FileName = "Levels";
 
             string json = JsonUtility.ToJson(currentLevelsData, true);
-
-            string fileName = "Levels";
-            string path = $"{LocalSavePath}/{fileName}.json";
+            string path = $"{LocalSavePath}/{FileName}.json";
 
             File.WriteAllText(path, json);
-
-            Debug.Log("Save Complete!!!");
         }
     }
 }

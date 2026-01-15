@@ -35,20 +35,9 @@ namespace Scripts.Model.BusStops
         public void AdFreePlaces(Material material, int spotIndex, int plasesCount)
         {
             for (int i = 0; i < plasesCount; i++)
+            {
                 _allPlaces[material].Enqueue(spotIndex);
-        }
-
-        public int TrySendPassengerToPlatform(Material passengerColor, Spot[] spots)
-        {
-            int stopIndex = GetStopIndexWithBusOfDesiredColor(passengerColor, spots);
-
-            if (stopIndex == FailedIndex || spots[stopIndex].BusAtBusStop == null)
-                return FailedIndex;
-
-            if (spots[stopIndex].BusAtBusStop.IsEmptySeat)
-                return stopIndex;
-
-            return FailedIndex;
+            }
         }
 
         public bool CheckDesiredColor(Material passengerColor, Spot[] spots) =>
@@ -59,20 +48,6 @@ namespace Scripts.Model.BusStops
             var allColors = _allPlaces.SelectMany(pair => Enumerable.Repeat(pair.Key, pair.Value.Count));
 
             return new Queue<Material>(allColors);
-        }
-
-        private int GetStopIndexWithBusOfDesiredColor(Material passengerColor, Spot[] spots)
-        {
-            for (int i = 0; i < spots.Length; i++)
-            {
-                if (spots[i].BusAtBusStop == null || passengerColor == null)
-                    continue;
-
-                if (spots[i].BusAtBusStop.Material == passengerColor)
-                    return i;
-            }
-
-            return FailedIndex;
         }
     }
 }
