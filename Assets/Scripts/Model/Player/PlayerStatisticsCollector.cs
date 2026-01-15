@@ -1,3 +1,4 @@
+using Scripts.Model.Money;
 using Scripts.View.Buses;
 using Scripts.View.Color;
 using Scripts.View.Windows;

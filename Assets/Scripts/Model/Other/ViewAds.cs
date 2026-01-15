@@ -1,3 +1,4 @@
+using Scripts.Model.Money;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;

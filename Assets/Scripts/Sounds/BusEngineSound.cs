@@ -12,17 +12,17 @@ namespace Scripts.Sounds
         private const float FadeOutSpeed = 4f;
 
         private AudioSource _sound;
-        private float _initialPich;
+        private float _initialPitch;
 
         private void Awake()
         {
             _sound = GetComponent<AudioSource>();
-            _initialPich = _sound.pitch;
+            _initialPitch = _sound.pitch;
         }
 
         public void PlaySound()
         {
-            _sound.pitch = Random.Range(_initialPich - RandomShiftSize, _initialPich + RandomShiftSize);
+            _sound.pitch = Random.Range(_initialPitch - RandomShiftSize, _initialPitch + RandomShiftSize);
             _sound.Play();
             _sound.volume = PlaySoundsValue;
         }

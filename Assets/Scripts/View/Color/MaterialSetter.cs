@@ -1,25 +1,28 @@
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer))]
-public class MaterialSetter : MonoBehaviour
+namespace Scripts.View.Color
 {
-    [SerializeField] private int _materalIndex;
-
-    private Renderer _renderer;
-
-    private void Awake()
+    [RequireComponent(typeof(Renderer))]
+    public class MaterialSetter : MonoBehaviour
     {
-        _renderer = GetComponent<Renderer>();
-    }
+        [SerializeField] private int _materalIndex;
 
-    public void SetMateral(Material material)
-    {
-        if (_renderer == null)
-            return;
+        private Renderer _renderer;
 
-        Material[] materials = _renderer.materials.ToArray();
-        materials[_materalIndex] = material;
-        _renderer.materials = materials;
+        private void Awake()
+        {
+            _renderer = GetComponent<Renderer>();
+        }
+
+        public void SetMaterial(Material material)
+        {
+            if (_renderer == null)
+                return;
+
+            Material[] materials = _renderer.materials.ToArray();
+            materials[_materalIndex] = material;
+            _renderer.materials = materials;
+        }
     }
 }

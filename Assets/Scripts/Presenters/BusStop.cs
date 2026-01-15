@@ -16,9 +16,9 @@ namespace Scripts.Presenters
         private const int FailedIndex = -1;
         private const float DelayOfUpdateQueue = 0.06f;
 
-        private readonly WaitForSeconds _waitForCheckGameOver = new(1.2f);
-        private readonly WaitForSeconds _delayBeforeLeave = new(0.3f);
-        private readonly Queue<Bus> _outGoingBuses = new();
+        private readonly WaitForSeconds _waitForCheckGameOver = new (1.2f);
+        private readonly WaitForSeconds _delayBeforeLeave = new (0.3f);
+        private readonly Queue<Bus> _outGoingBuses = new ();
 
         [SerializeField] private int _stopsCount = 7;
         [SerializeField] private int _initialFreeStopsCount = 7;
@@ -201,7 +201,7 @@ namespace Scripts.Presenters
                 _outGoingBus = _outGoingBuses.Dequeue();
                 _outGoingBus.MoveOutFromBusStop();
                 _canLeave = false;
-                
+
                 StartCoroutine(AllowLeave());
             }
         }

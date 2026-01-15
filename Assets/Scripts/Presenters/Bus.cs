@@ -5,6 +5,7 @@ using Scripts.Model.Buses.Move;
 using Scripts.Model.BusStops;
 using Scripts.Sounds;
 using Scripts.View.Buses;
+using Scripts.View.Color;
 using UnityEngine;
 
 namespace Scripts.Presenters
@@ -15,7 +16,7 @@ namespace Scripts.Presenters
     [RequireComponent(typeof(BusView))]
     public class Bus : MonoBehaviour, ISenderOfFillingCompletion, IBusParameters, IParkingExitHandler
     {
-        private readonly WaitForSeconds _waitOfCheckPassengers = new(0.01f);
+        private readonly WaitForSeconds _waitOfCheckPassengers = new (0.01f);
 
         private BusRouter _router;
         private BusView _transformChanger;
@@ -60,7 +61,7 @@ namespace Scripts.Presenters
             _router.Disable();
 
         public void SetColor(Material material) =>
-            _color.SetMateral(material);
+            _color.SetMaterial(material);
 
         public void Run()
         {

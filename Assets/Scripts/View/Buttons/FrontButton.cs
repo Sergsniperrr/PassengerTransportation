@@ -1,18 +1,22 @@
+using Scripts.Model.Money;
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class FrontButton : MonoBehaviour
+namespace Scripts.View.Buttons
 {
-    [SerializeField] protected Prices Prices;
-
-    private TextMeshProUGUI _text;
-
-    protected virtual void Awake()
+    [RequireComponent(typeof(TextMeshProUGUI))]
+    public class FrontButton : MonoBehaviour
     {
-        _text = GetComponent<TextMeshProUGUI>();
-    }
+        [SerializeField] protected Prices Prices;
 
-    protected void SetText(string text) =>
-        _text.text = text;
+        private TextMeshProUGUI _text;
+
+        protected virtual void Awake()
+        {
+            _text = GetComponent<TextMeshProUGUI>();
+        }
+
+        protected void SetText(string text) =>
+            _text.text = text;
+    }
 }

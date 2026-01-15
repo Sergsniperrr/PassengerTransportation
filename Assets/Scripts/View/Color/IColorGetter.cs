@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public interface IColorGetter
+namespace Scripts.View.Color
 {
-    int ColorsCount { get; }
-    Material DequeuePassengerColor();
+    public interface IColorGetter
+    {
+        int ColorsCount { get; }
+        Material DequeuePassengerColor();
+    }
 }

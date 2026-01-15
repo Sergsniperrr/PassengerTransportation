@@ -42,8 +42,6 @@ namespace Scripts.Model.Player
             YG2.saves.WriteTotalAdsViewsCount(InitialTotalAdsViewsCount);
             YG2.saves.WritePlayerSkill(InitialPlayerSkill);
 
-            Debug.Log($"PlayerSkillInitialized: {YG2.saves.PlayerSkill} !!!");
-
             StartCoroutine(WaitForPluginInit());
         }
     }

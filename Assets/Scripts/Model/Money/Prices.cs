@@ -1,8 +1,11 @@
 using UnityEngine;
 
-public class Prices : MonoBehaviour
+namespace Scripts.Model.Money
 {
-    [field: SerializeField] public int ShufflingBuses { get; private set; }
-    [field: SerializeField] public int ArrangingPassengers { get; private set; }
-    [field: SerializeField] public int ViewingAd { get; private set; }
+    public class Prices : MonoBehaviour
+    {
+        [field: SerializeField] public int ShufflingBuses { get; private set; }
+        [field: SerializeField] public int ArrangingPassengers { get; private set; }
+        [field: SerializeField] public int ViewingAd { get; private set; }
+    }
 }

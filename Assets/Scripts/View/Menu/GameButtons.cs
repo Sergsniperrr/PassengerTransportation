@@ -1,21 +1,25 @@
 using System;
+using Scripts.View.Buttons;
 using UnityEngine;
 
-public class GameButtons : MonoBehaviour
+namespace Scripts.View.Menu
 {
-    [SerializeField] private ButtonPassengerArrangeView _buttonPassengerArrange;
-    [SerializeField] private ButtonDisabler _buttonBusShuffler;
-
-    public event Action ButtonsActivated;
-
-    private void OnEnable()
+    public class GameButtons : MonoBehaviour
     {
-        ButtonsActivated?.Invoke();
-    }
+        [SerializeField] private ButtonPassengerArrangeView _buttonPassengerArrange;
+        [SerializeField] private ButtonDisabler _buttonBusShuffler;
 
-    public void PlayButtonPassengerArrangePulsation()
-    {
-        _buttonPassengerArrange.EnablePulsation();
-        _buttonBusShuffler.Disable();
+        public event Action ButtonsActivated;
+
+        private void OnEnable()
+        {
+            ButtonsActivated?.Invoke();
+        }
+
+        public void PlayButtonPassengerArrangePulsation()
+        {
+            _buttonPassengerArrange.EnablePulsation();
+            _buttonBusShuffler.Disable();
+        }
     }
 }

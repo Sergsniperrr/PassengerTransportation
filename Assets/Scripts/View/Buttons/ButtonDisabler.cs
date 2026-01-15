@@ -1,32 +1,34 @@
 using System;
-using Scripts.View.Buttons;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class ButtonDisabler : MonoBehaviour
+namespace Scripts.View.Buttons
 {
-    private Button _button;
-    private DarkeningLayer _darkeningLayer;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    public class ButtonDisabler : MonoBehaviour
     {
-        _button = GetComponent<Button>();
-        _darkeningLayer = GetComponentInChildren<DarkeningLayer>();
+        private Button _button;
+        private DarkeningLayer _darkeningLayer;
 
-        if (_darkeningLayer == null)
-            throw new NullReferenceException(nameof(_darkeningLayer));
-    }
+        private void Awake()
+        {
+            _button = GetComponent<Button>();
+            _darkeningLayer = GetComponentInChildren<DarkeningLayer>();
 
-    public void Enable() =>
-        SetActive(true);
+            if (_darkeningLayer == null)
+                throw new NullReferenceException(nameof(_darkeningLayer));
+        }
 
-    public void Disable() =>
-        SetActive(false);
+        public void Enable() =>
+            SetActive(true);
 
-    private void SetActive(bool isEnabled)
-    {
-        _darkeningLayer.gameObject.SetActive(!isEnabled);
-        _button.interactable = isEnabled;
+        public void Disable() =>
+            SetActive(false);
+
+        private void SetActive(bool isEnabled)
+        {
+            _darkeningLayer.gameObject.SetActive(!isEnabled);
+            _button.interactable = isEnabled;
+        }
     }
 }

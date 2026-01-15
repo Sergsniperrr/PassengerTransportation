@@ -1,9 +1,12 @@
-public class ButtonBusShuffleText : FrontButton
+namespace Scripts.View.Buttons
 {
-    protected override void Awake()
+    public class ButtonBusShuffleText : FrontButton
     {
-        base.Awake();
+        protected override void Awake()
+        {
+            base.Awake();
 
-        SetText($"{Prices.ShufflingBuses}");
+            SetText($"{Prices.ShufflingBuses}");
+        }
     }
 }

@@ -1,58 +1,60 @@
 using System.Collections;
-using Scripts.View.Buttons;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(ButtonPulsation))]
-public class ButtonPassengerArrangeView : MonoBehaviour
+namespace Scripts.View.Buttons
 {
-    private readonly float _duration = 5f;
-
-    private Button _button;
-    private Animator _animator;
-    private ButtonPulsation _pulsation;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(ButtonPulsation))]
+    public class ButtonPassengerArrangeView : MonoBehaviour
     {
-        _animator = GetComponent<Animator>();
-        _pulsation = GetComponent<ButtonPulsation>();
-        _button = GetComponent<Button>();
-    }
+        private const float Duration = 5f;
 
-    private void OnEnable()
-    {
-        DisablePulsation();
+        private Button _button;
+        private Animator _animator;
+        private ButtonPulsation _pulsation;
 
-        _button.onClick.AddListener(DisablePulsation);
-    }
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+            _pulsation = GetComponent<ButtonPulsation>();
+            _button = GetComponent<Button>();
+        }
 
-    private void OnDisable()
-    {
-        _button.onClick.RemoveListener(DisablePulsation);
-    }
+        private void OnEnable()
+        {
+            DisablePulsation();
 
-    public void EnablePulsation()
-    {
-        _animator.enabled = false;
-        _pulsation.enabled = true;
+            _button.onClick.AddListener(DisablePulsation);
+        }
 
-        StartCoroutine(Pulsate());
-    }
+        private void OnDisable()
+        {
+            _button.onClick.RemoveListener(DisablePulsation);
+        }
 
-    private void DisablePulsation()
-    {
-        _animator.enabled = true;
-        _pulsation.enabled = false;
-    }
+        public void EnablePulsation()
+        {
+            _animator.enabled = false;
+            _pulsation.enabled = true;
 
-    private IEnumerator Pulsate()
-    {
-        WaitForSeconds wait = new(_duration);
+            StartCoroutine(Pulsate());
+        }
 
-        yield return wait;
+        private void DisablePulsation()
+        {
+            _animator.enabled = true;
+            _pulsation.enabled = false;
+        }
 
-        DisablePulsation();
+        private IEnumerator Pulsate()
+        {
+            WaitForSeconds wait = new (Duration);
+
+            yield return wait;
+
+            DisablePulsation();
+        }
     }
 }

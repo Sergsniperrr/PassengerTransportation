@@ -1,5 +1,6 @@
 using System;
 using Scripts.Presenters;
+using Scripts.View.Color;
 using UnityEngine;
 
 namespace Scripts.Model.Passengers
@@ -31,7 +32,7 @@ namespace Scripts.Model.Passengers
             return _passenger;
         }
 
-        public void Remove(Passenger passenger)
+        private void Remove(Passenger passenger)
         {
             _passenger.Died -= Remove;
 

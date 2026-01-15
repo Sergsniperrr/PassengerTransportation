@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class ColorSetter : MonoBehaviour
+namespace Scripts.View.Color
 {
-    private MaterialSetter[] _colorers;
-
-    public Material Material { get; private set; }
-
-    private void Awake()
+    public class ColorSetter : MonoBehaviour
     {
-        _colorers = GetComponentsInChildren<MaterialSetter>();
-    }
+        private MaterialSetter[] _colorers;
 
-    public void SetMateral(Material material)
-    {
-        Material = material;
+        public Material Material { get; private set; }
 
-        foreach (MaterialSetter colorer in _colorers)
-            colorer.SetMateral(material);
+        private void Awake()
+        {
+            _colorers = GetComponentsInChildren<MaterialSetter>();
+        }
+
+        public void SetMaterial(Material material)
+        {
+            Material = material;
+
+            foreach (MaterialSetter colorer in _colorers)
+                colorer.SetMaterial(material);
+        }
     }
 }

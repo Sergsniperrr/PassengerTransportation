@@ -33,9 +33,7 @@ namespace Scripts.View.Elevator
             foreach (Transform part in _elevatorParts)
             {
                 part.DOScale(part.localScale * IncreaseSize, Duration).SetEase(Ease.OutSine).OnComplete(() =>
-                {
-                    part.DOScale(0, Duration).SetEase(Ease.InSine);
-                });
+                    part.DOScale(0, Duration).SetEase(Ease.InSine));
             }
         }
     }

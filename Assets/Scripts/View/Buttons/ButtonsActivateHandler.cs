@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Scripts.Model.Money;
 using Scripts.Presenters;
+using Scripts.View.Menu;
 using UnityEngine;
 
 namespace Scripts.View.Buttons
 {
     public class ButtonsActivateHandler : MonoBehaviour
     {
-        private readonly Dictionary<ButtonDisabler, int> _buttonsPrices = new();
+        private readonly Dictionary<ButtonDisabler, int> _buttonsPrices = new ();
 
         [SerializeField] private ButtonDisabler _passengersArrangeButton;
         [SerializeField] private ButtonDisabler _busesShuffleButton;

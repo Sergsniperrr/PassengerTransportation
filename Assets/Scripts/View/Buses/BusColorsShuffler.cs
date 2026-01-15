@@ -51,7 +51,7 @@ namespace Scripts.View.Buses
             IEnumerable<IBusParameters> enumerableUndergroundBuses = _undergroundBuses.Buses;
 
             List<IBusParameters> buses = enumerableBuses.Concat(enumerableUndergroundBuses).ToList();
-            Dictionary<IBusParameters, IBusParameters> duplicates = new();
+            Dictionary<IBusParameters, IBusParameters> duplicates = new ();
 
             IBusParameters busKey;
             IBusParameters busValue;

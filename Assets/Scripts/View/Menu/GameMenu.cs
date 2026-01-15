@@ -4,61 +4,64 @@ using Scripts.View.Windows;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameMenu : MonoBehaviour
+namespace Scripts.View.Menu
 {
-    [SerializeField] private Button _soundSettingsButton;
-    [SerializeField] private Button _restartButton;
-    [SerializeField] private Button _leaderboardButton;
-    [SerializeField] private Window _soundSettings;
-    [SerializeField] private Window _leaderboard;
-    [SerializeField] private GameResetter _resetter;
-
-    public event Action<bool> GameActiveChanged;
-
-    private void OnEnable()
+    public class GameMenu : MonoBehaviour
     {
-        _soundSettings.gameObject.SetActive(true);
-        _soundSettingsButton.onClick.AddListener(OpenSoundSettingsMenu);
-        _leaderboard.gameObject.SetActive(true);
-        _leaderboardButton.onClick.AddListener(OpenLeaderboard);
-        _restartButton.onClick.AddListener(Restart);
-    }
+        [SerializeField] private Button _soundSettingsButton;
+        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _leaderboardButton;
+        [SerializeField] private Window _soundSettings;
+        [SerializeField] private Window _leaderboard;
+        [SerializeField] private GameResetter _resetter;
 
-    private void OnDisable()
-    {
-        _soundSettingsButton.onClick.RemoveListener(OpenSoundSettingsMenu);
-        _leaderboardButton.onClick.RemoveListener(OpenLeaderboard);
-        _restartButton.onClick.RemoveListener(Restart);
-    }
+        public event Action<bool> GameActiveChanged;
 
-    private void Restart()
-    {
-        _restartButton.onClick.RemoveListener(Restart);
+        private void OnEnable()
+        {
+            _soundSettings.gameObject.SetActive(true);
+            _soundSettingsButton.onClick.AddListener(OpenSoundSettingsMenu);
+            _leaderboard.gameObject.SetActive(true);
+            _leaderboardButton.onClick.AddListener(OpenLeaderboard);
+            _restartButton.onClick.AddListener(Restart);
+        }
 
-        _resetter.RestartLevel();
-    }
+        private void OnDisable()
+        {
+            _soundSettingsButton.onClick.RemoveListener(OpenSoundSettingsMenu);
+            _leaderboardButton.onClick.RemoveListener(OpenLeaderboard);
+            _restartButton.onClick.RemoveListener(Restart);
+        }
 
-    private void OpenSoundSettingsMenu() =>
-        OpenWindow(_soundSettings);
+        private void Restart()
+        {
+            _restartButton.onClick.RemoveListener(Restart);
 
-    private void OpenLeaderboard() =>
-        OpenWindow(_leaderboard);
+            _resetter.RestartLevel();
+        }
 
-    private void OpenWindow(Window window)
-    {
-        window.gameObject.SetActive(true);
-        window.Open();
+        private void OpenSoundSettingsMenu() =>
+            OpenWindow(_soundSettings);
 
-        GameActiveChanged?.Invoke(false);
+        private void OpenLeaderboard() =>
+            OpenWindow(_leaderboard);
 
-        window.Closed += ActivateGame;
-    }
+        private void OpenWindow(Window window)
+        {
+            window.gameObject.SetActive(true);
+            window.Open();
 
-    private void ActivateGame()
-    {
-        _soundSettings.Closed -= ActivateGame;
-        _leaderboard.Closed -= ActivateGame;
+            GameActiveChanged?.Invoke(false);
 
-        GameActiveChanged?.Invoke(true);
+            window.Closed += ActivateGame;
+        }
+
+        private void ActivateGame()
+        {
+            _soundSettings.Closed -= ActivateGame;
+            _leaderboard.Closed -= ActivateGame;
+
+            GameActiveChanged?.Invoke(true);
+        }
     }
 }

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Scripts.Model.Buses;
 using Scripts.Model.Levels;
-using Scripts.Presenters;
 using UnityEngine;
 
 namespace Scripts.View.Color
@@ -14,7 +13,7 @@ namespace Scripts.View.Color
         public int ColorsCount => _colors.Count;
         public List<Material> Colors => _colors.ToList();
 
-        public void InitializePassengerColors(Bus[] visibleBases, BusUnderground[] undergroundBuses) =>
+        public void InitializePassengerColors(IBusParameters[] visibleBases, BusUnderground[] undergroundBuses) =>
             _colors = CreateRandomColors(ReadColors(visibleBases, undergroundBuses));
 
         public Material DequeuePassengerColor() =>

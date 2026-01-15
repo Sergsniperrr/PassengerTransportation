@@ -4,62 +4,65 @@ using Scripts.Model.Other;
 using TMPro;
 using UnityEngine;
 
-public class MoneySpendView : SpawnableObject<MoneySpendView>
+namespace Scripts.Model.Money
 {
-    private readonly float _moveDistance = 150f;
-    private readonly float _moveDuration = 1f;
-    private readonly float _fadeInDuration = 0.2f;
-    private readonly float _fadeOutDuration = 0.4f;
-    private readonly float _fadeOutDelay = 0.4f;
-
-    private TextMeshProUGUI _text;
-    private Color _maxColor;
-    private Color _minColor;
-
-    private void Awake()
+    public class MoneySpendView : SpawnableObject<MoneySpendView>
     {
-        _text = GetComponentInChildren<TextMeshProUGUI>();
+        private const float MoveDistance = 150f;
+        private const float MoveDuration = 1f;
+        private const float FadeInDuration = 0.2f;
+        private const float FadeOutDuration = 0.4f;
+        private const float FadeOutDelay = 0.4f;
 
-        if (_text == null)
-            throw new NullReferenceException(nameof(_text));
+        private TextMeshProUGUI _text;
+        private Color _maxColor;
+        private Color _minColor;
 
-        _maxColor = _text.faceColor;
-        _minColor = _text.faceColor;
+        private void Awake()
+        {
+            _text = GetComponentInChildren<TextMeshProUGUI>();
 
-        _minColor.a = 0;
+            if (_text == null)
+                throw new NullReferenceException(nameof(_text));
+
+            _maxColor = _text.faceColor;
+            _minColor = _text.faceColor;
+
+            _minColor.a = 0;
+        }
+
+        private void OnDisable()
+        {
+            _text.DOKill();
+        }
+
+        public void PlayBuyEffect(Vector3 position, int price)
+        {
+            _text.text = $"-{price}";
+            transform.position = position;
+
+            Move();
+            FadeIn();
+        }
+
+        private void Move()
+        {
+            transform.DOLocalMoveY(transform.localPosition.y + MoveDistance, MoveDuration).SetEase(Ease.OutSine);
+        }
+
+        private void FadeIn()
+        {
+            _text.DOColor(_maxColor, FadeInDuration).OnComplete(FadeOut);
+        }
+
+        private void FadeOut()
+        {
+            _text.DOColor(_minColor, FadeOutDuration)
+                .SetDelay(FadeOutDelay)
+                .OnComplete(Disable);
+        }
+
+        private void Disable() =>
+            Die(this);
     }
-
-    private void OnDisable()
-    {
-        _text.DOKill();
-    }
-
-    public void PlayBuyEffect(Vector3 position, int price)
-    {
-        _text.text = $"-{price}";
-        transform.position = position;
-
-        Move();
-        FadeIn();
-    }
-
-    private void Move()
-    {
-        transform.DOLocalMoveY(transform.localPosition.y + _moveDistance, _moveDuration).SetEase(Ease.OutSine);
-    }
-
-    private void FadeIn()
-    {
-        _text.DOColor(_maxColor, _fadeInDuration).OnComplete(FadeOut);
-    }
-
-    private void FadeOut()
-    {
-        _text.DOColor(_minColor, _fadeOutDuration)
-            .SetDelay(_fadeOutDelay)
-            .OnComplete(Disable);
-    }
-
-    private void Disable() =>
-        Die(this);
 }

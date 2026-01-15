@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Scripts.Presenters;
+using Scripts.View.Color;
 using UnityEngine;
 
 namespace Scripts.Model.Passengers

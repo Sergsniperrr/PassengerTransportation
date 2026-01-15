@@ -8,7 +8,7 @@ namespace Scripts.View.Menu
     public class Background : MonoBehaviour
     {
         private const float DefaultFadeDuration = 0.5f;
-        
+
         [SerializeField] private float _maxDarkness = 0.6f;
 
         private Image _image;
@@ -38,11 +38,11 @@ namespace Scripts.View.Menu
             if (_collider != null)
                 _collider.enabled = false;
         }
-        
+
         private void Fade(float endValue, float duration, TweenCallback onEnd)
         {
             if (_fadeTween != null)
-                _fadeTween.Kill(false);
+                _fadeTween.Kill();
 
             _fadeTween = _image.DOFade(endValue, duration);
             _fadeTween.onComplete += onEnd;

@@ -1,9 +1,12 @@
-public class ButtonPassengerArrangeText : FrontButton
+namespace Scripts.View.Buttons
 {
-    protected override void Awake()
+    public class ButtonPassengerArrangeText : FrontButton
     {
-        base.Awake();
+        protected override void Awake()
+        {
+            base.Awake();
 
-        SetText($"{Prices.ArrangingPassengers}");
+            SetText($"{Prices.ArrangingPassengers}");
+        }
     }
 }

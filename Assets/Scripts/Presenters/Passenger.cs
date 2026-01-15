@@ -1,6 +1,7 @@
 using System;
 using Scripts.Model.BusStops;
 using Scripts.Model.Passengers;
+using Scripts.View.Color;
 using UnityEngine;
 
 namespace Scripts.Presenters
@@ -13,12 +14,12 @@ namespace Scripts.Presenters
         private ColorSetter _color;
         private Vector3 _initialPosition;
         private Transform _container;
+        private int _busPlaceIndex;
 
         public event Action<Passenger> Died;
         public event Action<Passenger> GotOnBus;
 
         public Bus Bus { get; private set; }
-        public int BusPlaceIndex { get; private set; }
         public bool IsFinishedMovement { get; private set; } = true;
         public Material Material => _color.Material;
 
@@ -41,7 +42,7 @@ namespace Scripts.Presenters
             _container = container != null ? container : throw new NullReferenceException(nameof(container));
 
         public void SetColor(Material material) =>
-            _color.SetMateral(material);
+            _color.SetMaterial(material);
 
         public void IncrementCurrentIndex() =>
             _router.IncrementCurrentIndex();
@@ -69,27 +70,10 @@ namespace Scripts.Presenters
             _router.GetOnBus(bus);
         }
 
-        public bool TryGetOnBus(Bus bus)
-        {
-            if (bus == null)
-                throw new ArgumentNullException(nameof(bus));
-
-            int failedIndex = -1;
-            BusPlaceIndex = bus.ReserveFreePlace();
-
-            if (BusPlaceIndex == failedIndex)
-                return false;
-
-            Bus = bus;
-            _router.GetOnBus(bus);
-
-            return true;
-        }
-
         public void SpeedUp() =>
             _router.SpeedUp();
 
-        public void ResetData()
+        private void ResetData()
         {
             transform.SetParent(_container);
             transform.position = _initialPosition;

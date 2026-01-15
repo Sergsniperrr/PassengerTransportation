@@ -1,28 +1,31 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Colors : MonoBehaviour
+namespace Scripts.View.Color
 {
-    [SerializeField] private List<Material> _materals;
-
-    public int MaterialsCount => _materals.Count;
-
-    public Material GetRandomColor() =>
-        _materals[Random.Range(0, _materals.Count)];
-
-    public int GetIndexOfMaterial(Material material) =>
-        _materals.IndexOf(material);
-
-    public Material GetMaterial(int index) =>
-        _materals[index];
-
-    public int[] GetMaterialsIndexes(List<Material> materials)
+    public class Colors : MonoBehaviour
     {
-        int[] indexes = new int[materials.Count];
+        [SerializeField] private List<Material> _materals;
 
-        for (int i = 0; i < indexes.Length; i++)
-            indexes[i] = GetIndexOfMaterial(materials[i]);
+        public int MaterialsCount => _materals.Count;
 
-        return indexes;
+        public Material GetRandomColor() =>
+            _materals[Random.Range(0, _materals.Count)];
+
+        public int GetIndexOfMaterial(Material material) =>
+            _materals.IndexOf(material);
+
+        public Material GetMaterial(int index) =>
+            _materals[index];
+
+        public int[] GetMaterialsIndexes(List<Material> materials)
+        {
+            int[] indexes = new int[materials.Count];
+
+            for (int i = 0; i < indexes.Length; i++)
+                indexes[i] = GetIndexOfMaterial(materials[i]);
+
+            return indexes;
+        }
     }
 }

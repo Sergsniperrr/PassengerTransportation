@@ -1,17 +1,20 @@
 using Scripts.Model.Coins;
 using UnityEngine;
 
-public class MoneyCounter : CoinsCounter
+namespace Scripts.Model.Money
 {
-    [SerializeField] private CoinsOnBusStop _coinsPool;
-
-    private void OnEnable()
+    public class MoneyCounter : CoinsCounter
     {
-        _coinsPool.CoinResieved += AddOneCoin;
-    }
+        [SerializeField] private CoinsOnBusStop _coinsPool;
 
-    private void OnDisable()
-    {
-        _coinsPool.CoinResieved -= AddOneCoin;
+        private void OnEnable()
+        {
+            _coinsPool.CoinResieved += AddOneCoin;
+        }
+
+        private void OnDisable()
+        {
+            _coinsPool.CoinResieved -= AddOneCoin;
+        }
     }
 }

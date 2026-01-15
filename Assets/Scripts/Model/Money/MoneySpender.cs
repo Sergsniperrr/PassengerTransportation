@@ -1,4 +1,5 @@
 using System;
+using Scripts.View.Coins;
 using UnityEngine;
 using UnityEngine.UI;
 

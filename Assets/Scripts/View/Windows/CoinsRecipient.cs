@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Scripts.Model.Coins;
+using Scripts.Model.Money;
 using Scripts.Model.Score;
 using UnityEngine;
 
@@ -52,7 +53,6 @@ namespace Scripts.View.Windows
         {
             _money.ResetCompleted -= StartTransferScore;
             _moneyCoinsSpawner.StopSpawn();
-
 
             if (_score.Value == 0)
             {

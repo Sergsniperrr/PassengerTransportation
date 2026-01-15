@@ -1,17 +1,19 @@
 using Scripts.Sounds;
-using Scripts.View.Windows;
 using UnityEngine;
 
-public class FailWindows : SimpleWindow
+namespace Scripts.View.Windows
 {
-    [SerializeField] private Music _levelMusic;
-    [SerializeField] private Music _failMusic;
-
-    public override void Open(float delay = 0)
+    public class FailWindows : SimpleWindow
     {
-        _levelMusic.Stop();
-        _failMusic.Play();
+        [SerializeField] private Music _levelMusic;
+        [SerializeField] private Music _failMusic;
 
-        base.Open(delay);
+        public override void Open(float delay = 0)
+        {
+            _levelMusic.Stop();
+            _failMusic.Play();
+
+            base.Open(delay);
+        }
     }
 }

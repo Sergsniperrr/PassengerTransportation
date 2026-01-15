@@ -64,13 +64,15 @@ namespace Scripts.View.Windows
 
             sequence.Append(transform.DOScale(_maxScale, OutsideDuration))
                 .Append(transform.DOScale(Vector3.zero, ScaleDuration))
-                .OnComplete(() =>
-                {
-                    Closed?.Invoke();
+                .OnComplete(HandleClose);
+        }
 
-                    _buttons.gameObject.SetActive(true);
-                    gameObject.SetActive(false);
-                });
+        private void HandleClose()
+        {
+            Closed?.Invoke();
+
+            _buttons.gameObject.SetActive(true);
+            gameObject.SetActive(false);
         }
     }
 }
